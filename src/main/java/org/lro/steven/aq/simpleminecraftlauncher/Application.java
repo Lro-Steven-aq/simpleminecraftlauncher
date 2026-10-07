@@ -1,22 +1,20 @@
 package org.lro.steven.aq.simpleminecraftlauncher;
 
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.lro.steven.aq.simpleminecraftlauncher.plugin.PluginManager;
+import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.impl.LogEvent;
+import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.signalbus.SignalBus;
+import org.lro.steven.aq.simpleminecraftlauncher.plugin.loader.PluginLoader;
 
-import java.net.URL;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 public class Application extends javafx.application.Application {
-    private final Logger logger;
-
-    public Application() {
-        super();
-        logger = LoggerFactory.getLogger(Application.class);
-    }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -29,6 +27,20 @@ public class Application extends javafx.application.Application {
         primaryStage.setResizable(false);
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
-        logger.info("Main Window shows...");
+    }
+
+    public static void main(String[] args) throws
+            IOException, ClassNotFoundException,
+            InvocationTargetException, NoSuchMethodException,
+            InstantiationException, IllegalAccessException {
+        // start signalbus to load the plugins.
+        PluginManager manager = PluginManager.get();
+
+        manager.startAll();
+        manager.getSignalBus().emit("log.info", new LogEvent("initialize"));
+
+        Platform.exit();
+        // ///////////////////////////////////
+//        javafx.application.Application.launch(Application.class, args);
     }
 }

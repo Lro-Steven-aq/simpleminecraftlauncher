@@ -1,0 +1,138 @@
+package org.lro.steven.aq.simpleminecraftlauncher.plugin;
+
+import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.Plugin;
+import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.signalbus.SignalBus;
+import org.lro.steven.aq.simpleminecraftlauncher.plugin.loader.PluginLoader;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.jar.Manifest;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+
+/**
+ * 插件管理类.
+ * <br/>
+ * 组合起{@code PluginLoader}和{@code SignalBus}
+ * @author lro.steven.aq
+ * @since 0.1
+ */
+public class PluginManager {
+    private final PluginLoader loader;
+    private final SignalBus signalBus;
+    private final List<Plugin> plugins;
+
+    private boolean started;
+    private static PluginManager manager = null;
+
+    /**
+     * 唯一示例化。
+     */
+    private PluginManager() {
+        loader = PluginLoader.get();
+        signalBus = SignalBus.get();
+        plugins = new ArrayList<>();
+    }
+    public static PluginManager get() {
+        if (manager == null) {
+            manager = new PluginManager();
+        }
+        return manager;
+    }
+
+    /**
+     * 加载一个插件
+     * @param file JAR文件
+     */
+    private void start(File file) throws IOException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        String pluginClass = getPluginClass(file);
+
+        try {
+            Plugin plugin = loader.load(file.getAbsolutePath(), pluginClass);
+            plugins.add(plugin);
+            plugin.start(signalBus);
+        } catch (Throwable throwable) {
+            // ignored
+            throwable.printStackTrace();
+        }
+    }
+
+
+    private Manifest getManifest(File file) throws IOException {
+        ZipInputStream inputStream = null;
+        Manifest manifest = null;
+        try {
+            inputStream = new ZipInputStream(new FileInputStream(file));
+            ZipEntry entry;
+            while ((entry = inputStream.getNextEntry()) != null) {
+                if ("META-INF/MANIFEST.MF".equals(entry.getName())) {
+                    manifest = new Manifest(inputStream);
+                    break;
+                }
+            }
+        } finally {
+            inputStream.close();
+        }
+        return manifest;
+    }
+
+    private String getPluginClass(File file) throws IOException {
+        return getManifest(file).getMainAttributes().getValue("Plugin-Class");
+    }
+
+    /**
+     * 调用所有插件的{@code start(SignalBus signalBus)}方法.
+     * <br/>
+     * 而且最多执行一次。
+     * @throws IOException io错误
+     * @throws ClassNotFoundException 查无此类
+     * @throws InvocationTargetException
+     * @throws NoSuchMethodException 没有无参的构造函数
+     * @throws InstantiationException
+     * @throws IllegalAccessException 无权限
+     */
+    public void startAll() throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        if (!started) {
+            started = true;
+            //Path dir = Paths.get("plugins/");
+            Path dir = Paths.get("/home/steven/IdeaProjects/SimpleMinecraftLauncher/src/test/resources/plugins");
+            try(DirectoryStream<Path> directoryStream = Files.newDirectoryStream(dir, "*.jar")) {
+                for(Path path : directoryStream) {
+                    start(path.toFile());
+                }
+            }
+        }
+    }
+
+    public SignalBus getSignalBus() {
+        return signalBus;
+    }
+
+    /**
+     * 正序开始逆序卸载。
+     * <br/>
+     *
+     */
+    public void stopAll() {
+       for(Plugin plugin : plugins.reversed()) {
+           try {
+               plugin.stop();
+           } catch (Throwable throwable) {
+               // ignored
+               throwable.printStackTrace();
+           }
+       }
+        try {
+            loader.unloadAll();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
