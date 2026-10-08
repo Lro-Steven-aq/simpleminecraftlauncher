@@ -37,10 +37,8 @@ public class Application extends javafx.application.Application {
         PluginManager manager = PluginManager.get();
 
         manager.startAll();
-        manager.getSignalBus().emit("log.info", new LogEvent("initialize"));
-
-        Platform.exit();
+        manager.getSignalBus().emit("log.info", LogEvent.of("initialize"));
         // ///////////////////////////////////
-//        javafx.application.Application.launch(Application.class, args);
+        javafx.application.Application.launch(Application.class, args);
     }
 }

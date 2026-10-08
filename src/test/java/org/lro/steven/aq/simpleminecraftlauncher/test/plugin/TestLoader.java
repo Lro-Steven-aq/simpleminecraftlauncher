@@ -14,7 +14,7 @@ public class TestLoader {
         PluginManager manager = PluginManager.get();
         try {
             manager.startAll();
-            manager.getSignalBus().emit("logger.info", new LogEvent("Test Logger"));
+            manager.getSignalBus().emit("log.info", LogEvent.of("Test Logger"));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

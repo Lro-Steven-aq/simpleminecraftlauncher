@@ -8,8 +8,12 @@ import org.slf4j.LoggerFactory;
 public class LogEvent implements Event {
     private static Logger logger = null;
     private final String message;
-    public LogEvent(String message) {
+    private LogEvent(String message) {
         this.message = message;
+    }
+
+    public static Event of(String message) {
+        return new LogEvent(message);
     }
     public Logger getLogger() {
         if (logger == null) {
