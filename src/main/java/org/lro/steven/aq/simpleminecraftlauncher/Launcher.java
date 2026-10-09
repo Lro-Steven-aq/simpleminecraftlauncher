@@ -3,8 +3,13 @@ package org.lro.steven.aq.simpleminecraftlauncher;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
+/**
+ * @author lro.steven.aq
+ * @since 0.1
+ */
 public class Launcher {
     static void main(String[] args) {
+        // only depend on the java standard library.
         try {
             Application.main(args);
         } catch (Exception e) {
