@@ -1,7 +1,6 @@
 module org.lro.steven.aq.simpleminecraftlauncher {
     requires javafx.controls;
     requires javafx.fxml;
-    requires org.slf4j;
     requires static lombok;
     requires org.glavo.url;
 
