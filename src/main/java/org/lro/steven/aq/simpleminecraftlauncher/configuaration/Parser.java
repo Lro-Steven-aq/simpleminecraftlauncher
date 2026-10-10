@@ -1,5 +1,7 @@
 package org.lro.steven.aq.simpleminecraftlauncher.configuaration;
 
+import org.lro.steven.aq.simpleminecraftlauncher.configuaration.impl.DefaultImplementationParser;
+
 /**
  * Parser类是用于解析参数json的接口.
  * <br/>
@@ -10,6 +12,10 @@ package org.lro.steven.aq.simpleminecraftlauncher.configuaration;
  *
  */
 public interface Parser {
+
+    static Parser create(String jsonRawContent, Configuration configuration) {
+        return new DefaultImplementationParser(jsonRawContent, configuration);
+    }
 
     /**
      * 将配置设置为该参数.

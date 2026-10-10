@@ -29,7 +29,7 @@ public class Application extends javafx.application.Application {
         primaryStage.show();
     }
 
-    public static void main(String[] args) throws
+    public static void _main(String[] args) throws
             IOException, ClassNotFoundException,
             InvocationTargetException, NoSuchMethodException,
             InstantiationException, IllegalAccessException {

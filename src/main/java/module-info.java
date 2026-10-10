@@ -3,6 +3,8 @@ module org.lro.steven.aq.simpleminecraftlauncher {
     requires javafx.fxml;
     requires static lombok;
     requires org.glavo.url;
+    requires com.google.gson;
+    requires org.jetbrains.annotations;
 
     // ui
     opens org.lro.steven.aq.simpleminecraftlauncher.controller to javafx.fxml;

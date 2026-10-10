@@ -59,11 +59,18 @@
             <version>5.12.1</version>
             <scope>compile</scope>
         </dependency>
+            <!--  Gson: Java to JSON conversion -->
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.40</version>
-            <scope>provided</scope>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.14.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>RELEASE</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
@@ -119,7 +126,7 @@
                     <archive>
                         <manifest>
                             <mainClass>
-                                org.lro.steven.aq.simpleminecraftlauncher/org.lro.steven.aq.simpleminecraftlauncher.Launcher
+                                org.lro.steven.aq.simpleminecraftlauncher.Launcher
                             </mainClass>
                         </manifest>
                     </archive>

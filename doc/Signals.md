@@ -11,4 +11,8 @@ About logs, there are some signals below
 <br/>
 Note: "log.trace" and "log.debug" will be caught by plugin-logger, but no output. (see it in log4j2.xml configuration file)
 
-## 
+## Popups
+About popups, there are some signals below
+1. ui.popup.trace / ui.popup.debug / ui.popup.info
+2. ui.popup.warn
+3. ui.popup.error / ui.popup.fatal

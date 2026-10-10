@@ -1,5 +1,7 @@
 package org.lro.steven.aq.simpleminecraftlauncher.configuaration;
 
+import org.lro.steven.aq.simpleminecraftlauncher.configuaration.impl.DefaultImplementationCommand;
+
 import java.io.IOException;
 
 /**
@@ -10,6 +12,10 @@ import java.io.IOException;
  * @since 0.1
  */
 public interface Command {
+
+    static Command create() {
+        return new DefaultImplementationCommand();
+    }
 
     /**
      * 创建一个子进程运行命令.
@@ -23,4 +29,6 @@ public interface Command {
      * @return 拼接为命令行的字符串
      */
     String getAsString();
+
+    void add(String...commands);
 }

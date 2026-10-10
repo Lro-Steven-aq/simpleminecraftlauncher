@@ -1,5 +1,7 @@
 package org.lro.steven.aq.simpleminecraftlauncher.configuaration;
 
+import org.lro.steven.aq.simpleminecraftlauncher.configuaration.impl.DefaultImplementationConfiguration;
+
 import java.util.Map;
 
 /**
@@ -11,6 +13,9 @@ import java.util.Map;
  * @since 0.1
  */
 public interface Configuration {
+    static Configuration create() {
+        return new DefaultImplementationConfiguration();
+    }
 
     /**
      * 获取Configuration内部的表.
@@ -19,4 +24,31 @@ public interface Configuration {
      * @return 其内部维护的表。
      */
     Map<String, String> getMap();
+
+    /**
+     * 向内部的Map存储一对K, V.
+     * @param key 键
+     * @param value 值
+     */
+    default void add(String key, String value) {
+        getMap().put(key, value);
+    }
+
+    /**
+     * 从内部的Map依据一个K，获取一个 V.
+     * @param key 键
+     * @return 值
+     */
+    default String get(String key) {
+        return getMap().get(key);
+    }
+
+    /**
+     * 从内部的Map依据一个K，获取一个 V.
+     * @param key 键
+     * @return 值
+     */
+    default String get(String key, String defaultValue) {
+        return getMap().getOrDefault(key, defaultValue);
+    }
 }

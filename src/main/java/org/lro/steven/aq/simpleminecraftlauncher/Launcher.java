@@ -11,7 +11,7 @@ public class Launcher {
     static void main(String[] args) {
         // only depend on the java standard library.
         try {
-            Application.main(args);
+            Application._main(args);
         } catch (Exception e) {
             System.exit(getExitCode(e));
         }
