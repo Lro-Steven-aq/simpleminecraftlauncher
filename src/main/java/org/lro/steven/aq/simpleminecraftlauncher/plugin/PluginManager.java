@@ -101,8 +101,10 @@ public class PluginManager {
     public void startAll() throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         if (!started) {
             started = true;
-            //Path dir = Paths.get("plugins/");
-            Path dir = Paths.get("/home/steven/IdeaProjects/SimpleMinecraftLauncher/src/test/resources/plugins");
+            Path dir = Paths.get("plugins");
+            if (!Files.exists(dir)) {
+                Files.createDirectories(dir);
+            }
             try(DirectoryStream<Path> directoryStream = Files.newDirectoryStream(dir, "*.jar")) {
                 for(Path path : directoryStream) {
                     start(path.toFile());

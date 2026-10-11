@@ -32,5 +32,6 @@
       }
       .label {
          -fx-font-family: "LXGWWenKaiMono-Regular";
+      }
    </style>
 </Pane>
