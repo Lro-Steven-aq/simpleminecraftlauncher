@@ -6,6 +6,7 @@ import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.impl.LogEvent;
 import java.io.*;
 import java.nio.file.Files;
 import java.util.*;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -16,7 +17,7 @@ import java.util.regex.Pattern;
 public final class Internationalization {
 
     private static String INTERNATIONALIZATION_FILE_ROOT = ".simpleminecraftlauncher/i18n";
-    private Map<Locale, Properties> properties;    // K -> V
+    private final Map<Locale, Properties> properties = new HashMap<>();    // K -> V
     private final static Internationalization internationalization;
 
     static {
@@ -58,7 +59,8 @@ public final class Internationalization {
     }
     private static String parseLanguageTag(String fileName) {
         Pattern pattern = Pattern.compile("language_(.+)");
-        return pattern.matcher(fileName).group(1);
+        Matcher matcher = pattern.matcher(fileName);
+        return matcher.matches() ? matcher.group(1) : fileName;
     }
     private static Properties buildPropertiesFromFile(File file) {
         Properties properties = new Properties();

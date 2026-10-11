@@ -35,7 +35,7 @@ public class DefaultImplementationCommand implements Command {
         SignalBus signalBus = PluginManager.get().getSignalBus();
         Process process = null;
         BufferedReader bufferedErrorStream = null;
-        process = new ProcessBuilder(getAsString())
+        process = new ProcessBuilder(command)
                 .start();
         bufferedErrorStream = new BufferedReader(new InputStreamReader(process.getErrorStream(), StandardCharsets.UTF_8));
 
@@ -80,7 +80,7 @@ public class DefaultImplementationCommand implements Command {
 
     @Override
     public String getAsString() {
-        return String.join("", command);
+        return String.join(" ", command);
     }
 
     @Override

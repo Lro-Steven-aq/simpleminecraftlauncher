@@ -30,7 +30,7 @@ import java.util.stream.Stream;
  * @since 0.1
  */
 public class DefaultImplementationParser implements Parser {
-    private static final  Pattern PATTERN = Pattern.compile("\\$\\{([^}])\\}");
+    private static final  Pattern PATTERN = Pattern.compile("\\$\\{([^}]+)\\}");
     private static final Gson GSON = new GsonBuilder()
             .registerTypeAdapter(WebURL.class, new WebURLDeserializer())
             .create();
