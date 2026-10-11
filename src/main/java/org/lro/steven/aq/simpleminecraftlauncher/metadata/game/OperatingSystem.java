@@ -36,6 +36,7 @@ public enum OperatingSystem {
 
     public static String getVersion() {
         if (VERSION == null) {
+            VERSION = "";
             try (Process process = new ProcessBuilder("cmd", "/c", "ver").start();) {
                 String output = new String(process.getInputStream().readAllBytes());
                 Matcher matcher = Pattern.compile("Version\\s+(\\d+(?:\\.\\d+)+)").matcher(output);
@@ -45,7 +46,6 @@ public enum OperatingSystem {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            VERSION = "";
         }
 
         return VERSION;

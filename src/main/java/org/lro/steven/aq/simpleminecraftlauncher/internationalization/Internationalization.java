@@ -30,11 +30,12 @@ public final class Internationalization {
                     Locale.ENGLISH,
                     internationalization.load("%s/language.properties".formatted(INTERNATIONALIZATION_FILE_ROOT))
             );
-            Files.list(new File("%s/".formatted(INTERNATIONALIZATION_FILE_ROOT)).toPath())
-                    .filter((f) -> f.toFile().getName().startsWith("language_"))
-                    .forEach((f) -> {
-                            internationalization.addProperties(Locale.forLanguageTag(parseLanguageTag(f.toFile().getName())), buildPropertiesFromFile(f.toFile()));
-                    });
+            try (var stream = Files.list(new File("%s/".formatted(INTERNATIONALIZATION_FILE_ROOT)).toPath())) {
+                stream.filter((f) -> f.toFile().getName().startsWith("language_"))
+                        .forEach((f) -> {
+                                internationalization.addProperties(Locale.forLanguageTag(parseLanguageTag(f.toFile().getName())), buildPropertiesFromFile(f.toFile()));
+                        });
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

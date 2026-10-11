@@ -66,25 +66,23 @@ public class PluginManager {
 
 
     private Manifest getManifest(File file) throws IOException {
-        ZipInputStream inputStream = null;
-        Manifest manifest = null;
-        try {
-            inputStream = new ZipInputStream(new FileInputStream(file));
+        try (ZipInputStream inputStream = new ZipInputStream(new FileInputStream(file))) {
             ZipEntry entry;
             while ((entry = inputStream.getNextEntry()) != null) {
                 if ("META-INF/MANIFEST.MF".equals(entry.getName())) {
-                    manifest = new Manifest(inputStream);
-                    break;
+                    return new Manifest(inputStream);
                 }
             }
-        } finally {
-            inputStream.close();
         }
-        return manifest;
+        return null;
     }
 
     private String getPluginClass(File file) throws IOException {
-        return getManifest(file).getMainAttributes().getValue("Plugin-Class");
+        Manifest manifest = getManifest(file);
+        if (manifest == null) {
+            return null;
+        }
+        return manifest.getMainAttributes().getValue("Plugin-Class");
     }
 
     /**

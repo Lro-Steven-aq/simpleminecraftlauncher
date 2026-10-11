@@ -46,15 +46,15 @@ public final class DefaultImplementationSignalBus implements SignalBus {
     /// Implement its interface:
     @Override
     public void emit(String signal, Event payload) {
-        try {
-            map.getOrDefault(signal, List.of())
-                    .forEach((e) -> {
+        map.getOrDefault(signal, List.of())
+                .forEach((e) -> {
+                    try {
                         e.accept(payload);
-                    });
-        } catch (Throwable throwable) {
-            // ignored
-            throwable.printStackTrace();
-        }
+                    } catch (Throwable throwable) {
+                        // ignored
+                        throwable.printStackTrace();
+                    }
+                });
     }
 
 }
