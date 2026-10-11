@@ -33,48 +33,44 @@ public class DefaultImplementationCommand implements Command {
     @Override
     public void execute() throws IOException, InterruptedException {
         SignalBus signalBus = PluginManager.get().getSignalBus();
-        Process process = null;
-        BufferedReader bufferedErrorStream = null;
-        process = new ProcessBuilder(command)
-                .start();
-        bufferedErrorStream = new BufferedReader(new InputStreamReader(process.getErrorStream(), StandardCharsets.UTF_8));
-
-        // Get stdout.
-        Process finalProcess = process; // 绕过限制
-        CompletableFuture<Void> outputFuture = CompletableFuture.runAsync(() -> {
-            try(BufferedReader bufferedInputStream = new BufferedReader(new InputStreamReader(finalProcess.getInputStream(), StandardCharsets.UTF_8))) {
-                String line = null;
-                while ((line = bufferedInputStream.readLine()) != null) {
-                    signalBus.emit("log.info", LogEvent.of(line));
+        try (Process process = new ProcessBuilder(command) .start()) {
+            // Get stdout.
+            Process finalProcess = process; // 绕过限制
+            CompletableFuture<Void> outputFuture = CompletableFuture.runAsync(() -> {
+                try (BufferedReader bufferedInputStream = new BufferedReader(new InputStreamReader(finalProcess.getInputStream(), StandardCharsets.UTF_8))) {
+                    String line = null;
+                    while ((line = bufferedInputStream.readLine()) != null) {
+                        signalBus.emit("log.info", LogEvent.of(line));
+                    }
+                } catch (IOException e) {
+                    signalBus.emit("log.error", LogEvent.of("Error to read `<stdout>`: %s".formatted(e.getMessage())));
                 }
-            } catch (IOException e) {
-                signalBus.emit("log.error", LogEvent.of("Error to read `<stdout>`: %s".formatted(e.getMessage())));
-            }
             }, executor);
 
-        // Get stderr.
-        CompletableFuture<Void> errorFuture = CompletableFuture.runAsync(() -> {
-            try(BufferedReader bufferedInputStream = new BufferedReader(new InputStreamReader(finalProcess.getErrorStream(), StandardCharsets.UTF_8))) {
-                String line = null;
-                while ((line = bufferedInputStream.readLine()) != null) {
-                    signalBus.emit("log.info", LogEvent.of(line));
+            // Get stderr.
+            CompletableFuture<Void> errorFuture = CompletableFuture.runAsync(() -> {
+                try (BufferedReader bufferedInputStream = new BufferedReader(new InputStreamReader(finalProcess.getErrorStream(), StandardCharsets.UTF_8))) {
+                    String line = null;
+                    while ((line = bufferedInputStream.readLine()) != null) {
+                        signalBus.emit("log.info", LogEvent.of(line));
+                    }
+                } catch (IOException e) {
+                    signalBus.emit("log.error", LogEvent.of("Error to read `<stderr>`: %s".formatted(e.getMessage())));
                 }
-            } catch (IOException e) {
-                signalBus.emit("log.error", LogEvent.of("Error to read `<stderr>`: %s".formatted(e.getMessage())));
-            }
             }, executor);
-        CompletableFuture.allOf(outputFuture, errorFuture);
-        int exitcode = process.waitFor();
-        if (exitcode != 0) {
-            // Panic !
-            signalBus.emit("log.error", LogEvent.of("Error: exitcode=%d".formatted(exitcode)));
-            signalBus.emit("ui.popup.error",
-                    PopupEvent.of(
-                            Internationalization.get("launch.error.title"),
-                            Internationalization.get("launch.error.head"),
-                            Internationalization.get("launch.error.content")
-                    )
-            ); // Use I18n
+            CompletableFuture.allOf(outputFuture, errorFuture);
+            int exitcode = process.waitFor();
+            if (exitcode != 0) {
+                // Panic !
+                signalBus.emit("log.error", LogEvent.of("Error: exitcode=%d".formatted(exitcode)));
+                signalBus.emit("ui.popup.error",
+                        PopupEvent.of(
+                                Internationalization.get("launch.error.title"),
+                                Internationalization.get("launch.error.head"),
+                                Internationalization.get("launch.error.content")
+                        )
+                ); // Use I18n
+            }
         }
     }
 
