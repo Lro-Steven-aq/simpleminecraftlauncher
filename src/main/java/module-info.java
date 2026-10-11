@@ -1,7 +1,6 @@
 module org.lro.steven.aq.simpleminecraftlauncher {
     requires javafx.controls;
     requires javafx.fxml;
-    requires static lombok;
     requires org.glavo.url;
     requires com.google.gson;
     requires org.jetbrains.annotations;
@@ -10,6 +9,7 @@ module org.lro.steven.aq.simpleminecraftlauncher {
     opens org.lro.steven.aq.simpleminecraftlauncher.controller to javafx.fxml;
     exports org.lro.steven.aq.simpleminecraftlauncher.controller to javafx.graphics;
 
+    // for plugin-system.
     exports org.lro.steven.aq.simpleminecraftlauncher;
     exports org.lro.steven.aq.simpleminecraftlauncher.plugin;
     exports org.lro.steven.aq.simpleminecraftlauncher.plugin.api;
