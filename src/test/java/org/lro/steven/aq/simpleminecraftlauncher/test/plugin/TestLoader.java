@@ -32,6 +32,9 @@ public class TestLoader {
             //
             bus.emit("ui.popup.error", PopupEvent.of("test","?error happens!" ,"Test Content"));
             bus.emit("log.error", LogEvent.of("L"));
+
+            manager.stop(PluginManager.PLUGIN_PATH + "/simpleminecraftlauncher-plugin-logger-1.0-SNAPSHOT.jar");
+            bus.emit("log.error", LogEvent.of("You should not see it"));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

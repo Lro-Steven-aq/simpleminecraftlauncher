@@ -33,6 +33,8 @@ public class PluginManager {
     private boolean started;
     private static PluginManager manager = null;
 
+    public final static String PLUGIN_PATH = "plugins";
+
     /**
      * 唯一示例化。
      */
@@ -102,7 +104,7 @@ public class PluginManager {
     public void startAll() throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         if (!started) {
             started = true;
-            Path dir = Paths.get("plugins");
+            Path dir = Paths.get(PLUGIN_PATH);
             if (!Files.exists(dir)) {
                 Files.createDirectories(dir);
             }
@@ -145,7 +147,11 @@ public class PluginManager {
      * @param filePath 需要停止的插件路径。
      */
     public void stop(String filePath) {
-        Plugin plugin = pluginMap.get(filePath);
+        String absolutePath = new File(filePath).getAbsolutePath();
+        Plugin plugin = pluginMap.get(absolutePath);
+        if (plugin == null) {
+            throw new IllegalArgumentException("null: %s".formatted(filePath));
+        }
         try {
             plugin.stop();
         } catch (Throwable throwable) {
@@ -153,7 +159,7 @@ public class PluginManager {
             throwable.printStackTrace();
         }
         try {
-            loader.unload(filePath);
+            loader.unload(absolutePath);
         } catch (Throwable e) {
             e.printStackTrace();
         }
