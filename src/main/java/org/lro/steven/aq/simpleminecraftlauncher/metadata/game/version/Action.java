@@ -1,4 +1,4 @@
-package org.lro.steven.aq.simpleminecraftlauncher.metadata.game;
+package org.lro.steven.aq.simpleminecraftlauncher.metadata.game.version;
 
 import com.google.gson.annotations.SerializedName;
 

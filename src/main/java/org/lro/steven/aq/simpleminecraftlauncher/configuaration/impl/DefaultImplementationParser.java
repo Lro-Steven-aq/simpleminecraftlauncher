@@ -13,16 +13,15 @@ import org.lro.steven.aq.simpleminecraftlauncher.configuaration.Features;
 import org.lro.steven.aq.simpleminecraftlauncher.configuaration.Parser;
 import org.lro.steven.aq.simpleminecraftlauncher.deserializer.WebURLDeserializer;
 import org.lro.steven.aq.simpleminecraftlauncher.metadata.game.*;
+import org.lro.steven.aq.simpleminecraftlauncher.metadata.game.version.*;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.PluginManager;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.impl.LogEvent;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 /**
  * 实际解析类的默认实现.
@@ -115,7 +114,7 @@ public class DefaultImplementationParser implements Parser {
      */
     private boolean matches(Rule rule) {
         if (rule.os() != null) {
-            Os os = rule.os();
+            Rule.Os os = rule.os();
             if (os.name() == null || os.name() != CURRENT_SYSTEM) {
                 return false;
             }
