@@ -28,6 +28,7 @@ public class PluginManager {
     private final PluginLoader loader;
     private final SignalBus signalBus;
     private final List<Plugin> plugins;
+    private final Map<String, Plugin> pluginMap; // filePath -> Plugin instance
 
     private boolean started;
     private static PluginManager manager = null;
@@ -39,6 +40,7 @@ public class PluginManager {
         loader = PluginLoader.get();
         signalBus = SignalBus.get();
         plugins = new ArrayList<>();
+        pluginMap = new HashMap<>();
     }
     public static PluginManager get() {
         if (manager == null) {
@@ -51,13 +53,14 @@ public class PluginManager {
      * 加载一个插件
      * @param file JAR文件
      */
-    private void start(File file) throws IOException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    public void start(File file) throws IOException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         String pluginClass = getPluginClass(file);
 
         try {
             Plugin plugin = loader.load(file.getAbsolutePath(), pluginClass);
             plugins.add(plugin);
             plugin.start(signalBus);
+            pluginMap.put(file.getAbsolutePath(), plugin);
         } catch (Throwable throwable) {
             // ignored
             throwable.printStackTrace();
@@ -131,7 +134,27 @@ public class PluginManager {
        }
         try {
             loader.unloadAll();
-        } catch (Exception e) {
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        pluginMap.clear();
+    }
+
+    /**
+     * 停止一个插件.
+     * @param filePath 需要停止的插件路径。
+     */
+    public void stop(String filePath) {
+        Plugin plugin = pluginMap.get(filePath);
+        try {
+            plugin.stop();
+        } catch (Throwable throwable) {
+            // ignored
+            throwable.printStackTrace();
+        }
+        try {
+            loader.unload(filePath);
+        } catch (Throwable e) {
             e.printStackTrace();
         }
     }
