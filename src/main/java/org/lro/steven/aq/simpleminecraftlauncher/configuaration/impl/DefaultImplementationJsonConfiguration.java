@@ -26,11 +26,11 @@ import java.util.Map;
  * @author lro.steven.aq
  * @since 0.1
  */
-public class DefaultImplementationConfiguration implements Configuration {
+public class DefaultImplementationJsonConfiguration implements Configuration {
 
     private final Map<String, String> configuration;
 
-    public DefaultImplementationConfiguration() {
+    public DefaultImplementationJsonConfiguration() {
         configuration = new HashMap<>();
     }
 

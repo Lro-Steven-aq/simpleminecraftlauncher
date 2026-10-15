@@ -16,13 +16,14 @@
  */
 package org.lro.steven.aq.simpleminecraftlauncher.configuaration;
 
-import org.lro.steven.aq.simpleminecraftlauncher.configuaration.impl.DefaultImplementationConfiguration;
+import org.lro.steven.aq.simpleminecraftlauncher.configuaration.impl.DefaultImplementationJsonConfiguration;
 
 import java.util.Map;
 
 /**
- * 处理配置的json的 变量引用 "${abc}"
+ * 对于json解析的配置.
  * <br/>
+ * 其实就是一一对应.
  * 比如：${classpath}<br>
  * 其本质就是一个 Map，这是在内部维护的。
  * @author Lro.Steven.aq
@@ -30,7 +31,7 @@ import java.util.Map;
  */
 public interface Configuration {
     static Configuration create() {
-        return new DefaultImplementationConfiguration();
+        return new DefaultImplementationJsonConfiguration();
     }
 
     /**

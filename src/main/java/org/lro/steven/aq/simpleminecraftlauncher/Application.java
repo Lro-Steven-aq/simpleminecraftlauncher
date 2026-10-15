@@ -20,8 +20,14 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import org.lro.steven.aq.simpleminecraftlauncher.configuaration.Configuration;
+import org.lro.steven.aq.simpleminecraftlauncher.configuaration.Features;
+import org.lro.steven.aq.simpleminecraftlauncher.configuaration.impl.ApplicationConfiguration;
+import org.lro.steven.aq.simpleminecraftlauncher.controller.impl.LauncherMainWindowController;
+import org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.Metadata;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.PluginManager;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.impl.LogEvent;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.signalbus.SignalBus;
@@ -29,13 +35,26 @@ import org.lro.steven.aq.simpleminecraftlauncher.plugin.loader.PluginLoader;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Application extends javafx.application.Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+
+        // load config -> preciousBackgroundImage -> Metadata
+        Configuration configuration = loadConfiguration();
+        Metadata metadata = Metadata.from(Features.create(
+                new HashMap<>()),
+                new Image(configuration.get("preciousBackgroundImage"))
+        );
         // size: 577 x 900
-        Parent root = FXMLLoader.load(getClass().getResource("Application.fxml"));
+
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Application.fxml"));
+        LauncherMainWindowController controller = fxmlLoader.getController();
+        controller.setMetadata(metadata);
+        Parent root = fxmlLoader.load();
 
         Font.loadFont(getClass().getResourceAsStream("LXGWWenKaiMono-Regular.ttf"), 48);
 
@@ -46,9 +65,7 @@ public class Application extends javafx.application.Application {
     }
 
     public static void _main(String[] args) throws
-            IOException, ClassNotFoundException,
-            InvocationTargetException, NoSuchMethodException,
-            InstantiationException, IllegalAccessException {
+            IOException {
         // start signalbus to load the plugins.
         PluginManager manager = PluginManager.get();
 
@@ -56,5 +73,11 @@ public class Application extends javafx.application.Application {
         manager.getSignalBus().emit("log.info", LogEvent.of("initialize"));
         // ///////////////////////////////////
         javafx.application.Application.launch(Application.class, args);
+    }
+
+    public static Configuration loadConfiguration() {
+        Configuration configuration = new ApplicationConfiguration();
+        // unimplement...
+        return configuration;
     }
 }

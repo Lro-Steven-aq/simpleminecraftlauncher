@@ -7,17 +7,27 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="577.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity"
+      minHeight="-Infinity" minWidth="-Infinity"
+      prefHeight="577.0" prefWidth="900.0"
+      fx:controller="org.lro.steven.aq.simpleminecraftlauncher.controller.impl.LauncherMainWindowController"
+      fx:id="root"
+      xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1">
+   <!--opacity="0.6"-->
    <children>
-      <ImageView fitHeight="577.0" fitWidth="900.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@background.jpg" />
-         </image>
+      <ImageView fitHeight="577.0" fitWidth="900.0"
+                 pickOnBounds="true" preserveRatio="true"
+                 fx:id="backgroundImage">
+
       </ImageView>
       <AnchorPane layoutX="14.0" layoutY="14.0" prefHeight="200.0" prefWidth="873.0" />
       <AnchorPane layoutX="14.0" layoutY="355.0" prefHeight="200.0" prefWidth="873.0">
          <children>
-            <Button fx:id="launchButton" layoutX="664.0" layoutY="40.0" mnemonicParsing="false" prefHeight="141.0" prefWidth="199.0" text="启动" AnchorPane.bottomAnchor="19.0" AnchorPane.rightAnchor="10.0">
+            <Button fx:id="launchButton" layoutX="664.0"
+                    layoutY="40.0" mnemonicParsing="false"
+                    prefHeight="141.0" prefWidth="199.0"
+                    AnchorPane.bottomAnchor="19.0"
+                    AnchorPane.rightAnchor="10.0">
                <font>
                   <Font name="LXGW WenKai Mono" size="48.0" />
                </font>

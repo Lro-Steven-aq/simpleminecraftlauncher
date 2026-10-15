@@ -44,7 +44,7 @@ import java.util.regex.Pattern;
  * @author lro.steven.aq
  * @since 0.1
  */
-public class DefaultImplementationParser implements Parser {
+public class DefaultImplementationJsonParser implements Parser {
     private static final  Pattern PATTERN = Pattern.compile("\\$\\{([^}]+)\\}");
     private static final Gson GSON = new GsonBuilder()
             .registerTypeAdapter(WebURL.class, new WebURLDeserializer())
@@ -55,7 +55,7 @@ public class DefaultImplementationParser implements Parser {
     private final String jsonRawContent;
     private Features features = null;
 
-    public DefaultImplementationParser(String jsonRawContent, Configuration configuration, Features features) {
+    public DefaultImplementationJsonParser(String jsonRawContent, Configuration configuration, Features features) {
         this.jsonRawContent = jsonRawContent;
         this.configuration = configuration;
         this.features = features;

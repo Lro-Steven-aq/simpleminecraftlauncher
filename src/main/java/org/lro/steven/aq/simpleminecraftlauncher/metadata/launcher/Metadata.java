@@ -16,6 +16,7 @@
  */
 package org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher;
 
+import javafx.scene.image.Image;
 import org.lro.steven.aq.simpleminecraftlauncher.configuaration.Features;
 import org.lro.steven.aq.simpleminecraftlauncher.metadata.game.OperatingSystem;
 
@@ -24,15 +25,17 @@ public final class Metadata {
     private final OperatingSystem system;
     private final String systemVersion;
     private final Features features;
+    private final Image preciousBackgroundImage;
 
-    private Metadata(OperatingSystem system, String systemVersion, Features features) {
+    private Metadata(OperatingSystem system, String systemVersion, Features features, Image preciousBackgroundImage) {
         this.system = system;
         this.systemVersion = systemVersion;
         this.features = features;
+        this.preciousBackgroundImage = preciousBackgroundImage;
     }
 
-    public Metadata from(Features features) {
-        return new Metadata(OperatingSystem.getOs(), OperatingSystem.getVersion(), features);
+    public static Metadata from(Features features, Image preciousBackgroundImage) {
+        return new Metadata(OperatingSystem.getOs(), OperatingSystem.getVersion(), features, preciousBackgroundImage);
     }
 
     public OperatingSystem system() {
@@ -45,5 +48,9 @@ public final class Metadata {
 
     public Features features() {
         return features;
+    }
+
+    public Image preciousBackgroundImage() {
+        return preciousBackgroundImage;
     }
 }

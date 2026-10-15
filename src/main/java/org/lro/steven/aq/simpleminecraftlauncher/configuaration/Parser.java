@@ -16,7 +16,7 @@
  */
 package org.lro.steven.aq.simpleminecraftlauncher.configuaration;
 
-import org.lro.steven.aq.simpleminecraftlauncher.configuaration.impl.DefaultImplementationParser;
+import org.lro.steven.aq.simpleminecraftlauncher.configuaration.impl.DefaultImplementationJsonParser;
 
 /**
  * Parser类是用于解析参数json的接口.
@@ -30,7 +30,7 @@ import org.lro.steven.aq.simpleminecraftlauncher.configuaration.impl.DefaultImpl
 public interface Parser {
 
     static Parser create(String jsonRawContent, Configuration configuration, Features features) {
-        return new DefaultImplementationParser(jsonRawContent, configuration, features);
+        return new DefaultImplementationJsonParser(jsonRawContent, configuration, features);
     }
 
     /**

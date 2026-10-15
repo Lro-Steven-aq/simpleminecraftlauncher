@@ -63,6 +63,10 @@ public final class Internationalization {
                 internationalization.properties.get(Locale.ENGLISH)  // 退化为英语
         ).getProperty(key, key);
     }
+
+    public void setLocale(Locale locale) {
+        Locale.setDefault(locale);
+    }
     private Internationalization() {}
 
 
