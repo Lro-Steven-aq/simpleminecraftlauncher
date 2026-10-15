@@ -30,6 +30,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.jar.Manifest;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -117,17 +118,40 @@ public class PluginManager {
      * @throws InstantiationException
      * @throws IllegalAccessException 无权限
      */
-    public void startAll() throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public void startAll() throws IOException {
         if (!started) {
             started = true;
             Path dir = Paths.get(PLUGIN_PATH);
             if (!Files.exists(dir)) {
                 Files.createDirectories(dir);
             }
-            try(DirectoryStream<Path> directoryStream = Files.newDirectoryStream(dir, "*.jar")) {
-                for(Path path : directoryStream) {
-                    start(path.toFile());
-                }
+            try(Stream<Path> directoryStream = Files.list(dir)) {
+                directoryStream.filter(path -> path.toString().endsWith(".jar"))
+                        .sorted((path1, path2) -> {
+                            // logger 优先，不管它是谁实现的logger.
+                            // 因为其他的插件可能在.start方法里就依赖于plugin-logger 了。
+                            // 如果需要额外的优先，应该插入在logger后面(见 <位置1>)
+                            boolean isLogger1 = path1.getFileName().toString().toLowerCase(Locale.ROOT).contains("logger");
+                            boolean isLogger2 = path2.getFileName().toString().toLowerCase(Locale.ROOT).contains("logger");
+                            if (isLogger1 && !isLogger2) {
+                                // path1 放在前面
+                                return -1;
+                            }
+                            if (!isLogger1 && isLogger2) {
+                                // path2 放在前面.
+                                return 1;
+                            }
+                            // <位置1>，应该此处插入此后需要优先的插件。
+                            return path1.compareTo(path2);
+                        })
+                        .forEach(path -> {
+                            try {
+                                start(path.toFile());
+                            }  catch (Throwable throwable) {
+                                // skip it.
+                                throwable.printStackTrace();
+                            }
+                        });
             }
         }
     }

@@ -29,8 +29,8 @@ import org.lro.steven.aq.simpleminecraftlauncher.configuaration.impl.DefaultImpl
  */
 public interface Parser {
 
-    static Parser create(String jsonRawContent, Configuration configuration) {
-        return new DefaultImplementationParser(jsonRawContent, configuration);
+    static Parser create(String jsonRawContent, Configuration configuration, Features features) {
+        return new DefaultImplementationParser(jsonRawContent, configuration, features);
     }
 
     /**

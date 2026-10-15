@@ -31,8 +31,8 @@ public final class Metadata {
         this.features = features;
     }
 
-    public Metadata get() {
-        return new Metadata(OperatingSystem.getOs(), OperatingSystem.getVersion(), Features.getInstance());
+    public Metadata from(Features features) {
+        return new Metadata(OperatingSystem.getOs(), OperatingSystem.getVersion(), features);
     }
 
     public OperatingSystem system() {

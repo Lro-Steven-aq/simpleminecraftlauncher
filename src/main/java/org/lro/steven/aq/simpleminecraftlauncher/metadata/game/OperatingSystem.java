@@ -39,7 +39,7 @@ public enum OperatingSystem {
 
     public static OperatingSystem getOs() {
         if (CURRENT_SYSTEM == null) {
-            CURRENT_SYSTEM = switch (System.getProperty("os.name").toLowerCase(Locale.ENGLISH)) {
+            CURRENT_SYSTEM = switch (System.getProperty("os.name").toLowerCase(Locale.ROOT)) {
                 case String string when string.contains("win") -> OperatingSystem.WINDOWS;
                 case String string when string.contains("mac") -> OperatingSystem.OSX;
                 case String string when string.contains("nix") || string.contains("nux") -> OperatingSystem.LINUX;
