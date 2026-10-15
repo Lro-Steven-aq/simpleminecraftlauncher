@@ -53,11 +53,12 @@ public class DefaultImplementationParser implements Parser {
 
     private Configuration configuration;
     private final String jsonRawContent;
+    private Features features = null;
 
-
-    public DefaultImplementationParser(String jsonRawContent, Configuration configuration) {
+    public DefaultImplementationParser(String jsonRawContent, Configuration configuration, Features features) {
         this.jsonRawContent = jsonRawContent;
         this.configuration = configuration;
+        this.features = features;
     }
 
     @Override
@@ -141,9 +142,7 @@ public class DefaultImplementationParser implements Parser {
 
         if (rule.features() != null) {
             for (Map.Entry<String, Boolean> entry : rule.features().entrySet()) {
-                if (! Features
-                        .getInstance()
-                        .getOrDefault(
+                if (! features.getOrDefault(
                                 entry.getKey(),
                                 false).equals(entry.getValue())) {
                     return false;

@@ -16,17 +16,12 @@
  */
 package org.lro.steven.aq.simpleminecraftlauncher.test.plugin;
 
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.stage.Stage;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.PluginManager;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.impl.LogEvent;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.impl.PopupEvent;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.signalbus.SignalBus;
 
-import java.util.concurrent.CountDownLatch;
 
 
 public class TestLoader {

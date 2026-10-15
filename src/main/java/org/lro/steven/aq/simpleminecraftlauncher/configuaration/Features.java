@@ -21,18 +21,16 @@ import java.util.Map;
 
 public final class Features {
     private Map<String, Boolean> map;
-    private static Features features = null;
 
 
-    public static Features getInstance() {
-        if (features == null) {
-            features = new Features();
-            features.map = new HashMap<>();
-        }
+    public static Features create(Map<String, Boolean> config) {
+        Features features = new Features(config);
         return features;
     }
 
-    private Features() {}
+    private Features(Map<String, Boolean> config) {
+        this.map = config;
+    }
 
     public Boolean getOrDefault(String key, Boolean defaultValue) {
         return map.getOrDefault(key, defaultValue);
