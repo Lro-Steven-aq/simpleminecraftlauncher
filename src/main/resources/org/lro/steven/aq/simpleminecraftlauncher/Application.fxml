@@ -27,6 +27,7 @@
                     layoutY="40.0" mnemonicParsing="false"
                     prefHeight="141.0" prefWidth="199.0"
                     AnchorPane.bottomAnchor="19.0"
+                    text="launch!"
                     AnchorPane.rightAnchor="10.0">
                <font>
                   <Font name="LXGW WenKai Mono" size="48.0" />

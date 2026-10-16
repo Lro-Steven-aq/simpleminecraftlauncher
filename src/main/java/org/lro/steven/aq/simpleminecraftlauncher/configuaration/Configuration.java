@@ -16,8 +16,10 @@
  */
 package org.lro.steven.aq.simpleminecraftlauncher.configuaration;
 
+import org.apache.commons.io.IOUtils;
 import org.lro.steven.aq.simpleminecraftlauncher.configuaration.impl.DefaultImplementationJsonConfiguration;
 
+import java.io.File;
 import java.util.Map;
 
 /**
@@ -33,6 +35,18 @@ public interface Configuration {
     static Configuration create() {
         return new DefaultImplementationJsonConfiguration();
     }
+
+    /**
+     * 字符串加载配置.
+     * @param string 配置字符串
+     */
+    default void load(String string) {}
+
+    /**
+     * 文件加载配置.
+     * @param file 配置字符串
+     */
+    default void load(File file) {}
 
     /**
      * 获取Configuration内部的表.

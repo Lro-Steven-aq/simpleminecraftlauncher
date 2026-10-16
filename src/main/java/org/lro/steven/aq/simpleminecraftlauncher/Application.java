@@ -23,18 +23,22 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import org.glavo.url.WebURL;
 import org.lro.steven.aq.simpleminecraftlauncher.configuaration.Configuration;
 import org.lro.steven.aq.simpleminecraftlauncher.configuaration.Features;
 import org.lro.steven.aq.simpleminecraftlauncher.configuaration.impl.ApplicationConfiguration;
 import org.lro.steven.aq.simpleminecraftlauncher.controller.impl.LauncherMainWindowController;
 import org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.Metadata;
+import org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.conf.ApplicationConfigurationMapper;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.PluginManager;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.impl.LogEvent;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.signalbus.SignalBus;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.loader.PluginLoader;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,17 +48,17 @@ public class Application extends javafx.application.Application {
     public void start(Stage primaryStage) throws Exception {
 
         // load config -> preciousBackgroundImage -> Metadata
-        Configuration configuration = loadConfiguration();
-        Metadata metadata = Metadata.from(Features.create(
-                new HashMap<>()),
-                new Image(configuration.get("preciousBackgroundImage"))
-        );
+        ApplicationConfiguration conf = loadConfiguration();
+        ApplicationConfigurationMapper configurations = conf.getConfigurations();
+        WebURL url = configurations.userSettings().preciousBackgroundImageUrl();
+        Metadata metadata = Metadata.from(Features.create(new HashMap<>()), configurations);
         // size: 577 x 900
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Application.fxml"));
+        Parent root = fxmlLoader.load();
+
         LauncherMainWindowController controller = fxmlLoader.getController();
         controller.setMetadata(metadata);
-        Parent root = fxmlLoader.load();
 
         Font.loadFont(getClass().getResourceAsStream("LXGWWenKaiMono-Regular.ttf"), 48);
 
@@ -75,9 +79,9 @@ public class Application extends javafx.application.Application {
         javafx.application.Application.launch(Application.class, args);
     }
 
-    public static Configuration loadConfiguration() {
-        Configuration configuration = new ApplicationConfiguration();
-        // unimplement...
+    public static ApplicationConfiguration loadConfiguration() {
+        ApplicationConfiguration configuration = new ApplicationConfiguration();
+        configuration.load(new File(".simpleminecraftlauncher/configurations.json"));
         return configuration;
     }
 }

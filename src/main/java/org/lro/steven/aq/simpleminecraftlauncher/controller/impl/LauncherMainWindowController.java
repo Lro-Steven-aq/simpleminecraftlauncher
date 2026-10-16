@@ -9,6 +9,9 @@ import org.lro.steven.aq.simpleminecraftlauncher.controller.Controller;
 import org.lro.steven.aq.simpleminecraftlauncher.internationalization.Internationalization;
 import org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.Metadata;
 
+import java.net.URL;
+import java.util.ResourceBundle;
+
 public class LauncherMainWindowController extends Controller {
 
     @FXML
@@ -24,8 +27,8 @@ public class LauncherMainWindowController extends Controller {
 
     public LauncherMainWindowController() {}
 
-    @FXML
-    public void initialize() {
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
         root.setOpacity(0.4);
         // Internationalization
         backgroundImage.setImage(metadata.preciousBackgroundImage());
@@ -33,5 +36,9 @@ public class LauncherMainWindowController extends Controller {
 
     public void setMetadata(Metadata metadata) {
         this.metadata = metadata;
+    }
+
+    public void initializeData() {
+        // change ui here.
     }
 }

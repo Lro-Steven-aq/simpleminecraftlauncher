@@ -16,6 +16,8 @@
  */
 package org.lro.steven.aq.simpleminecraftlauncher.controller;
 
+import javafx.fxml.Initializable;
+
 /**
  * 这是一个给图形界面的Controller的父类。
  * 没有抽象方法，<br/>
@@ -23,5 +25,5 @@ package org.lro.steven.aq.simpleminecraftlauncher.controller;
  * 而且考虑到接口并不合适（以后可能会涉及default方法和字段）
  * @author Lro.Steven.aq
  */
-public abstract class Controller {
+public abstract class Controller implements Initializable {
 }

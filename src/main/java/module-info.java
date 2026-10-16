@@ -20,6 +20,7 @@ module org.lro.steven.aq.simpleminecraftlauncher {
     requires org.glavo.url;
     requires com.google.gson;
     requires org.jetbrains.annotations;
+    requires org.apache.commons.io;
 
     // ui
     opens org.lro.steven.aq.simpleminecraftlauncher.controller to javafx.fxml;
