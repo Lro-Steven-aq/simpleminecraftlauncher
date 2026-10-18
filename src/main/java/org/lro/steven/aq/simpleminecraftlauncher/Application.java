@@ -16,31 +16,22 @@
  */
 package org.lro.steven.aq.simpleminecraftlauncher;
 
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.glavo.url.WebURL;
-import org.lro.steven.aq.simpleminecraftlauncher.configuaration.Configuration;
-import org.lro.steven.aq.simpleminecraftlauncher.configuaration.Features;
-import org.lro.steven.aq.simpleminecraftlauncher.configuaration.impl.ApplicationConfiguration;
+import org.lro.steven.aq.simpleminecraftlauncher.json.configuaration.Features;
 import org.lro.steven.aq.simpleminecraftlauncher.controller.impl.LauncherMainWindowController;
 import org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.Metadata;
 import org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.conf.ApplicationConfigurationMapper;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.PluginManager;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.impl.LogEvent;
-import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.signalbus.SignalBus;
-import org.lro.steven.aq.simpleminecraftlauncher.plugin.loader.PluginLoader;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
 import java.util.HashMap;
-import java.util.Map;
 
 public class Application extends javafx.application.Application {
 
@@ -50,15 +41,20 @@ public class Application extends javafx.application.Application {
         // load config -> preciousBackgroundImage -> Metadata
         ApplicationConfiguration conf = loadConfiguration();
         ApplicationConfigurationMapper configurations = conf.getConfigurations();
-        WebURL url = configurations.userSettings().preciousBackgroundImageUrl();
         Metadata metadata = Metadata.from(Features.create(new HashMap<>()), configurations);
         // size: 577 x 900
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Application.fxml"));
-        Parent root = fxmlLoader.load();
+        fxmlLoader.setControllerFactory(controllerClass -> {
+            if (controllerClass.equals(LauncherMainWindowController.class)) {
+                return new LauncherMainWindowController(metadata);
+            } else {
+                try { return controllerClass.getDeclaredConstructor().newInstance(); }
+                catch (Exception e) {throw new RuntimeException(e); }
+            }
+        });
 
-        LauncherMainWindowController controller = fxmlLoader.getController();
-        controller.setMetadata(metadata);
+        Parent root = fxmlLoader.load();
 
         Font.loadFont(getClass().getResourceAsStream("LXGWWenKaiMono-Regular.ttf"), 48);
 
@@ -68,8 +64,7 @@ public class Application extends javafx.application.Application {
         primaryStage.show();
     }
 
-    public static void _main(String[] args) throws
-            IOException {
+    public static void _main(String[] args) throws IOException {
         // start signalbus to load the plugins.
         PluginManager manager = PluginManager.get();
 

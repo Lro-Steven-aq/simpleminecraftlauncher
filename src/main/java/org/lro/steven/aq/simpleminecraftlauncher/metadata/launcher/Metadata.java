@@ -18,7 +18,7 @@ package org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher;
 
 import javafx.scene.image.Image;
 import org.glavo.url.WebURL;
-import org.lro.steven.aq.simpleminecraftlauncher.configuaration.Features;
+import org.lro.steven.aq.simpleminecraftlauncher.json.configuaration.Features;
 import org.lro.steven.aq.simpleminecraftlauncher.metadata.game.OperatingSystem;
 import org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.conf.ApplicationConfigurationMapper;
 
@@ -40,7 +40,11 @@ public final class Metadata {
 
     public static Metadata from(Features features, ApplicationConfigurationMapper configurationMapper) {
         WebURL url = configurationMapper.userSettings().preciousBackgroundImageUrl();
-        return new Metadata(OperatingSystem.getOs(), OperatingSystem.getVersion(), features, new Image(url == null? "@background": url.toString()), configurationMapper);
+        return new Metadata(OperatingSystem.getOs(),
+                OperatingSystem.getVersion(),
+                features,
+                new Image(url == null? "@background": url.toString()),
+                configurationMapper);
     }
 
     public OperatingSystem system() {
@@ -57,5 +61,9 @@ public final class Metadata {
 
     public Image preciousBackgroundImage() {
         return preciousBackgroundImage;
+    }
+
+    public ApplicationConfigurationMapper configurationMapper() {
+        return configurationMapper;
     }
 }

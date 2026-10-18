@@ -21,10 +21,11 @@ module org.lro.steven.aq.simpleminecraftlauncher {
     requires com.google.gson;
     requires org.jetbrains.annotations;
     requires org.apache.commons.io;
+    requires okhttp3;
 
     // ui
-    opens org.lro.steven.aq.simpleminecraftlauncher.controller to javafx.fxml;
-    exports org.lro.steven.aq.simpleminecraftlauncher.controller to javafx.graphics;
+    opens org.lro.steven.aq.simpleminecraftlauncher.controller.impl to javafx.fxml;
+    exports org.lro.steven.aq.simpleminecraftlauncher.controller.impl to javafx.graphics;
 
     // for plugin-system.
     exports org.lro.steven.aq.simpleminecraftlauncher;
@@ -42,6 +43,8 @@ module org.lro.steven.aq.simpleminecraftlauncher {
     opens org.lro.steven.aq.simpleminecraftlauncher.plugin.api.signalbus;
 
     exports org.lro.steven.aq.simpleminecraftlauncher.metadata.game to com.google.gson;
+    exports org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.conf to com.google.gson;
+    exports org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.conf.settings to com.google.gson;
     exports org.lro.steven.aq.simpleminecraftlauncher.metadata.game.version;
     exports org.lro.steven.aq.simpleminecraftlauncher.metadata.game.versionmanifest;
 }

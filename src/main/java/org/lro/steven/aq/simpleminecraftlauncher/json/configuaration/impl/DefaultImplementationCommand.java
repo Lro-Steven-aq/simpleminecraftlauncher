@@ -14,9 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.lro.steven.aq.simpleminecraftlauncher.configuaration.impl;
+package org.lro.steven.aq.simpleminecraftlauncher.json.configuaration.impl;
 
-import org.lro.steven.aq.simpleminecraftlauncher.configuaration.Command;
+import org.lro.steven.aq.simpleminecraftlauncher.json.configuaration.Command;
 import org.lro.steven.aq.simpleminecraftlauncher.internationalization.Internationalization;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.PluginManager;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.impl.LogEvent;

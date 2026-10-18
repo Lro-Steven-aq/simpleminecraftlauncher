@@ -14,15 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.lro.steven.aq.simpleminecraftlauncher.configuaration;
+package org.lro.steven.aq.simpleminecraftlauncher.json.configuaration;
 
-import org.lro.steven.aq.simpleminecraftlauncher.configuaration.impl.DefaultImplementationJsonParser;
+import org.lro.steven.aq.simpleminecraftlauncher.json.configuaration.impl.DefaultImplementationJsonParser;
 
 /**
  * Parser类是用于解析参数json的接口.
  * <br/>
  * 所有适于解析的类都应该实现它。<br>
- * 关于其parse返回值 {@link org.lro.steven.aq.simpleminecraftlauncher.configuaration.Command}
+ * 关于其parse返回值 {@link Command}
  * @author Lro.Steven.aq
  * @since 0.1
  *

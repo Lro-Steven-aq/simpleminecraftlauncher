@@ -14,9 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.lro.steven.aq.simpleminecraftlauncher.configuaration;
+package org.lro.steven.aq.simpleminecraftlauncher.json.configuaration;
 
-import org.lro.steven.aq.simpleminecraftlauncher.configuaration.impl.DefaultImplementationCommand;
+import org.lro.steven.aq.simpleminecraftlauncher.json.configuaration.impl.DefaultImplementationCommand;
 
 import java.io.IOException;
 

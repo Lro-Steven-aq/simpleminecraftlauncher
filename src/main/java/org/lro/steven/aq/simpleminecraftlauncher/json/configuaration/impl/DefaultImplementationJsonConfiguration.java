@@ -14,9 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.lro.steven.aq.simpleminecraftlauncher.configuaration.impl;
+package org.lro.steven.aq.simpleminecraftlauncher.json.configuaration.impl;
 
-import org.lro.steven.aq.simpleminecraftlauncher.configuaration.Configuration;
+import org.lro.steven.aq.simpleminecraftlauncher.json.configuaration.Configuration;
 
 import java.util.HashMap;
 import java.util.Map;

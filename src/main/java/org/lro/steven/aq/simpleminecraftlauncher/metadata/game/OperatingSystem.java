@@ -51,17 +51,21 @@ public enum OperatingSystem {
     }
 
     public static String getVersion() {
-        if (VERSION == null) {
-            VERSION = "";
-            try (Process process = new ProcessBuilder("cmd", "/c", "ver").start();) {
-                String output = new String(process.getInputStream().readAllBytes());
-                Matcher matcher = Pattern.compile("Version\\s+(\\d+(?:\\.\\d+)+)").matcher(output);
-                if (matcher.find()) {
-                    VERSION = matcher.group(1);
+        if (CURRENT_SYSTEM == OperatingSystem.WINDOWS){
+            if (VERSION == null) {
+                VERSION = "";
+                try (Process process = new ProcessBuilder("cmd", "/c", "ver").start();) {
+                    String output = new String(process.getInputStream().readAllBytes());
+                    Matcher matcher = Pattern.compile("Version\\s+(\\d+(?:\\.\\d+)+)").matcher(output);
+                    if (matcher.find()) {
+                        VERSION = matcher.group(1);
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
             }
+        } else {
+            VERSION = System.getProperty("os.version");
         }
 
         return VERSION;

@@ -18,15 +18,15 @@
     ## WARNING, THIS CODE IS NOT SECURE, AND IT DOES NOT SUPPORT THE OLD VERSION OD MINECRAFT. ##
       WE WILL REFACTOR THIS CLASS IN OTHER BRANCH TO FIX IT.
  */
-package org.lro.steven.aq.simpleminecraftlauncher.configuaration.impl;
+package org.lro.steven.aq.simpleminecraftlauncher.json.configuaration.impl;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.glavo.url.WebURL;
-import org.lro.steven.aq.simpleminecraftlauncher.configuaration.Command;
-import org.lro.steven.aq.simpleminecraftlauncher.configuaration.Configuration;
-import org.lro.steven.aq.simpleminecraftlauncher.configuaration.Features;
-import org.lro.steven.aq.simpleminecraftlauncher.configuaration.Parser;
+import org.lro.steven.aq.simpleminecraftlauncher.json.configuaration.Command;
+import org.lro.steven.aq.simpleminecraftlauncher.json.configuaration.Configuration;
+import org.lro.steven.aq.simpleminecraftlauncher.json.configuaration.Features;
+import org.lro.steven.aq.simpleminecraftlauncher.json.configuaration.Parser;
 import org.lro.steven.aq.simpleminecraftlauncher.deserializer.WebURLDeserializer;
 import org.lro.steven.aq.simpleminecraftlauncher.metadata.game.*;
 import org.lro.steven.aq.simpleminecraftlauncher.metadata.game.version.*;
