@@ -83,7 +83,10 @@ public class DefaultImplementationCommand implements Command {
                         PopupEvent.of(
                                 Internationalization.get("launch.error.title"),
                                 Internationalization.get("launch.error.head"),
-                                Internationalization.get("launch.error.content")
+                                Internationalization.get("launch.error.content"),
+                                () -> {},
+                                () -> {},
+                                () -> {}
                         )
                 ); // Use I18n
             }

@@ -16,22 +16,37 @@
  */
 package org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.impl;
 
-import javafx.scene.control.Alert;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.Event;
 
 public class PopupEvent implements Event {
-    public static Event of(String title,String head, String msg) {
-        return new PopupEvent(title,head, msg);
+    public static Event of(String title,
+                           String head,
+                           String msg,
+                           Runnable callableOnYes,
+                           Runnable callableOnNo,
+                           Runnable callableOnClose) {
+        return new PopupEvent(title,head, msg, callableOnYes, callableOnNo, callableOnClose);
     }
 
     private final String title;
     private final String head;
     private final String message;
+    private final Runnable callableOnYes;
+    private final Runnable callableOnNo;
+    private final Runnable callableOnClose;
 
-    private PopupEvent(String title,String head, String msg) {
+    private PopupEvent(String title,
+                       String head,
+                       String msg,
+                       Runnable callableOnYes,
+                       Runnable callableOnNo,
+                       Runnable callableOnClose) {
         this.title = title;
         this.head = head;
         this.message = msg;
+        this.callableOnYes = callableOnYes;
+        this.callableOnNo = callableOnNo;
+        this.callableOnClose = callableOnClose;
     }
 
     @Override
@@ -50,4 +65,17 @@ public class PopupEvent implements Event {
     public String getHead() {
         return head;
     }
+
+    public Runnable getCallableOnYes() {
+        return callableOnYes;
+    }
+
+    public Runnable getCallableOnNo() {
+        return callableOnNo;
+    }
+
+    public Runnable getCallableOnClose() {
+        return callableOnClose;
+    }
+
 }

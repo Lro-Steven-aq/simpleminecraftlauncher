@@ -13,6 +13,7 @@ Note: "log.trace" and "log.debug" will be caught by plugin-logger, but no output
 
 ## Popups
 About popups, there are some signals below
-1. ui.popup.trace / ui.popup.debug / ui.popup.info
-2. ui.popup.warn
-3. ui.popup.error / ui.popup.fatal
+1. ui.popup.trace / ui.popup.debug / ui.popup.info  ->NONE
+2. ui.popup.warn  ->WARN
+3. ui.popup.error / ui.popup.fatal  ->ERROR
+4. ui.popup.confirmation  ->CONFIRMATION

@@ -83,9 +83,30 @@ public class LauncherMainWindowController extends Controller {
         } else {
             SIGNAL_BUS.emit("log.error",
                     LogEvent.of("Can't find your java, Do you want to scan your disk or download from Internet for it?"));
-            SIGNAL_BUS.emit("ui.popup.error", PopupEvent.of("Java", "", "Do you want to scan for java?"));
+            SIGNAL_BUS.emit("ui.popup.confirmation",
+                    PopupEvent.of("Java",
+                            "Do you want to scan for java? Or Download it from internet?",
+                            "Click \"Yes\" to scan Java Runtime Environment; \nClick \"No\" to download runtime from internet. (jdk.java.net)",
+                            this::scanJavaRuntime,
+                            this::downloadJavaRuntimeFromInternet,
+                            this::noChoice));
+            launchButton.setDisable(false);
         }
 
     }
 
+    private void scanJavaRuntime() {
+        SIGNAL_BUS.emit("log.info", LogEvent.of("User clicks OK button"));
+        // todo
+    }
+
+    private void downloadJavaRuntimeFromInternet() {
+        SIGNAL_BUS.emit("log.error", LogEvent.of("User click to SCAN DISK"));
+        // todo
+    }
+
+    private void noChoice() {
+        SIGNAL_BUS.emit("log.error", LogEvent.of("No choice"));
+        // todo
+    }
 }
