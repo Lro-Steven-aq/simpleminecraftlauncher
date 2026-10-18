@@ -16,6 +16,7 @@
  */
 package org.lro.steven.aq.simpleminecraftlauncher.controller.impl;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuBar;
@@ -56,6 +57,12 @@ public class LauncherMainWindowController extends Controller {
     @FXML
     private Pane root;
 
+    @FXML
+    private Button minimizeButton;
+
+    @FXML
+    private Button exitButton;
+
     private final Metadata metadata;
 
     private static final SignalBus SIGNAL_BUS = PluginManager.get().getSignalBus();
@@ -75,6 +82,9 @@ public class LauncherMainWindowController extends Controller {
         if (userSettings != null && userSettings.alpha() != null) {
             root.setOpacity(userSettings.alpha());
         }
+        exitButton.setOpacity(0.74);
+        minimizeButton.setOpacity(0.74);
+        launchButton.setOpacity(0.74);
 
         // ////////////////// bind events ///////////////////////
         launchButton.setOnMouseClicked(this::launch);
@@ -98,6 +108,13 @@ public class LauncherMainWindowController extends Controller {
                 stage.setX(event.getScreenX() - xOffset[0]);
                 stage.setY(event.getScreenY() - yOffset[0]);
             }
+        });
+        exitButton.setOnMouseClicked(event -> {
+            Platform.exit();
+            System.exit(0);
+        });
+        minimizeButton.setOnMouseClicked(event -> {
+            root.getScene().getWindow().hide();
         });
     }
 

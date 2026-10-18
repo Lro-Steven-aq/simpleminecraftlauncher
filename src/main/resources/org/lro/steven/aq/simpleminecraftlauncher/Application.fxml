@@ -52,12 +52,12 @@
             </MenuBar>
             <ButtonBar layoutX="700.0" prefHeight="28.0" prefWidth="200.0">
                <buttons>
-                  <Button mnemonicParsing="false" prefHeight="28.0" prefWidth="101.0" text="--">
+                  <Button mnemonicParsing="false" fx:id="minimizeButton" prefHeight="28.0" prefWidth="101.0" text="--">
                      <font>
                         <Font name="LXGW WenKai Mono" size="13.0" />
                      </font>
                   </Button>
-                  <Button mnemonicParsing="false" prefHeight="28.0" prefWidth="61.0" text="❌">
+                  <Button mnemonicParsing="false" fx:id="exitButton" prefHeight="28.0" prefWidth="61.0" text="❌">
                      <font>
                         <Font name="LXGW WenKai Mono" size="13.0" />
                      </font>
