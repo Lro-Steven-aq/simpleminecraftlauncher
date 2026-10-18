@@ -19,13 +19,14 @@ package org.lro.steven.aq.simpleminecraftlauncher;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import org.glavo.url.WebURL;
+import javafx.stage.StageStyle;
 import org.lro.steven.aq.simpleminecraftlauncher.json.configuaration.Features;
 import org.lro.steven.aq.simpleminecraftlauncher.controller.impl.LauncherMainWindowController;
 import org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.Metadata;
-import org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.conf.ApplicationConfigurationMapper;
+import org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.conf.ApplicationConfiguration;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.PluginManager;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.impl.LogEvent;
 
@@ -37,10 +38,9 @@ public class Application extends javafx.application.Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-
         // load config -> preciousBackgroundImage -> Metadata
-        ApplicationConfiguration conf = loadConfiguration();
-        ApplicationConfigurationMapper configurations = conf.getConfigurations();
+        ApplicationConfigurationLoader conf = loadConfiguration();
+        ApplicationConfiguration configurations = conf.getConfigurations();
         Metadata metadata = Metadata.from(Features.create(new HashMap<>()), configurations);
         // size: 577 x 900
 
@@ -59,13 +59,19 @@ public class Application extends javafx.application.Application {
         Font.loadFont(getClass().getResourceAsStream("LXGWWenKaiMono-Regular.ttf"), 48);
 
         primaryStage.setTitle("Simple Launcher");
+
         primaryStage.setResizable(false);
-        primaryStage.setScene(new Scene(root));
+        primaryStage.initStyle(StageStyle.TRANSPARENT);
+
+        Scene scene = new Scene(root);
+        // 透明窗口必须在 show() 之前设置场景背景透明，否则第一帧会是不透明白底。
+        scene.setFill(Color.TRANSPARENT);
+        primaryStage.setScene(scene);
         primaryStage.show();
     }
 
     public static void _main(String[] args) throws IOException {
-        // start signalbus to load the plugins.
+        // start signalBus to load the plugins.
         PluginManager manager = PluginManager.get();
 
         manager.startAll();
@@ -74,8 +80,8 @@ public class Application extends javafx.application.Application {
         javafx.application.Application.launch(Application.class, args);
     }
 
-    public static ApplicationConfiguration loadConfiguration() {
-        ApplicationConfiguration configuration = new ApplicationConfiguration();
+    public static ApplicationConfigurationLoader loadConfiguration() {
+        ApplicationConfigurationLoader configuration = new ApplicationConfigurationLoader();
         configuration.load(new File(".simpleminecraftlauncher/configurations.json"));
         return configuration;
     }

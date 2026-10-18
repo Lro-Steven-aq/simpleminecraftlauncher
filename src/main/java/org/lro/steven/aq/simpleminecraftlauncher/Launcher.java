@@ -29,6 +29,8 @@ public class Launcher {
         try {
             Application._main(args);
         } catch (Exception e) {
+            // 启动失败时必须把根因打印出来，否则只会得到一个退出码，IDE 里看不到任何线索。
+            e.printStackTrace();
             System.exit(getExitCode(e));
         }
     }

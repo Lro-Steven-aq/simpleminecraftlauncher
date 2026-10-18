@@ -18,11 +18,9 @@ package org.lro.steven.aq.simpleminecraftlauncher;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.apache.commons.io.IOUtils;
 import org.glavo.url.WebURL;
-import org.lro.steven.aq.simpleminecraftlauncher.json.configuaration.Configuration;
 import org.lro.steven.aq.simpleminecraftlauncher.deserializer.WebURLDeserializer;
-import org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.conf.ApplicationConfigurationMapper;
+import org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.conf.ApplicationConfiguration;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.PluginManager;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.impl.LogEvent;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.signalbus.SignalBus;
@@ -31,27 +29,25 @@ import java.io.*;
 import java.nio.file.Files;
 import java.util.Map;
 
-public class ApplicationConfiguration implements Configuration {
+public class ApplicationConfigurationLoader {
 
-    private ApplicationConfigurationMapper configurations;
+    private ApplicationConfiguration configurations;
     private static final Gson GSON = new GsonBuilder()
             .registerTypeAdapter(WebURL.class, new WebURLDeserializer())
             .create();
     private static final SignalBus signalBus = PluginManager.get().getSignalBus();
 
-    public ApplicationConfiguration() {
+    public ApplicationConfigurationLoader() {
         this.configurations = null;
     }
 
-    @Override
     public void load(String content) {
         content = content.strip();
         // parse it.
-        configurations = GSON.fromJson(content, ApplicationConfigurationMapper.class);
+        configurations = GSON.fromJson(content, ApplicationConfiguration.class);
         check(configurations);
     }
 
-    @Override
     public void load(File file) {
         initializeConfigurationFileIfAbsent(file);
 //        byte[] buffer = IOUtils.byteArray();
@@ -95,7 +91,7 @@ public class ApplicationConfiguration implements Configuration {
         }
     }
 
-    private void check(ApplicationConfigurationMapper configurations) {
+    private void check(ApplicationConfiguration configurations) {
         if (configurations == null) {
             throw new IllegalArgumentException("Null Configurations");
         }
@@ -107,12 +103,11 @@ public class ApplicationConfiguration implements Configuration {
         }
     }
 
-    @Override
     public Map<String, String> getMap() {
         return GSON.fromJson(GSON.toJson(configurations), Map.class);
     }
 
-    public ApplicationConfigurationMapper getConfigurations() {
+    public ApplicationConfiguration getConfigurations() {
         return configurations;
     }
 }

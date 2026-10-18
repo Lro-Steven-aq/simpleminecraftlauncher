@@ -18,10 +18,13 @@ package org.lro.steven.aq.simpleminecraftlauncher.controller.impl;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.MenuBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import org.lro.steven.aq.simpleminecraftlauncher.controller.Controller;
@@ -48,6 +51,9 @@ public class LauncherMainWindowController extends Controller {
     private Button launchButton;
 
     @FXML
+    private MenuBar menuBar;
+
+    @FXML
     private Pane root;
 
     private final Metadata metadata;
@@ -60,11 +66,39 @@ public class LauncherMainWindowController extends Controller {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        root.setOpacity(0.6);
-        // Internationalization
+        // Initialize basic styles and metadata.
         backgroundImage.setImage(metadata.preciousBackgroundImage());
+
+        // 在挂载到 Scene 之前设置整体透明度，避免启动首帧不透明。
+        // 这里用节点透明度而不是 Stage.setOpacity：后者在 Linux/GTK 下不会真正改变窗口像素的 alpha。
+        UserSettings userSettings = metadata.configurationMapper().userSettings();
+        if (userSettings != null && userSettings.alpha() != null) {
+            root.setOpacity(userSettings.alpha());
+        }
+
+        // ////////////////// bind events ///////////////////////
         launchButton.setOnMouseClicked(this::launch);
 
+        // 透明窗口没有拖拽和操作系统的关闭按钮与最小化按钮。
+        // 此处需要模拟这些功能.
+        final double[] xOffset = new double[1], yOffset = new double[1];
+        // 拖拽.
+        menuBar.setOnMousePressed(event -> {
+            if (event.isPrimaryButtonDown()) {
+                Stage stage = (Stage) menuBar.getScene().getWindow();
+                xOffset[0] = event.getScreenX() - stage.getX();
+                yOffset[0] = event.getScreenY() - stage.getY();
+                menuBar.requestFocus();
+                event.consume();
+            }
+        });
+        menuBar.setOnMouseDragged(event -> {
+            if (event.isPrimaryButtonDown()) {
+                Stage stage = (Stage) menuBar.getScene().getWindow();
+                stage.setX(event.getScreenX() - xOffset[0]);
+                stage.setY(event.getScreenY() - yOffset[0]);
+            }
+        });
     }
 
     private void launch(MouseEvent event) {
@@ -95,16 +129,19 @@ public class LauncherMainWindowController extends Controller {
 
     }
 
+    // 附属于launch方法
     private void scanJavaRuntime() {
         SIGNAL_BUS.emit("log.info", LogEvent.of("User clicks OK button"));
         // todo
     }
 
+    // 附属于launch方法
     private void downloadJavaRuntimeFromInternet() {
         SIGNAL_BUS.emit("log.error", LogEvent.of("User click to SCAN DISK"));
         // todo
     }
 
+    // 附属于launch方法.
     private void noChoice() {
         SIGNAL_BUS.emit("log.error", LogEvent.of("No choice"));
         // todo

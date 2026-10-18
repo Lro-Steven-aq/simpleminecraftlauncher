@@ -31,6 +31,9 @@ public record UserSettings(
         String executableJavaCommand,
 
         @SerializedName("is_fast_launch")
-        boolean fastLaunch
+        boolean fastLaunch,
+
+        @SerializedName("alpha")  // 透明度: 1为不透明，0为不可见.
+        Double alpha
 ) {
 }

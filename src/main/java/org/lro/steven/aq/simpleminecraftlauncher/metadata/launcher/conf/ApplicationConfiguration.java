@@ -19,13 +19,19 @@ package org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.conf;
 import com.google.gson.annotations.SerializedName;
 import org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.conf.settings.UserSettings;
 
-public record ApplicationConfigurationMapper(
+public record ApplicationConfiguration(
 
         @SerializedName("configuration_version")
         String configurationVersion,
 
         @SerializedName("settings")
-        UserSettings userSettings
+        UserSettings userSettings,
+
+        @SerializedName("font_family")
+        String fontFamily,
+
+        @SerializedName("font_size")
+        String fontSize
 
 ) {
 }
