@@ -19,21 +19,37 @@ package org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.conf.setting
 import com.google.gson.annotations.SerializedName;
 import org.glavo.url.WebURL;
 
-public record UserSettings(
-
+public class UserSettings {
         @SerializedName("background_image")
-        WebURL preciousBackgroundImageUrl,
+        WebURL preciousBackgroundImageUrl;
 
         @SerializedName("JAVA_HOME")
-        String javaHome,
+        String javaHome;
 
         @SerializedName("JAVA_EXE")
-        String executableJavaCommand,
+        String executableJavaCommand;
 
         @SerializedName("is_fast_launch")
-        boolean fastLaunch,
+        boolean fastLaunch;
 
         @SerializedName("alpha")  // 透明度: 1为不透明，0为不可见.
-        Double alpha
-) {
+        Double alpha;
+
+        public UserSettings() {}
+
+        public WebURL preciousBackgroundImageUrl() {
+                return preciousBackgroundImageUrl;
+        }
+        public String javaHome() {
+                return javaHome;
+        }
+        public String executableJavaCommand() {
+                return executableJavaCommand;
+        }
+        public boolean fastLaunch() {
+                return fastLaunch;
+        }
+        public Double alpha() {
+                return alpha;
+        }
 }

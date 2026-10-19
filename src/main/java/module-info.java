@@ -42,9 +42,12 @@ module org.lro.steven.aq.simpleminecraftlauncher {
     opens org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.impl;
     opens org.lro.steven.aq.simpleminecraftlauncher.plugin.api.signalbus;
 
+    // for Gson
     exports org.lro.steven.aq.simpleminecraftlauncher.metadata.game to com.google.gson;
     exports org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.conf to com.google.gson;
     exports org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.conf.settings to com.google.gson;
     exports org.lro.steven.aq.simpleminecraftlauncher.metadata.game.version;
     exports org.lro.steven.aq.simpleminecraftlauncher.metadata.game.versionmanifest;
+    opens org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.conf to com.google.gson;
+    opens org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.conf.settings to com.google.gson;
 }

@@ -18,3 +18,8 @@
 17:37:58.613 [main] INFO  Logger-Plugin - initialize
 17:38:44.590 [JavaFX Application Thread] ERROR Logger-Plugin - Can't find your java, Do you want to scan your disk or download from Internet for it?
 17:38:45.894 [JavaFX Application Thread] ERROR Logger-Plugin - User click to SCAN DISK
+21:31:04.301 [main] INFO  Logger-Plugin - initialize
+21:34:55.859 [main] INFO  Logger-Plugin - initialize
+21:35:50.639 [main] INFO  Logger-Plugin - initialize
+21:36:42.573 [main] INFO  Logger-Plugin - initialize
+21:38:25.427 [main] INFO  Logger-Plugin - initialize

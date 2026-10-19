@@ -16,22 +16,49 @@
  */
 package org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.conf;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
+import org.apache.commons.io.IOUtils;
+import org.glavo.url.WebURL;
+import org.lro.steven.aq.simpleminecraftlauncher.deserializer.WebURLDeserializer;
 import org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.conf.settings.UserSettings;
 
-public record ApplicationConfiguration(
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
+import java.nio.file.Path;
 
+public class ApplicationConfiguration {
         @SerializedName("configuration_version")
-        String configurationVersion,
+        String configurationVersion;
 
         @SerializedName("settings")
-        UserSettings userSettings,
+        UserSettings userSettings;
 
-        @SerializedName("font_family")
-        String fontFamily,
 
-        @SerializedName("font_size")
-        String fontSize
 
-) {
+        public ApplicationConfiguration() {}
+
+        public void save(String configurationFilePath) {
+                Gson gson = new GsonBuilder()
+                        .registerTypeAdapter(WebURL.class, new WebURLDeserializer())
+                        .create();
+                try (OutputStream outputStream = new FileOutputStream(configurationFilePath)) {
+                        String content = gson.toJson(this);
+                        IOUtils.write(content, outputStream, Charset.defaultCharset());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+        }
+
+        public UserSettings userSettings() {
+                return userSettings;
+        }
+        public String configurationVersion() {
+                return configurationVersion;
+        }
+
 }
