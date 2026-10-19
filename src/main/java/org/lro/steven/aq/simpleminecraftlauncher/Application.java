@@ -42,6 +42,8 @@ public class Application extends javafx.application.Application {
         ApplicationConfigurationLoader conf = loadConfiguration();
         ApplicationConfiguration configurations = conf.getConfigurations();
         Metadata metadata = Metadata.from(Features.create(new HashMap<>()), configurations);
+
+        Font.loadFont(getClass().getResourceAsStream("LXGWWenKaiMono-Regular.ttf"), 48);
         // size: 577 x 900
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Application.fxml"));
@@ -55,8 +57,6 @@ public class Application extends javafx.application.Application {
         });
 
         Parent root = fxmlLoader.load();
-
-        Font.loadFont(getClass().getResourceAsStream("LXGWWenKaiMono-Regular.ttf"), 48);
 
         primaryStage.setTitle("Simple Launcher");
 

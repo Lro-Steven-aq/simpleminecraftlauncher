@@ -3,17 +3,13 @@
 }
 
 @font-face {
-    font-family: "LXGWWenKaiMono-Regular";
+    font-family: "LXGW WenKai Mono";
     src: url("LXGWWenKaiMono-Regular.ttf");
-}
-
-* {
-    -fx-font-family: "LXGWWenKaiMono-Regular";
 }
 
 .menu-bar {
     -fx-background-color: transparent;
-    -fx-font-family: "LXGWWenKaiMono-Regular";
+    -fx-font-family: "LXGW WenKai Mono";
     -fx-font-size: 14px;
 }
 
@@ -23,7 +19,7 @@
 }
 
 .menu-item {
-    -fx-font-family: "LXGWWenKaiMono-Regular";
+    -fx-font-family: "LXGW WenKai Mono";
     -fx-font-size: 14px;
 }
 
@@ -35,6 +31,24 @@
 
 }
 
-.menu-item:focus {
-    -fx-background-color: rgb(174 204 255 / 0.21);
+.button#launchButton {
+    -fx-font-family: "LXGW WenKai Mono";
+    -fx-font-size: 35;
+}
+
+.button {
+    -fx-font-family: "LXGW WenKai Mono";
+}
+
+/* 菜单栏顶层的菜单按钮（Quick Start / Downloads / Help） */
+.menu-bar > .container > .menu-button:hover,
+.menu-bar > .container > .menu-button:focused,
+.menu-bar > .container > .menu-button:showing {
+    -fx-background-color: rgba(174, 204, 255, 0.21);
+}
+
+/* 弹出菜单里的条目 */
+.menu-item:hover,
+.menu-item:focused {
+    -fx-background-color: rgba(174, 204, 255, 0.21);
 }

@@ -21,9 +21,9 @@
       <AnchorPane layoutX="14.0" layoutY="355.0" prefHeight="200.0" prefWidth="873.0">
          <children>
             <Button fx:id="launchButton" layoutX="660.0" layoutY="-10.0" mnemonicParsing="false" prefHeight="141.0" prefWidth="199.0" text="launch!" AnchorPane.bottomAnchor="98.0" AnchorPane.rightAnchor="14.0">
-               <font>
-                  <Font name="LXGW WenKai Mono" size="35.0" />
-               </font>
+<!--               <font>-->
+<!--                  <Font name="LXGW WenKai Mono" size="35.0" />-->
+<!--               </font>-->
             </Button>
             <ComboBox fx:id="versionSelector" layoutX="484.0" prefHeight="28.0" prefWidth="176.0" promptText="Select your version" style="-fx-background-color: 505050;" />
          </children>
