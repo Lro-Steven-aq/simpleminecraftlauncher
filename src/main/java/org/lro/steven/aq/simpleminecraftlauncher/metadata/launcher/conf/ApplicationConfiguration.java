@@ -33,10 +33,10 @@ import java.nio.file.Path;
 
 public class ApplicationConfiguration {
         @SerializedName("configuration_version")
-        String configurationVersion;
+        private String configurationVersion;
 
         @SerializedName("settings")
-        UserSettings userSettings;
+        private UserSettings userSettings;
 
 
 

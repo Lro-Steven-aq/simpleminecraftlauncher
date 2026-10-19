@@ -21,19 +21,22 @@ import org.glavo.url.WebURL;
 
 public class UserSettings {
         @SerializedName("background_image")
-        WebURL preciousBackgroundImageUrl;
+        private WebURL preciousBackgroundImageUrl;
 
         @SerializedName("JAVA_HOME")
-        String javaHome;
+        private String javaHome;
 
         @SerializedName("JAVA_EXE")
-        String executableJavaCommand;
+        private String executableJavaCommand;
 
         @SerializedName("is_fast_launch")
-        boolean fastLaunch;
+        private boolean fastLaunch;
 
         @SerializedName("alpha")  // 透明度: 1为不透明，0为不可见.
-        Double alpha;
+        private Double alpha;
+
+        @SerializedName("last_version_file")
+        private String lastVersionJsonFile; // 如果用户没有更改，那么默认就是 .minecraft/versions/<SHA256_of_last_version>.json
 
         public UserSettings() {}
 
@@ -51,5 +54,11 @@ public class UserSettings {
         }
         public Double alpha() {
                 return alpha;
+        }
+        public String lastVersionJsonFile() {
+                return lastVersionJsonFile;
+        }
+        public void lastVersionJsonFile(String lastVersionJsonFile) {
+                this.lastVersionJsonFile = lastVersionJsonFile;
         }
 }

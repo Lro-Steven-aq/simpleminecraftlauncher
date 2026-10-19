@@ -19,6 +19,7 @@ package org.lro.steven.aq.simpleminecraftlauncher.controller.impl;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.MenuBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -40,10 +41,16 @@ import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.impl.LogEvent;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.impl.PopupEvent;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.signalbus.SignalBus;
 
+import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ResourceBundle;
 
 public class LauncherMainWindowController extends Controller {
+
+    @FXML
+    private ComboBox versionSelector;
 
     @FXML
     private ImageView backgroundImage;
@@ -82,9 +89,9 @@ public class LauncherMainWindowController extends Controller {
         if (userSettings != null && userSettings.alpha() != null) {
             root.setOpacity(userSettings.alpha());
         }
-        exitButton.setOpacity(0.74);
-        minimizeButton.setOpacity(0.74);
-        launchButton.setOpacity(0.74);
+        exitButton.setOpacity(0.7);
+        minimizeButton.setOpacity(0.7);
+        launchButton.setOpacity(0.7);
 
         // ////////////////// bind events ///////////////////////
         launchButton.setOnMouseClicked(this::launch);
@@ -114,7 +121,10 @@ public class LauncherMainWindowController extends Controller {
             System.exit(0);
         });
         minimizeButton.setOnMouseClicked(event -> {
-            root.getScene().getWindow().hide();
+            // hide it here.
+            if (root.getScene() != null && root.getScene().getWindow() instanceof Stage stage) {
+                stage.setIconified(true);
+            }
         });
     }
 
@@ -125,6 +135,7 @@ public class LauncherMainWindowController extends Controller {
         launchButton.setDisable(true);
         root.setOpacity(0.65);
 
+        // build the command.
         Command command = Command.create();
         UserSettings userSettings = metadata.configurationMapper().userSettings();
         if (userSettings.javaHome() != null) {
@@ -141,24 +152,48 @@ public class LauncherMainWindowController extends Controller {
                             this::scanJavaRuntime,
                             this::downloadJavaRuntimeFromInternet,
                             this::noChoice));
+            command.add(System.getProperty("JAVA_HOME")); // 这是scanJavaRuntime里面设置的。
             launchButton.setDisable(false);
+        }
+
+        boolean hasLastestVersion = false;
+        try {
+            // 有就直接执行。
+            String content = Files.readString(Path.of(metadata.configurationMapper().userSettings().lastVersionJsonFile()));
+            hasLastestVersion = true;
+            Parser parser = Parser.create(content, Configuration.create(), metadata.features());
+            parser.parse(command).execute();
+        } catch (IOException e) {
+            hasLastestVersion = false;
+            SIGNAL_BUS.emit("log.error", LogEvent.of("No last version was found. "));
+        } catch (InterruptedException e) {
+            // 启动失败。
+            SIGNAL_BUS.emit("log.error", LogEvent.of("Error to Start.."));
+        }
+
+        if (!hasLastestVersion) {
+            // popup to let user select a minecraft version, and download it.
+            // then, set it to user settings.
         }
 
     }
 
     // 附属于launch方法
+    // set it to System.getProperty
     private void scanJavaRuntime() {
         SIGNAL_BUS.emit("log.info", LogEvent.of("User clicks OK button"));
         // todo
     }
 
     // 附属于launch方法
+    // use OkHttp to download it and check the hash, then set it to System.getProperty
     private void downloadJavaRuntimeFromInternet() {
         SIGNAL_BUS.emit("log.error", LogEvent.of("User click to SCAN DISK"));
         // todo
     }
 
     // 附属于launch方法.
+    // EMPTY METHOD.
     private void noChoice() {
         SIGNAL_BUS.emit("log.error", LogEvent.of("No choice"));
         // todo

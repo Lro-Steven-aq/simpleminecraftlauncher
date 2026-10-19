@@ -77,8 +77,7 @@ public class DefaultImplementationJsonParser implements Parser {
      * @return 配置好的Command 入口
      */
     @Override
-    public Command parse(Configuration configuration) {
-        Command command = Command.create();
+    public Command parse(Command command, Configuration configuration) {
 
         GameMetadataManifest manifest = GSON.fromJson(jsonRawContent, GameMetadataManifest.class);
         if (manifest == null || manifest.arguments() == null) {
@@ -249,8 +248,8 @@ public class DefaultImplementationJsonParser implements Parser {
      * @return 解析结果
      */
     @Override
-    public Command parse() {
-        return parse(this.configuration);
+    public Command parse(Command command) {
+        return parse(command, this.configuration);
     }
 
 }

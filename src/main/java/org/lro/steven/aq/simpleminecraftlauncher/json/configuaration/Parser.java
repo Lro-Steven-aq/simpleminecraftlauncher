@@ -55,12 +55,12 @@ public interface Parser {
      * @param configuration 配置
      * @return 配置结束的命令
      */
-    Command parse(Configuration configuration);
+    Command parse(Command command, Configuration configuration);
 
     /**
      * 使用已有的配置解析，返回一个可执行的命令.
      * <br>
      * @return 配置好的命令
      */
-    Command parse();
+    Command parse(Command command);
 }

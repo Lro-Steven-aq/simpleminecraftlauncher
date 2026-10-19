@@ -25,7 +25,7 @@
 <!--                  <Font name="LXGW WenKai Mono" size="35.0" />-->
 <!--               </font>-->
             </Button>
-            <ComboBox fx:id="versionSelector" layoutX="484.0" prefHeight="28.0" prefWidth="176.0" promptText="Select your version" style="-fx-background-color: 505050;" />
+            <ComboBox fx:id="versionSelector" layoutX="484.0" prefHeight="28.0" prefWidth="176.0" promptText="Select your version" />
          </children>
       </AnchorPane>
       <Pane prefHeight="28.0" prefWidth="900.0">
