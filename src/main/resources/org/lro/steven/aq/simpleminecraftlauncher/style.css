@@ -75,3 +75,13 @@
 .menu-item:focused {
     -fx-background-color: rgba(174, 204, 255, 0.21);
 }
+
+/* 右侧面板背景 */
+#rightPane {
+    -fx-background-color: #FFF9C4;
+}
+
+/* 顶部菜单栏 / 窗口按钮栏背景 */
+#topBar {
+    -fx-background-color: rgba(200, 200, 200, 0.5);
+}

@@ -2,6 +2,7 @@
   "configuration_version": "1.0",
   "settings": {
     "background_image": "file:/home/steven/IdeaProjects/SimpleMinecraftLauncher/src/main/resources/org/lro/steven/aq/simpleminecraftlauncher/background.jpg",
-    "alpha": 0.8
+    "alpha": 0.8,
+    "last_version_file": "./test.json"
   }
 }

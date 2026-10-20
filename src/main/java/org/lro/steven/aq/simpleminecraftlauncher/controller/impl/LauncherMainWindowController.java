@@ -159,7 +159,11 @@ public class LauncherMainWindowController extends Controller {
         boolean hasLastestVersion = false;
         try {
             // 有就直接执行。
-            String content = Files.readString(Path.of(metadata.configurationMapper().userSettings().lastVersionJsonFile()));
+            String jsonPath = metadata.configurationMapper().userSettings().lastVersionJsonFile();
+            if (jsonPath == null) {
+                SIGNAL_BUS.emit("log.warn", LogEvent.of("No version"));
+            }
+            String content = Files.readString(Path.of(jsonPath));
             hasLastestVersion = true;
             Parser parser = Parser.create(content, Configuration.create(), metadata.features());
             parser.parse(command).execute();
