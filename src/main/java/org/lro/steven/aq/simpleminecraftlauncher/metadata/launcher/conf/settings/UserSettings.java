@@ -61,4 +61,7 @@ public class UserSettings {
         public void lastVersionJsonFile(String lastVersionJsonFile) {
                 this.lastVersionJsonFile = lastVersionJsonFile;
         }
+        public void javaHome(String javaHome) {
+                this.javaHome = javaHome;
+        }
 }
