@@ -34,6 +34,11 @@ public class PluginClassLoader extends URLClassLoader {
             "org.lro.steven.aq."
     );
 
+    /**
+     * 创建插件类加载器。
+     * @param urls 参数
+     * @param parent 参数
+     */
     public PluginClassLoader(URL[] urls, ClassLoader parent) {
         super(urls, parent);
     }

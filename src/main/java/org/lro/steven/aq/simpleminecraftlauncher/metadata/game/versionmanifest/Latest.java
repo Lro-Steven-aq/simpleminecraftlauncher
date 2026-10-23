@@ -16,5 +16,6 @@
  */
 package org.lro.steven.aq.simpleminecraftlauncher.metadata.game.versionmanifest;
 
+/** 版本清单中的最新正式版/快照信息。 */
 public record Latest(String release, String snapshot) {
 }

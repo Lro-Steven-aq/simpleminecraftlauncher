@@ -31,6 +31,10 @@ import java.util.Map;
  * @since 0.1
  */
 public interface Configuration {
+    /**
+     * 创建参数配置表。
+     * @return 配置表
+     */
     static Configuration create() {
         return new DefaultImplementationJsonConfiguration();
     }

@@ -18,5 +18,6 @@ package org.lro.steven.aq.simpleminecraftlauncher.metadata.game.version;
 
 import org.glavo.url.WebURL;
 
+/** 资源索引信息。 */
 public record AssetIndex(String id, String sha1, int size, int totalSize, WebURL url) {
 }

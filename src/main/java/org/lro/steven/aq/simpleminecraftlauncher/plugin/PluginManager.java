@@ -61,6 +61,10 @@ public class PluginManager {
         plugins = new ArrayList<>();
         pluginMap = new HashMap<>();
     }
+    /**
+     * 返回插件管理器单例。
+     * @return 返回值
+     */
     public static PluginManager get() {
         if (manager == null) {
             manager = new PluginManager();
@@ -156,6 +160,10 @@ public class PluginManager {
         }
     }
 
+    /**
+     * 返回全局信号总线。
+     * @return 返回值
+     */
     public SignalBus getSignalBus() {
         return signalBus;
     }

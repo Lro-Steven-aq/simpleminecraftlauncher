@@ -19,5 +19,6 @@ package org.lro.steven.aq.simpleminecraftlauncher.metadata.game.versionmanifest;
 import org.glavo.url.WebURL;
 import org.lro.steven.aq.simpleminecraftlauncher.metadata.game.version.VersionType;
 
+/** 版本清单中的一项。 */
 public record Version(String id, VersionType type, WebURL url, String time, String releaseTime) {
 }

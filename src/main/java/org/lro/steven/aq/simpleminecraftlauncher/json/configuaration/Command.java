@@ -29,6 +29,10 @@ import java.io.IOException;
  */
 public interface Command {
 
+    /**
+     * 创建命令构建器。
+     * @return 命令构建器
+     */
     static Command create() {
         return new DefaultImplementationCommand();
     }
@@ -46,5 +50,9 @@ public interface Command {
      */
     String getAsString();
 
+    /**
+     * 追加一条命令参数。
+     * @param commands 参数
+     */
     void add(String...commands);
 }

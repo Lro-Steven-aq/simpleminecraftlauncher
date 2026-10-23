@@ -19,6 +19,7 @@ package org.lro.steven.aq.simpleminecraftlauncher.metadata.game.version;
 import org.glavo.url.WebURL;
 import org.jetbrains.annotations.Nullable;
 
+/** 可下载文件的路径、哈希、大小和 URL。 */
 public record Artifact(
         String path,
         String sha1,

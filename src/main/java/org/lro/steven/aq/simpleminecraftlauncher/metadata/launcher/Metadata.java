@@ -22,6 +22,9 @@ import org.lro.steven.aq.simpleminecraftlauncher.json.configuaration.Features;
 import org.lro.steven.aq.simpleminecraftlauncher.metadata.game.OperatingSystem;
 import org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.conf.ApplicationConfiguration;
 
+import java.io.InputStream;
+
+/** 启动器运行期元数据。 */
 public final class Metadata {
 
     private final OperatingSystem system;
@@ -38,31 +41,75 @@ public final class Metadata {
         this.configurationMapper = configurationMapper;
     }
 
+    /**
+     * 根据配置构建运行期元数据。
+     * @param features 参数
+     * @param configurationMapper 参数
+     * @return 返回值
+     */
     public static Metadata from(Features features, ApplicationConfiguration configurationMapper) {
-        WebURL url = configurationMapper.userSettings().preciousBackgroundImageUrl();
+        WebURL url = configurationMapper.userSettings() == null
+                ? null
+                : configurationMapper.userSettings().preciousBackgroundImageUrl();
         return new Metadata(OperatingSystem.getOs(),
                 OperatingSystem.getVersion(),
                 features,
-                new Image(url == null? "@background": url.toString()),
+                loadBackground(url),
                 configurationMapper);
     }
 
+    private static Image loadBackground(WebURL url) {
+        if (url != null) {
+            try {
+                Image image = new Image(url.toString());
+                if (!image.isError()) {
+                    return image;
+                }
+            } catch (RuntimeException ignored) {
+                // 继续使用默认背景。
+            }
+        }
+        InputStream stream = Metadata.class.getResourceAsStream(
+                "/org/lro/steven/aq/simpleminecraftlauncher/background.jpg");
+        return stream == null ? null : new Image(stream);
+    }
+
+    /**
+     * 返回当前操作系统。
+     * @return 返回值
+     */
     public OperatingSystem system() {
         return system;
     }
 
+    /**
+     * 返回系统版本。
+     * @return 返回值
+     */
     public String systemVersion() {
         return systemVersion;
     }
 
+    /**
+     * 返回 features 开关。
+     * @return 返回值
+     */
     public Features features() {
         return features;
     }
 
+    /**
+     * 返回背景图片。
+     * @return 返回值
+     */
     public Image preciousBackgroundImage() {
         return preciousBackgroundImage;
     }
 
+    /**
+     * 返回配置对象。
+     * @return 返回值
+     */
     public ApplicationConfiguration configurationMapper() {
         return configurationMapper;
     }

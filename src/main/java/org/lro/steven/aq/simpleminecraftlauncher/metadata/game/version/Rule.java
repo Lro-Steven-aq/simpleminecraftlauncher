@@ -16,14 +16,17 @@
  */
 package org.lro.steven.aq.simpleminecraftlauncher.metadata.game.version;
 
+import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.Nullable;
 import org.lro.steven.aq.simpleminecraftlauncher.metadata.game.OperatingSystem;
 
 import java.util.Map;
 
+/** 版本 JSON 的规则条目。 */
 public record Rule(Action action, Os os, Map<String, Boolean> features) {
 
-    public record Os(OperatingSystem name, @Nullable VersionRange versionRange) {
+    /** 规则中的操作系统条件。 */
+    public record Os(OperatingSystem name, @SerializedName("version") @Nullable VersionRange versionRange) {
     }
 
 }

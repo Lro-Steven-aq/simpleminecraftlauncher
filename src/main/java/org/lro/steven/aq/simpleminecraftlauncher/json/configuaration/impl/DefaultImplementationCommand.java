@@ -41,6 +41,9 @@ public class DefaultImplementationCommand implements Command {
     private List<String> command;
     private ExecutorService executor;
 
+    /**
+     * 创建一个命令构建器。
+     */
     public DefaultImplementationCommand() {
         command = new ArrayList<>();
         executor = Executors.newCachedThreadPool();

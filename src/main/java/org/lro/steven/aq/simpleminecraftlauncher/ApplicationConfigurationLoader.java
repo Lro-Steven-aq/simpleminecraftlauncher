@@ -29,7 +29,10 @@ import java.io.*;
 import java.nio.file.Files;
 import java.util.Map;
 
+/** 负责读取、校验并保存启动器配置。 */
 public class ApplicationConfigurationLoader {
+
+    public static final String DEFAULT_PATH = ".simpleminecraftlauncher/configurations.json";
 
     private ApplicationConfiguration configurations;
     private static final Gson GSON = new GsonBuilder()
@@ -37,43 +40,57 @@ public class ApplicationConfigurationLoader {
             .create();
     private static final SignalBus signalBus = PluginManager.get().getSignalBus();
 
+    /**
+     * 创建一个配置加载器。
+     */
     public ApplicationConfigurationLoader() {
         this.configurations = null;
     }
 
+    /**
+     * 从 JSON 字符串或文件加载并校验配置。
+     * @param content 参数
+     */
     public void load(String content) {
+        if (content == null || content.isBlank()) {
+            content = "{\"configuration_version\":\"1.0\",\"settings\":{}}";
+        }
         content = content.strip();
         // parse it.
         configurations = GSON.fromJson(content, ApplicationConfiguration.class);
         check(configurations);
     }
 
+    /**
+     * 把当前配置写回默认配置文件。
+     */
+    public void save() {
+        configurations.save(DEFAULT_PATH);
+    }
+
+    /**
+     * 从 JSON 字符串或文件加载并校验配置。
+     * @param file 参数
+     */
     public void load(File file) {
         initializeConfigurationFileIfAbsent(file);
-//        byte[] buffer = IOUtils.byteArray();
-//        try (InputStream inputStream = IOUtils.buffer(new FileInputStream(file))) {
-//            IOUtils.readFully(inputStream, buffer);
-//        } catch (FileNotFoundException e) {
-//            signalBus.emit("log.error",
-//                    LogEvent.of("Can't find launcher configuration file: %s; we will use default configurations".formatted(file)));
-//        } catch (IOException e) {
-//            signalBus.emit("log.error",
-//                    LogEvent.of("IO Exception, at reading file: %s; we will use default configurations".formatted(file)));
-//        }
-//        load(new String(buffer));
+        load(readContent(file));
+    }
 
-        String content = null;
+    private String readContent(File file) {
         try {
-            content = Files.readString(file.toPath());
+            return Files.readString(file.toPath());
         } catch (IOException e) {
             signalBus.emit("log.error",
                     LogEvent.of("IO Exception, at reading file: %s; we will use default configurations".formatted(file)));
+            return null;
         }
-
-        load(content);
-
     }
 
+    /**
+     * 如果配置文件不存在，创建一个最小默认配置。
+     * @param file 参数
+     */
     public void initializeConfigurationFileIfAbsent(File file) {
         try {
             if (!file.exists()) {
@@ -103,10 +120,18 @@ public class ApplicationConfigurationLoader {
         }
     }
 
+    /**
+     * 把当前配置转换成键值表。
+     * @return 返回值
+     */
     public Map<String, String> getMap() {
         return GSON.fromJson(GSON.toJson(configurations), Map.class);
     }
 
+    /**
+     * 返回当前配置对象。
+     * @return 返回值
+     */
     public ApplicationConfiguration getConfigurations() {
         return configurations;
     }

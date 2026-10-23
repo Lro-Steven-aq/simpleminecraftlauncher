@@ -34,42 +34,50 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
+/** 启动器主类：加载配置、构建界面并在 JavaFX 中显示主窗口。 */
 public class Application extends javafx.application.Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        // load config -> preciousBackgroundImage -> Metadata
-        ApplicationConfigurationLoader conf = loadConfiguration();
-        ApplicationConfiguration configurations = conf.getConfigurations();
+        ApplicationConfiguration configurations = loadConfiguration().getConfigurations();
         Metadata metadata = Metadata.from(Features.create(new HashMap<>()), configurations);
-
+        Parent root = loadRoot(metadata);
         Font.loadFont(getClass().getResourceAsStream("LXGWWenKaiMono-Regular.ttf"), 48);
-        // size: 577 x 900
-
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Application.fxml"));
-        fxmlLoader.setControllerFactory(controllerClass -> {
-            if (controllerClass.equals(LauncherMainWindowController.class)) {
-                return new LauncherMainWindowController(metadata);
-            } else {
-                try { return controllerClass.getDeclaredConstructor().newInstance(); }
-                catch (Exception e) {throw new RuntimeException(e); }
-            }
-        });
-
-        Parent root = fxmlLoader.load();
-
-        primaryStage.setTitle("Simple Launcher");
-
-        primaryStage.setResizable(false);
-        primaryStage.initStyle(StageStyle.TRANSPARENT);
-
-        Scene scene = new Scene(root);
-        // 透明窗口必须在 show() 之前设置场景背景透明，否则第一帧会是不透明白底。
-        scene.setFill(Color.TRANSPARENT);
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        showStage(primaryStage, root);
     }
 
+    private Parent loadRoot(Metadata metadata) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("Application.fxml"));
+        loader.setControllerFactory(controllerClass -> createController(controllerClass, metadata));
+        return loader.load();
+    }
+
+    private Object createController(Class<?> controllerClass, Metadata metadata) {
+        if (controllerClass.equals(LauncherMainWindowController.class)) {
+            return new LauncherMainWindowController(metadata);
+        }
+        try {
+            return controllerClass.getDeclaredConstructor().newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void showStage(Stage stage, Parent root) {
+        stage.setTitle("Simple Launcher");
+        stage.setResizable(false);
+        stage.initStyle(StageStyle.TRANSPARENT);
+        Scene scene = new Scene(root);
+        scene.setFill(Color.TRANSPARENT);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    /**
+     * JavaFX 入口：启动插件系统并启动应用。
+     * @param args 参数
+     * @throws IOException 异常
+     */
     public static void _main(String[] args) throws IOException {
         // start signalBus to load the plugins.
         PluginManager manager = PluginManager.get();
@@ -80,9 +88,13 @@ public class Application extends javafx.application.Application {
         javafx.application.Application.launch(Application.class, args);
     }
 
+    /**
+     * 加载默认配置文件。
+     * @return 返回值
+     */
     public static ApplicationConfigurationLoader loadConfiguration() {
         ApplicationConfigurationLoader configuration = new ApplicationConfigurationLoader();
-        configuration.load(new File(".simpleminecraftlauncher/configurations.json"));
+        configuration.load(new File(ApplicationConfigurationLoader.DEFAULT_PATH));
         return configuration;
     }
 }

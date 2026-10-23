@@ -20,6 +20,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+/** 版本 JSON 的 arguments 节点，包含 jvm 与 game 参数。 */
 public record Arguments(
         @SerializedName("default-user-jvm") List<Argument> defaultUserJavaVirtualMachine,
         List<Argument> game,

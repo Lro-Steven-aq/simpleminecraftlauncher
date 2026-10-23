@@ -18,5 +18,6 @@ package org.lro.steven.aq.simpleminecraftlauncher.metadata.game.versionmanifest;
 
 import java.util.List;
 
+/** Mojang 版本清单。 */
 public record VersionManifest(Latest latest, List<Version> versions) {
 }

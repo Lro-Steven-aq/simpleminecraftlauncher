@@ -18,6 +18,7 @@ package org.lro.steven.aq.simpleminecraftlauncher.metadata.game.version;
 
 import com.google.gson.annotations.SerializedName;
 
+/** 版本类型：正式版、快照或旧版本。 */
 public enum VersionType {
 
     @SerializedName("release")

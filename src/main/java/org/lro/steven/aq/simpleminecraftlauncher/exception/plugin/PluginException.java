@@ -18,5 +18,6 @@ package org.lro.steven.aq.simpleminecraftlauncher.exception.plugin;
 
 import org.lro.steven.aq.simpleminecraftlauncher.exception.Exception;
 
+/** 插件相关异常。 */
 public class PluginException extends Exception {
 }

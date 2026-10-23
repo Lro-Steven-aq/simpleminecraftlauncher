@@ -18,10 +18,16 @@ package org.lro.steven.aq.simpleminecraftlauncher.json.configuaration;
 
 import java.util.Map;
 
+/** 版本 JSON 中 features 规则使用的开关集合。 */
 public final class Features {
     private Map<String, Boolean> map;
 
 
+    /**
+     * 创建 features 开关集合。
+     * @param config 参数
+     * @return 返回值
+     */
     public static Features create(Map<String, Boolean> config) {
         Features features = new Features(config);
         return features;
@@ -31,6 +37,12 @@ public final class Features {
         this.map = config;
     }
 
+    /**
+     * 获取指定 feature 的值，缺省时返回默认值。
+     * @param key 参数
+     * @param defaultValue 参数
+     * @return 返回值
+     */
     public Boolean getOrDefault(String key, Boolean defaultValue) {
         return map.getOrDefault(key, defaultValue);
     }

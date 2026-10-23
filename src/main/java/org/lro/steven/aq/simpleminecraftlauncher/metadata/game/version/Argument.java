@@ -18,5 +18,6 @@ package org.lro.steven.aq.simpleminecraftlauncher.metadata.game.version;
 
 import java.util.List;
 
+/** 版本 JSON 中的一条启动参数，或一组带 rules 的参数值。 */
 public record Argument(List<Rule> rules, List<String> value) {
 }

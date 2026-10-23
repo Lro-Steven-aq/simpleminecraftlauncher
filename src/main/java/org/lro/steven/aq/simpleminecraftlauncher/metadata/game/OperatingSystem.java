@@ -23,6 +23,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/** 启动器支持的操作系统及其版本信息。 */
 public enum OperatingSystem {
 
     @SerializedName("osx")
@@ -37,6 +38,10 @@ public enum OperatingSystem {
     private static String VERSION = null;
     private static OperatingSystem CURRENT_SYSTEM = null;
 
+    /**
+     * 返回当前操作系统。
+     * @return 返回值
+     */
     public static OperatingSystem getOs() {
         if (CURRENT_SYSTEM == null) {
             CURRENT_SYSTEM = switch (System.getProperty("os.name").toLowerCase(Locale.ROOT)) {
@@ -50,6 +55,10 @@ public enum OperatingSystem {
 
     }
 
+    /**
+     * 返回当前操作系统版本。
+     * @return 返回值
+     */
     public static String getVersion() {
         if (CURRENT_SYSTEM == OperatingSystem.WINDOWS){
             if (VERSION == null) {

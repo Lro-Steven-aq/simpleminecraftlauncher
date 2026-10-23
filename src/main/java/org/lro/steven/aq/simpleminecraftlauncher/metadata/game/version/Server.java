@@ -18,5 +18,6 @@ package org.lro.steven.aq.simpleminecraftlauncher.metadata.game.version;
 
 import org.glavo.url.WebURL;
 
+/** 服务端下载信息。 */
 public record Server(String sha1, int size, WebURL url) {
 }

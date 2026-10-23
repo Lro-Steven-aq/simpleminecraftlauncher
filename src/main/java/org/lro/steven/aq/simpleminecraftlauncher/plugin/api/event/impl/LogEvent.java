@@ -18,12 +18,18 @@ package org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.impl;
 
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.Event;
 
+/** 日志事件。 */
 public class LogEvent implements Event {
     private final String message;
     private LogEvent(String message) {
         this.message = message;
     }
 
+    /**
+     * 创建一条日志事件。
+     * @param message 参数
+     * @return 返回值
+     */
     public static Event of(String message) {
         return new LogEvent(message);
     }

@@ -22,6 +22,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Map;
 
+/** 版本依赖库。 */
 public record Library(
 
         @SerializedName("name")
@@ -35,6 +36,7 @@ public record Library(
         Extract extract
 ) {
 
+        /** 依赖库的下载信息。 */
         public record Downloads(
                 @Nullable
                 Artifact artifact,

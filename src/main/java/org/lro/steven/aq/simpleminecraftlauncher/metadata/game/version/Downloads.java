@@ -16,5 +16,6 @@
  */
 package org.lro.steven.aq.simpleminecraftlauncher.metadata.game.version;
 
+/** 版本的客户端/服务端下载信息。 */
 public record Downloads(Client client, Server server) {
 }

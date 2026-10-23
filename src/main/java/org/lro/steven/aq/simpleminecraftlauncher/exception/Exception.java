@@ -16,9 +16,14 @@
  */
 package org.lro.steven.aq.simpleminecraftlauncher.exception;
 
+/** 启动器自定义异常基类。 */
 public abstract class Exception extends java.lang.RuntimeException {
     private String message = null;
 
+    /**
+     * 设置异常消息。
+     * @param msg 参数
+     */
     public void setMessage(String msg) {
         message = msg;
     }

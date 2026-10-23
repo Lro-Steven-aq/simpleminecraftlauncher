@@ -57,6 +57,11 @@ public final class Internationalization {
         }
     }
 
+    /**
+     * 按当前语言获取国际化文本，找不到时回退到英语。
+     * @param key 参数
+     * @return 返回值
+     */
     public static String get(String key) {
         return internationalization.properties.getOrDefault(
                 Locale.getDefault(),
@@ -64,6 +69,10 @@ public final class Internationalization {
         ).getProperty(key, key);
     }
 
+    /**
+     * 设置当前语言。
+     * @param locale 参数
+     */
     public void setLocale(Locale locale) {
         Locale.setDefault(locale);
     }

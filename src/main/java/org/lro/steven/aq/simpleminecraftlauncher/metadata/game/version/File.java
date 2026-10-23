@@ -18,6 +18,7 @@ package org.lro.steven.aq.simpleminecraftlauncher.metadata.game.version;
 
 import org.glavo.url.WebURL;
 
+/** 日志配置文件信息。 */
 public record File(
     String id,
     String sha1,

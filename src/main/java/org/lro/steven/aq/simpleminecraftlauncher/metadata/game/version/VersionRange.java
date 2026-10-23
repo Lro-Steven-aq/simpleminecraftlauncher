@@ -16,5 +16,6 @@
  */
 package org.lro.steven.aq.simpleminecraftlauncher.metadata.game.version;
 
+/** 系统版本范围（min/max）。 */
 public record VersionRange(String min, String max) {
 }

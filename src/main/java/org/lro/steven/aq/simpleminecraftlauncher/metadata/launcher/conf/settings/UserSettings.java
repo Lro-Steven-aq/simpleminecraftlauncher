@@ -19,6 +19,7 @@ package org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.conf.setting
 import com.google.gson.annotations.SerializedName;
 import org.glavo.url.WebURL;
 
+/** 用户设置。 */
 public class UserSettings {
         @SerializedName("background_image")
         private WebURL preciousBackgroundImageUrl;
@@ -38,30 +39,108 @@ public class UserSettings {
         @SerializedName("last_version_file")
         private String lastVersionJsonFile; // 如果用户没有更改，那么默认就是 .minecraft/versions/<SHA256_of_last_version>.json
 
+        @SerializedName("game_directory")
+        private String gameDirectory; // .minecraft 目录；缺省为 ~/.minecraft
+
+        @SerializedName("username")
+        private String username; // 离线启动用户名
+
+        /** 创建一个空的用户设置。 */
         public UserSettings() {}
 
+        /**
+         * 返回背景图片 URL。
+         * @return 背景图片 URL；未设置时为 null
+         */
         public WebURL preciousBackgroundImageUrl() {
                 return preciousBackgroundImageUrl;
         }
+
+        /**
+         * 返回 JAVA_HOME。
+         * @return JAVA_HOME；未设置时为 null
+         */
         public String javaHome() {
                 return javaHome;
         }
+
+        /**
+         * 设置 JAVA_HOME。
+         * @param javaHome JAVA_HOME
+         */
+        public void javaHome(String javaHome) {
+                this.javaHome = javaHome;
+        }
+
+        /**
+         * 返回 Java 可执行文件路径。
+         * @return Java 可执行文件路径；未设置时为 null
+         */
         public String executableJavaCommand() {
                 return executableJavaCommand;
         }
+
+        /**
+         * 返回是否启用快速启动。
+         * @return 是否快速启动
+         */
         public boolean fastLaunch() {
                 return fastLaunch;
         }
+
+        /**
+         * 返回窗口透明度。
+         * @return 透明度（0 到 1）；未设置时为 null
+         */
         public Double alpha() {
                 return alpha;
         }
+
+        /**
+         * 返回上次使用的版本 JSON 文件路径。
+         * @return 版本 JSON 路径；未设置时为 null
+         */
         public String lastVersionJsonFile() {
                 return lastVersionJsonFile;
         }
+
+        /**
+         * 设置上次使用的版本 JSON 文件路径。
+         * @param lastVersionJsonFile 版本 JSON 路径
+         */
         public void lastVersionJsonFile(String lastVersionJsonFile) {
                 this.lastVersionJsonFile = lastVersionJsonFile;
         }
-        public void javaHome(String javaHome) {
-                this.javaHome = javaHome;
+
+        /**
+         * 返回游戏目录。
+         * @return 游戏目录；未设置时为 null
+         */
+        public String gameDirectory() {
+                return gameDirectory;
+        }
+
+        /**
+         * 设置游戏目录。
+         * @param gameDirectory 游戏目录
+         */
+        public void gameDirectory(String gameDirectory) {
+                this.gameDirectory = gameDirectory;
+        }
+
+        /**
+         * 返回离线用户名。
+         * @return 离线用户名；未设置时为 null
+         */
+        public String username() {
+                return username;
+        }
+
+        /**
+         * 设置离线用户名。
+         * @param username 离线用户名
+         */
+        public void username(String username) {
+                this.username = username;
         }
 }

@@ -38,6 +38,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class DefaultImplementationPluginLoader implements PluginLoader {
     private final Map<String, ClassLoader> loaderMap;
 
+    /**
+     * 创建插件加载器。
+     */
     public DefaultImplementationPluginLoader() {
         this.loaderMap = new ConcurrentHashMap<>();
     }

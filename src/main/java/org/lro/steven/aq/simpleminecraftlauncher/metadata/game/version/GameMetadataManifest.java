@@ -20,6 +20,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+/** 版本 JSON 的顶层结构。 */
 public record GameMetadataManifest(
         Arguments arguments,
         AssetIndex assetIndex,
@@ -29,6 +30,9 @@ public record GameMetadataManifest(
         int complianceLevel,
         Downloads downloads,
         String id,
+
+        @SerializedName("jar")
+        String jar,
         JavaVersion javaVersion,
         List<Library> libraries,
         Logging logging,

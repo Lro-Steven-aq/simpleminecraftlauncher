@@ -18,6 +18,7 @@ package org.lro.steven.aq.simpleminecraftlauncher.metadata.game.version;
 
 import java.util.List;
 
+/** 依赖库解压时需要排除的文件列表。 */
 public record Extract(
         List<String> exclude
 ) {

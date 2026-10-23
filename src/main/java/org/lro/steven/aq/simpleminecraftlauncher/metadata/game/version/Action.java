@@ -18,6 +18,7 @@ package org.lro.steven.aq.simpleminecraftlauncher.metadata.game.version;
 
 import com.google.gson.annotations.SerializedName;
 
+/** 规则的动作：允许（allow）或禁止（disallow）。 */
 public enum Action {
 
     @SerializedName("allow")

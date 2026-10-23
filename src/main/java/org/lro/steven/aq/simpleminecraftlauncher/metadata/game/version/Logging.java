@@ -16,9 +16,11 @@
  */
 package org.lro.steven.aq.simpleminecraftlauncher.metadata.game.version;
 
+/** 日志配置。 */
 public record Logging(Client client) {
 
 
+    /** 客户端日志文件配置。 */
     public record Client(
             String argument,
             File file,

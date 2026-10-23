@@ -16,8 +16,14 @@
  */
 package org.lro.steven.aq.simpleminecraftlauncher.json.configuaration.impl;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.lro.steven.aq.simpleminecraftlauncher.json.configuaration.Configuration;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,8 +36,32 @@ public class DefaultImplementationJsonConfiguration implements Configuration {
 
     private final Map<String, String> configuration;
 
+    /**
+     * 创建一个参数配置表。
+     */
     public DefaultImplementationJsonConfiguration() {
         configuration = new HashMap<>();
+    }
+
+    @Override
+    public void load(String string) {
+        if (string == null || string.isBlank()) {
+            return;
+        }
+        Map<String, String> values = new Gson().fromJson(
+                string, new TypeToken<Map<String, String>>() { }.getType());
+        if (values != null) {
+            configuration.putAll(values);
+        }
+    }
+
+    @Override
+    public void load(File file) {
+        try {
+            load(Files.readString(file.toPath()));
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
     @Override

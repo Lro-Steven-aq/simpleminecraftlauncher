@@ -16,5 +16,6 @@
  */
 package org.lro.steven.aq.simpleminecraftlauncher.metadata.game.version;
 
+/** 版本要求的 Java 组件与主版本号。 */
 public record JavaVersion(String component, int majorVersion) {
 }

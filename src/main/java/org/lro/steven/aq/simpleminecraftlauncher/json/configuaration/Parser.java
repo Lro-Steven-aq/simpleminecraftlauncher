@@ -29,6 +29,13 @@ import org.lro.steven.aq.simpleminecraftlauncher.json.configuaration.impl.Defaul
  */
 public interface Parser {
 
+    /**
+     * 创建版本 JSON 参数解析器。
+     * @param jsonRawContent 版本 JSON 文本
+     * @param configuration 参数配置
+     * @param features features 开关
+     * @return 解析器
+     */
     static Parser create(String jsonRawContent, Configuration configuration, Features features) {
         return new DefaultImplementationJsonParser(jsonRawContent, configuration, features);
     }

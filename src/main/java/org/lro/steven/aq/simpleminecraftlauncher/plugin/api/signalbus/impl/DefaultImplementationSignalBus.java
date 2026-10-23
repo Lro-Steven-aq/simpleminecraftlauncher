@@ -46,6 +46,10 @@ public final class DefaultImplementationSignalBus implements SignalBus {
      * <b>单例化</b>
      */
     private static SignalBus instance = null;
+    /**
+     * 返回信号总线单例。
+     * @return 返回值
+     */
     public static SignalBus get() {
         if (instance == null) {
             instance = new DefaultImplementationSignalBus();

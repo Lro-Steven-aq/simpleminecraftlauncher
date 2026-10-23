@@ -1,4 +1,63 @@
-14:49:17.825 [main] INFO  Logger-Plugin - initialize
-21:33:28.801 [main] INFO  Logger-Plugin - initialize
-21:33:32.865 [JavaFX Application Thread] ERROR Logger-Plugin - Can't find your java, Do you want to scan your disk or download from Internet for it?
-21:33:34.447 [JavaFX Application Thread] INFO  Logger-Plugin - User clicks OK button
+00:12:45.710 [main] INFO  Logger-Plugin - Test Logger info
+00:12:45.718 [main] WARN  Logger-Plugin - warn...
+00:12:45.719 [main] ERROR Logger-Plugin - error!
+00:12:45.719 [main] FATAL Logger-Plugin - FATal...
+00:12:45.795 [main] ERROR Logger-Plugin - L
+00:14:00.152 [main] INFO  Logger-Plugin - Test Logger info
+00:14:00.156 [main] WARN  Logger-Plugin - warn...
+00:14:00.156 [main] ERROR Logger-Plugin - error!
+00:14:00.157 [main] FATAL Logger-Plugin - FATal...
+00:14:00.193 [main] ERROR Logger-Plugin - L
+00:14:39.786 [main] INFO  Logger-Plugin - Test Logger info
+00:14:39.791 [main] WARN  Logger-Plugin - warn...
+00:14:39.792 [main] ERROR Logger-Plugin - error!
+00:14:39.796 [main] FATAL Logger-Plugin - FATal...
+00:14:39.840 [main] ERROR Logger-Plugin - L
+00:16:44.302 [main] INFO  Logger-Plugin - Test Logger info
+00:16:44.305 [main] WARN  Logger-Plugin - warn...
+00:16:44.306 [main] ERROR Logger-Plugin - error!
+00:16:44.306 [main] FATAL Logger-Plugin - FATal...
+00:16:44.336 [main] ERROR Logger-Plugin - L
+00:17:21.979 [main] INFO  Logger-Plugin - initialize
+00:19:35.167 [main] INFO  Logger-Plugin - Test Logger info
+00:19:35.175 [main] WARN  Logger-Plugin - warn...
+00:19:35.176 [main] ERROR Logger-Plugin - error!
+00:19:35.176 [main] FATAL Logger-Plugin - FATal...
+00:19:35.211 [main] ERROR Logger-Plugin - L
+00:19:51.783 [main] INFO  Logger-Plugin - initialize
+00:21:46.664 [main] INFO  Logger-Plugin - Test Logger info
+00:21:46.669 [main] WARN  Logger-Plugin - warn...
+00:21:46.669 [main] ERROR Logger-Plugin - error!
+00:21:46.670 [main] FATAL Logger-Plugin - FATal...
+00:21:46.696 [main] ERROR Logger-Plugin - L
+00:23:41.325 [main] INFO  Logger-Plugin - initialize
+00:23:46.451 [JavaFX Application Thread] ERROR Logger-Plugin - Launch failed: com.google.gson.JsonIOException: Failed making field 'org.glavo.url.internal.WebURLImpl#scheme' accessible; either increase its visibility or write a custom TypeAdapter for its declaring type.
+See https://github.com/google/gson/blob/main/Troubleshooting.md#reflection-inaccessible-to-module-gson
+00:24:44.201 [version-install] INFO  Logger-Plugin - Downloading version JSON: 1.9
+00:24:44.482 [version-install] ERROR Logger-Plugin - Install failed: java.lang.IllegalStateException: Expected BEGIN_ARRAY but was BEGIN_OBJECT at line 1 column 11507 path $.libraries[29].natives
+See https://github.com/google/gson/blob/main/Troubleshooting.md#unexpected-json-structure
+00:24:44.488 [JavaFX Application Thread] ERROR Logger-Plugin - Launch failed: com.google.gson.JsonSyntaxException: java.lang.IllegalStateException: Expected BEGIN_ARRAY but was BEGIN_OBJECT at line 1 column 11507 path $.libraries[29].natives
+See https://github.com/google/gson/blob/main/Troubleshooting.md#unexpected-json-structure
+00:24:48.311 [JavaFX Application Thread] ERROR Logger-Plugin - Launch failed: com.google.gson.JsonSyntaxException: java.lang.IllegalStateException: Expected BEGIN_ARRAY but was BEGIN_OBJECT at line 1 column 11507 path $.libraries[29].natives
+See https://github.com/google/gson/blob/main/Troubleshooting.md#unexpected-json-structure
+00:25:18.730 [JavaFX Application Thread] ERROR Logger-Plugin - Launch failed: com.google.gson.JsonSyntaxException: java.lang.IllegalStateException: Expected BEGIN_ARRAY but was BEGIN_OBJECT at line 1 column 11507 path $.libraries[29].natives
+See https://github.com/google/gson/blob/main/Troubleshooting.md#unexpected-json-structure
+09:59:36.936 [main] INFO  Logger-Plugin - Test Logger info
+09:59:36.943 [main] WARN  Logger-Plugin - warn...
+09:59:36.943 [main] ERROR Logger-Plugin - error!
+09:59:36.943 [main] FATAL Logger-Plugin - FATal...
+09:59:36.983 [main] ERROR Logger-Plugin - L
+09:59:45.707 [main] INFO  Logger-Plugin - initialize
+10:00:10.672 [main] INFO  Logger-Plugin - initialize
+10:02:17.591 [main] INFO  Logger-Plugin - Test Logger info
+10:02:17.594 [main] WARN  Logger-Plugin - warn...
+10:02:17.594 [main] ERROR Logger-Plugin - error!
+10:02:17.594 [main] FATAL Logger-Plugin - FATal...
+10:02:17.621 [main] ERROR Logger-Plugin - L
+10:02:22.530 [main] INFO  Logger-Plugin - initialize
+10:03:11.608 [main] INFO  Logger-Plugin - initialize
+18:43:21.374 [main] INFO  Logger-Plugin - Test Logger info
+18:43:21.400 [main] WARN  Logger-Plugin - warn...
+18:43:21.401 [main] ERROR Logger-Plugin - error!
+18:43:21.401 [main] FATAL Logger-Plugin - FATal...
+18:43:21.521 [main] ERROR Logger-Plugin - L

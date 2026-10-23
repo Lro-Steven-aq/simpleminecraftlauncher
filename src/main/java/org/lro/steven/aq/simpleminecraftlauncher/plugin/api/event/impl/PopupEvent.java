@@ -18,7 +18,18 @@ package org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.impl;
 
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.Event;
 
+/** 弹窗事件，携带标题、文本和按钮回调。 */
 public class PopupEvent implements Event {
+    /**
+     * 创建一条弹窗事件。
+     * @param title 参数
+     * @param head 参数
+     * @param msg 参数
+     * @param callableOnYes 参数
+     * @param callableOnNo 参数
+     * @param callableOnClose 参数
+     * @return 返回值
+     */
     public static Event of(String title,
                            String head,
                            String msg,
@@ -58,22 +69,42 @@ public class PopupEvent implements Event {
         return title;
     }
 
+    /**
+     * 返回弹窗正文。
+     * @return 返回值
+     */
     public String getMessage() {
         return message;
     }
 
+    /**
+     * 返回弹窗头部文本。
+     * @return 返回值
+     */
     public String getHead() {
         return head;
     }
 
+    /**
+     * 返回“是”按钮的回调。
+     * @return 返回值
+     */
     public Runnable getCallableOnYes() {
         return callableOnYes;
     }
 
+    /**
+     * 返回“否”按钮的回调。
+     * @return 返回值
+     */
     public Runnable getCallableOnNo() {
         return callableOnNo;
     }
 
+    /**
+     * 返回关闭按钮的回调。
+     * @return 返回值
+     */
     public Runnable getCallableOnClose() {
         return callableOnClose;
     }
