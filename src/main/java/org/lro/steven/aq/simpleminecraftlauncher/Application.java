@@ -16,6 +16,7 @@
  */
 package org.lro.steven.aq.simpleminecraftlauncher;
 
+import javafx.animation.PauseTransition;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -23,12 +24,14 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Duration;
 import org.lro.steven.aq.simpleminecraftlauncher.json.configuaration.Features;
 import org.lro.steven.aq.simpleminecraftlauncher.controller.impl.LauncherMainWindowController;
 import org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.Metadata;
 import org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.conf.ApplicationConfiguration;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.PluginManager;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.impl.LogEvent;
+import org.lro.steven.aq.simpleminecraftlauncher.window.DesktopFrost;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,6 +39,8 @@ import java.util.HashMap;
 
 /** 启动器主类：加载配置、构建界面并在 JavaFX 中显示主窗口。 */
 public class Application extends javafx.application.Application {
+
+    private LauncherMainWindowController launcherController;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -49,7 +54,11 @@ public class Application extends javafx.application.Application {
     private Parent loadRoot(Metadata metadata) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Application.fxml"));
         loader.setControllerFactory(controllerClass -> createController(controllerClass, metadata));
-        return loader.load();
+        Parent root = loader.load();
+        if (loader.getController() instanceof LauncherMainWindowController controller) {
+            launcherController = controller;
+        }
+        return root;
     }
 
     private Object createController(Class<?> controllerClass, Metadata metadata) {
@@ -71,6 +80,24 @@ public class Application extends javafx.application.Application {
         scene.setFill(Color.TRANSPARENT);
         stage.setScene(scene);
         stage.show();
+        applyDesktopFrost(stage.getTitle(), false);
+        // 调试启动时原生窗口就绪可能稍慢，延迟再补一次；成功则把回退样式升级为磨砂样式。
+        PauseTransition retry = new PauseTransition(Duration.millis(600));
+        retry.setOnFinished(event -> applyDesktopFrost(stage.getTitle(), true));
+        retry.play();
+    }
+
+    /**
+     * 开启桌面磨砂，并把结果交给控制器选择对应的透明方案。
+     * @param windowTitle 窗口标题
+     * @param retry 是否为延迟重试；重试只在成功时才重新应用样式
+     */
+    private void applyDesktopFrost(String windowTitle, boolean retry) {
+        boolean frosted = DesktopFrost.apply(windowTitle);
+        if (launcherController == null || (retry && !frosted)) {
+            return;
+        }
+        launcherController.applyFrostState(frosted);
     }
 
     /**

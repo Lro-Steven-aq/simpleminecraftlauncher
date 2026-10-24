@@ -14,10 +14,8 @@
 <Pane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="507.0" prefWidth="900.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.lro.steven.aq.simpleminecraftlauncher.controller.impl.LauncherMainWindowController">
    <!--opacity="0.6"-->
    <children>
-      <ImageView fx:id="backgroundImage" fitHeight="577.0" fitWidth="900.0" pickOnBounds="true" preserveRatio="true">
-
-      </ImageView>
-      <AnchorPane id="rightPane" layoutX="489.0" prefHeight="507.0" prefWidth="411.0">
+      <ImageView fx:id="backgroundImage" fitHeight="577.0" fitWidth="900.0" pickOnBounds="true" preserveRatio="true" />
+      <AnchorPane fx:id="rightPane" id="rightPane" layoutX="489.0" prefHeight="507.0" prefWidth="411.0">
          <children>
             <Button fx:id="launchButton" mnemonicParsing="false" prefHeight="141.0" prefWidth="199.0" text="launch!" AnchorPane.bottomAnchor="50.0" AnchorPane.rightAnchor="27.0" />
             <ComboBox fx:id="versionSelector" prefHeight="28.0" prefWidth="176.0" promptText="Select your version" AnchorPane.bottomAnchor="124.0" AnchorPane.leftAnchor="9.0" />

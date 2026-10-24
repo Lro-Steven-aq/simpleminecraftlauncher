@@ -149,6 +149,9 @@
                             <mainClass>
                                 org.lro.steven.aq.simpleminecraftlauncher/org.lro.steven.aq.simpleminecraftlauncher.Launcher
                             </mainClass>
+                            <options>
+                                <option>--enable-native-access=javafx.graphics,org.lro.steven.aq.simpleminecraftlauncher</option>
+                            </options>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>

@@ -76,9 +76,16 @@
     -fx-background-color: rgba(174, 204, 255, 0.21);
 }
 
-/* 右侧面板背景 */
+/* 右侧面板背景：半透明淡黄，透出系统磨砂后的桌面 */
 #rightPane {
-    -fx-background-color: #FFF9C4;
+    -fx-background-color: rgba(255, 249, 196, 0.55);
+    -fx-border-color: rgba(255, 255, 255, 0.45);
+    -fx-border-width: 1 0 0 0;
+}
+
+/* 系统不支持磨砂时的回退：背景更透，直接露出桌面 */
+#rightPane.no-frost {
+    -fx-background-color: rgba(255, 249, 196, 0.20);
 }
 
 /* 顶部菜单栏 / 窗口按钮栏背景 */

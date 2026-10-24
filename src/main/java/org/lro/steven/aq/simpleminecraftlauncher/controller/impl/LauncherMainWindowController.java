@@ -24,7 +24,9 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.MenuBar;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -79,6 +81,9 @@ public class LauncherMainWindowController extends Controller {
     private Pane root;
 
     @FXML
+    private AnchorPane rightPane;
+
+    @FXML
     private Button minimizeButton;
 
     @FXML
@@ -89,6 +94,12 @@ public class LauncherMainWindowController extends Controller {
     private static final SignalBus SIGNAL_BUS = PluginManager.get().getSignalBus();
 
     private final VersionManager versionManager;
+
+    /** 系统不支持磨砂时，右侧面板使用的样式类。 */
+    private static final String NO_FROST_CLASS = "no-frost";
+
+    /** 系统不支持磨砂时，背景图几乎不透明。 */
+    private static final double FALLBACK_IMAGE_OPACITY = 0.95;
 
     /**
      * 创建主窗口控制器。
@@ -109,17 +120,45 @@ public class LauncherMainWindowController extends Controller {
 
     private void initializeStyle() {
         backgroundImage.setImage(metadata.preciousBackgroundImage());
+        // 右侧面板区域不显示背景图，具体宽度取自布局，避免两处写死同一个数值。
+        backgroundImage.setClip(new Rectangle(0, 0, rightPane.getLayoutX(), root.getPrefHeight()));
         applyOpacity();
-        exitButton.setOpacity(0.7);
-        minimizeButton.setOpacity(0.7);
-        launchButton.setOpacity(0.7);
     }
 
+    /**
+     * 透明度只作用于背景图，文字和控件保持不透明；透出的桌面色由系统磨砂处理。
+     */
     private void applyOpacity() {
-        UserSettings settings = metadata.configurationMapper().userSettings();
-        if (settings != null && settings.alpha() != null) {
-            root.setOpacity(settings.alpha());
+        backgroundImage.setOpacity(configuredAlpha());
+    }
+
+    /**
+     * 根据磨砂是否生效切换透明方案。
+     * 支持磨砂时右侧保持半透明、由系统模糊桌面色；不支持时改为图片低透明、右侧高透明，直接露出桌面。
+     * @param frosted 系统磨砂是否生效
+     */
+    public void applyFrostState(boolean frosted) {
+        if (frosted) {
+            rightPane.getStyleClass().remove(NO_FROST_CLASS);
+            applyOpacity();
+        } else {
+            if (!rightPane.getStyleClass().contains(NO_FROST_CLASS)) {
+                rightPane.getStyleClass().add(NO_FROST_CLASS);
+            }
+            backgroundImage.setOpacity(Math.max(FALLBACK_IMAGE_OPACITY, configuredAlpha()));
         }
+    }
+
+    /**
+     * 用户配置的背景图透明度；没有配置时按不透明处理。
+     * @return 0 到 1 之间的透明度
+     */
+    private double configuredAlpha() {
+        UserSettings settings = metadata.configurationMapper().userSettings();
+        if (settings == null || settings.alpha() == null) {
+            return 1.0;
+        }
+        return Math.max(0.0, Math.min(1.0, settings.alpha()));
     }
 
     private void initializeVersionSelector() {
