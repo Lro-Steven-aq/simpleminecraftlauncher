@@ -22,6 +22,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.MenuBar;
+import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -72,6 +73,9 @@ public class LauncherMainWindowController extends Controller {
     private ImageView backgroundImage;
 
     @FXML
+    private ImageView frostImage;
+
+    @FXML
     private Button launchButton;
 
     @FXML
@@ -98,6 +102,9 @@ public class LauncherMainWindowController extends Controller {
     /** 系统不支持磨砂时，右侧面板使用的样式类。 */
     private static final String NO_FROST_CLASS = "no-frost";
 
+    /** 内置磨砂层的模糊半径。 */
+    private static final double FROST_BLUR_RADIUS = 40.0;
+
     /** 系统不支持磨砂时，背景图几乎不透明。 */
     private static final double FALLBACK_IMAGE_OPACITY = 0.95;
 
@@ -119,34 +126,49 @@ public class LauncherMainWindowController extends Controller {
     }
 
     private void initializeStyle() {
-        backgroundImage.setImage(metadata.preciousBackgroundImage());
-        // 右侧面板区域不显示背景图，具体宽度取自布局，避免两处写死同一个数值。
+        var image = metadata.preciousBackgroundImage();
+        backgroundImage.setImage(image);
+        // 左侧保留清晰背景图；右侧用同一张图的模糊副本做磨砂底层。
         backgroundImage.setClip(new Rectangle(0, 0, rightPane.getLayoutX(), root.getPrefHeight()));
+
+        frostImage.setImage(image);
+        Rectangle frostClip = new Rectangle();
+        frostClip.xProperty().bind(rightPane.layoutXProperty());
+        frostClip.widthProperty().bind(rightPane.widthProperty());
+        frostClip.heightProperty().bind(root.heightProperty());
+        frostImage.setClip(frostClip);
+        frostImage.setEffect(new GaussianBlur(FROST_BLUR_RADIUS));
+        frostImage.setMouseTransparent(true);
         applyOpacity();
     }
 
     /**
-     * 透明度只作用于背景图，文字和控件保持不透明；透出的桌面色由系统磨砂处理。
+     * 透明度只作用于背景图和磨砂层，文字与控件保持不透明。
      */
     private void applyOpacity() {
-        backgroundImage.setOpacity(configuredAlpha());
+        double alpha = configuredAlpha();
+        backgroundImage.setOpacity(alpha);
+        frostImage.setOpacity(alpha);
     }
 
     /**
-     * 根据磨砂是否生效切换透明方案。
-     * 支持磨砂时右侧保持半透明、由系统模糊桌面色；不支持时改为图片低透明、右侧高透明，直接露出桌面。
+     * 根据系统磨砂是否生效切换方案：
+     * 系统支持时隐藏内置模糊层、由系统模糊桌面；不支持时显示内置模糊背景副本。
      * @param frosted 系统磨砂是否生效
      */
     public void applyFrostState(boolean frosted) {
+        frostImage.setVisible(!frosted);
         if (frosted) {
             rightPane.getStyleClass().remove(NO_FROST_CLASS);
             applyOpacity();
-        } else {
-            if (!rightPane.getStyleClass().contains(NO_FROST_CLASS)) {
-                rightPane.getStyleClass().add(NO_FROST_CLASS);
-            }
-            backgroundImage.setOpacity(Math.max(FALLBACK_IMAGE_OPACITY, configuredAlpha()));
+            return;
         }
+        if (!rightPane.getStyleClass().contains(NO_FROST_CLASS)) {
+            rightPane.getStyleClass().add(NO_FROST_CLASS);
+        }
+        double fallback = Math.max(FALLBACK_IMAGE_OPACITY, configuredAlpha());
+        backgroundImage.setOpacity(fallback);
+        frostImage.setOpacity(fallback);
     }
 
     /**

@@ -83,9 +83,9 @@
     -fx-border-width: 1 0 0 0;
 }
 
-/* 系统不支持磨砂时的回退：背景更透，直接露出桌面 */
+/* 系统不支持磨砂时的回退：使用内置模糊背景 + 半透明面板 */
 #rightPane.no-frost {
-    -fx-background-color: rgba(255, 249, 196, 0.20);
+    -fx-background-color: rgba(255, 249, 196, 0.35);
 }
 
 /* 顶部菜单栏 / 窗口按钮栏背景 */

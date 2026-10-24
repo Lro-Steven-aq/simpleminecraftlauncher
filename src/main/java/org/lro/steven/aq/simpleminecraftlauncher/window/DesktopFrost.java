@@ -16,6 +16,10 @@
  */
 package org.lro.steven.aq.simpleminecraftlauncher.window;
 
+import org.lro.steven.aq.simpleminecraftlauncher.plugin.PluginManager;
+import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.impl.LogEvent;
+import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.signalbus.SignalBus;
+
 import java.lang.foreign.Arena;
 import java.lang.foreign.FunctionDescriptor;
 import java.lang.foreign.Linker;
@@ -37,6 +41,8 @@ public final class DesktopFrost {
      */
     private static final int ACCENT_ENABLE_BLURBEHIND = 3;
 
+    private static final SignalBus SIGNAL_BUS = PluginManager.get().getSignalBus();
+
     private DesktopFrost() {
     }
 
@@ -47,7 +53,7 @@ public final class DesktopFrost {
      */
     public static boolean apply(String windowTitle) {
         if (!isWindows()) {
-            System.out.println("[DesktopFrost] 非 Windows，跳过");
+            SIGNAL_BUS.emit("log.info", LogEvent.of("[DesktopFrost] 非 Windows，跳过"));
             return false;
         }
         try (Arena arena = Arena.ofConfined()) {
@@ -66,7 +72,7 @@ public final class DesktopFrost {
             MemorySegment title = arena.allocateFrom(windowTitle);
             MemorySegment hwnd = (MemorySegment) findWindow.invokeExact(MemorySegment.NULL, title);
             if (hwnd.address() == 0) {
-                System.out.println("[DesktopFrost] 未找到窗口: " + windowTitle);
+                SIGNAL_BUS.emit("log.error", LogEvent.of("[DesktopFrost] 未找到窗口: " + windowTitle));
                 return false;
             }
             // 标题可能与其他进程的窗口重名，确认句柄属于当前进程。
@@ -89,10 +95,10 @@ public final class DesktopFrost {
             data.set(ValueLayout.JAVA_LONG, 16, 16L);
 
             int ret = (int) setComposition.invokeExact(hwnd, data);
-            System.out.println("[DesktopFrost] applied=" + ret);
+            SIGNAL_BUS.emit("log.info", LogEvent.of("[DesktopFrost] applied=" + ret));
             return ret != 0;
         } catch (Throwable error) {
-            System.out.println("[DesktopFrost] failed: " + error);
+            SIGNAL_BUS.emit("log.fatal", LogEvent.of("[DesktopFrost] failed: " + error));
             // 非 Windows、旧版本 Windows 或未授权原生访问时，由调用方回退到普通透明窗口。
             return false;
         }

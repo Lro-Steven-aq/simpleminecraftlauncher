@@ -15,6 +15,7 @@
    <!--opacity="0.6"-->
    <children>
       <ImageView fx:id="backgroundImage" fitHeight="577.0" fitWidth="900.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="frostImage" fitHeight="577.0" fitWidth="900.0" pickOnBounds="false" preserveRatio="true" />
       <AnchorPane fx:id="rightPane" id="rightPane" layoutX="489.0" prefHeight="507.0" prefWidth="411.0">
          <children>
             <Button fx:id="launchButton" mnemonicParsing="false" prefHeight="141.0" prefWidth="199.0" text="launch!" AnchorPane.bottomAnchor="50.0" AnchorPane.rightAnchor="27.0" />

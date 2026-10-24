@@ -1,10 +1,10 @@
 {
-  "configuration_version":"1.0",
-  "settings":{
+  "configuration_version": "1.0",
+  "settings": {
     "background_image":"file:///home/steven/IdeaProjects/SimpleMinecraftLauncher/src/main/resources/org/lro/steven/aq/simpleminecraftlauncher/background.jpg",
-    "JAVA_HOME":"/home/steven/Applications/jdk-26.0.2.1",
-    "is_fast_launch":false,
-    "alpha":0.8,
-    "last_version_file":"./.minecraft/versions/26.3/26.3.json",
-    "game_directory":"./.minecraft"}
+    "JAVA_HOME": "/home/steven/Applications/jdk-26.0.2.1",
+    "is_fast_launch": false,
+    "alpha": 0.8,
+    "last_version_file": "./.minecraft/versions/26.3/26.3.json",
+    "game_directory": "./.minecraft"}
 }
