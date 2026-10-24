@@ -18,6 +18,7 @@ package org.lro.steven.aq.simpleminecraftlauncher.json.configuaration.impl;
 
 import org.lro.steven.aq.simpleminecraftlauncher.json.configuaration.Command;
 import org.lro.steven.aq.simpleminecraftlauncher.internationalization.Internationalization;
+import org.lro.steven.aq.simpleminecraftlauncher.metadata.game.OperatingSystem;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.PluginManager;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.impl.LogEvent;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.impl.PopupEvent;
@@ -25,8 +26,11 @@ import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.signalbus.SignalBus;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -52,7 +56,9 @@ public class DefaultImplementationCommand implements Command {
     @Override
     public void execute() throws IOException, InterruptedException {
         SignalBus signalBus = PluginManager.get().getSignalBus();
-        try (Process process = new ProcessBuilder(command) .start()) {
+        ProcessBuilder builder = new ProcessBuilder(command);
+        applyLinuxDisplayWorkarounds(builder);
+        try (Process process = builder.start()) {
             // Get stdout.
             Process finalProcess = process; // 绕过限制
             CompletableFuture<Void> outputFuture = CompletableFuture.runAsync(() -> {
@@ -93,6 +99,25 @@ public class DefaultImplementationCommand implements Command {
                         )
                 ); // Use I18n
             }
+        }
+    }
+
+    /**
+     * Wayland 下 SDL 窗口没有标题栏和关闭/最小化按钮，强制使用 X11；
+     * 同时优先使用 Mesa EGL，规避部分 NVIDIA EGL 驱动崩溃。
+     * @param builder 游戏进程构建器
+     */
+    private static void applyLinuxDisplayWorkarounds(ProcessBuilder builder) {
+        if (OperatingSystem.getOs() != OperatingSystem.LINUX
+                || System.getenv("WAYLAND_DISPLAY") == null
+                || System.getenv("DISPLAY") == null) {
+            return;
+        }
+        Map<String, String> environment = builder.environment();
+        environment.putIfAbsent("SDL_VIDEODRIVER", "x11");
+        Path mesa = Path.of("/usr/share/glvnd/egl_vendor.d/50_mesa.json");
+        if (Files.isRegularFile(mesa)) {
+            environment.putIfAbsent("__EGL_VENDOR_LIBRARY_FILENAMES", mesa.toString());
         }
     }
 

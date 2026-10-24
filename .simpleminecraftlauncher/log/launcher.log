@@ -172,3 +172,9 @@
 10:36:14.388 [pool-3-thread-1] INFO  Logger-Plugin - [10:36:14] [Server thread/INFO]: Saving chunks for level 'ServerLevel[新的世界]'/minecraft:the_end
 10:36:14.393 [pool-3-thread-1] INFO  Logger-Plugin - [10:36:14] [Server thread/INFO]: Saving chunks for level 'ServerLevel[新的世界]'/minecraft:the_nether
 10:37:29.244 [pool-3-thread-1] INFO  Logger-Plugin - [10:37:29] [Render thread/INFO]: Stopping!
+10:47:10.424 [main] INFO  Logger-Plugin - Downloader plugin started
+10:47:10.432 [main] INFO  Logger-Plugin - Test Logger info
+10:47:10.432 [main] WARN  Logger-Plugin - warn...
+10:47:10.432 [main] ERROR Logger-Plugin - error!
+10:47:10.433 [main] FATAL Logger-Plugin - FATal...
+10:47:10.477 [main] ERROR Logger-Plugin - L
