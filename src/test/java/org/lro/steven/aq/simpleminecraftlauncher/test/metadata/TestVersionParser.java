@@ -81,10 +81,10 @@ public class TestVersionParser {
         Files.createFile(osxJar);
 
         Library linuxLibrary = new Library("g:a:1.0",
-                new Library.Downloads(new Artifact("g/a/1.0/a-1.0.jar", "x", 1, null, null), Map.of()),
+                new Library.Downloads(new Artifact("g/a/1.0/a-1.0.jar", "x", 1, null, null), null),
                 null, null, null);
         Library osxLibrary = new Library("osx:only:1",
-                new Library.Downloads(new Artifact("osx/only/1/only-1.jar", "x", 1, null, null), Map.of()),
+                new Library.Downloads(new Artifact("osx/only/1/only-1.jar", "x", 1, null, null), null),
                 List.of(new Rule(Action.ALLOW, new Rule.Os(OperatingSystem.OSX, null), null)),
                 null, null);
 
@@ -98,5 +98,59 @@ public class TestVersionParser {
         assertTrue(classpath.contains(clientJar.toString()), classpath);
         assertTrue(classpath.contains(linuxJar.toString()), classpath);
         assertFalse(classpath.contains(osxJar.toString()), classpath);
+    }
+
+    @Test
+    public void parsesLibraryNativesObject() {
+        String json = """
+                {
+                  "id": "test",
+                  "mainClass": "com.example.Main",
+                  "arguments": {"game": []},
+                  "libraries": [
+                    {
+                      "name": "org.lwjgl:lwjgl:3.3.3",
+                      "downloads": {
+                        "artifact": {
+                          "path": "org/lwjgl/lwjgl/3.3.3/lwjgl-3.3.3.jar",
+                          "url": "https://example.com/lwjgl.jar",
+                          "sha1": "x",
+                          "size": 1
+                        }
+                      },
+                      "natives": {"linux": "natives-linux", "windows": "natives-windows"}
+                    }
+                  ]
+                }
+                """;
+
+        Command command = Command.create();
+        command.add("java");
+        Parser parser = Parser.create(json, Configuration.create(), Features.create(Map.of()));
+        String line = parser.parse(command).getAsString();
+
+        assertTrue(line.contains("com.example.Main"), line);
+    }
+
+    @Test
+    public void parsesArgumentWithSingleStringValue() {
+        String json = """
+                {
+                  "id": "test",
+                  "mainClass": "com.example.Main",
+                  "arguments": {
+                    "game": [
+                      {"value": "--demo"}
+                    ]
+                  }
+                }
+                """;
+
+        Command command = Command.create();
+        command.add("java");
+        Parser parser = Parser.create(json, Configuration.create(), Features.create(Map.of()));
+        String line = parser.parse(command).getAsString();
+
+        assertTrue(line.contains("--demo"), line);
     }
 }

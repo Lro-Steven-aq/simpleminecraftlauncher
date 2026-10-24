@@ -52,12 +52,28 @@ public class ArgumentDeserializer implements JsonDeserializer<Argument> {
     }
 
     private Argument fromObject(JsonObject object, JsonDeserializationContext context) {
-        List<Rule> rules = object.has("rules")
-                ? context.deserialize(object.get("rules"), RULE_LIST)
-                : null;
-        List<String> value = object.has("value")
-                ? context.deserialize(object.get("value"), STRING_LIST)
-                : List.of();
-        return new Argument(rules, value);
+        return new Argument(readRules(object, context), readValue(object, context));
+    }
+
+    private List<Rule> readRules(JsonObject object, JsonDeserializationContext context) {
+        if (!object.has("rules")) {
+            return null;
+        }
+        JsonElement rules = object.get("rules");
+        if (rules.isJsonObject()) {
+            return List.of(context.deserialize(rules, Rule.class));
+        }
+        return context.deserialize(rules, RULE_LIST);
+    }
+
+    private List<String> readValue(JsonObject object, JsonDeserializationContext context) {
+        if (!object.has("value")) {
+            return List.of();
+        }
+        JsonElement value = object.get("value");
+        if (value.isJsonPrimitive()) {
+            return List.of(value.getAsString());
+        }
+        return context.deserialize(value, STRING_LIST);
     }
 }

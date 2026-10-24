@@ -34,6 +34,7 @@ module org.lro.steven.aq.simpleminecraftlauncher {
     exports org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event;
     exports org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.impl;
     exports org.lro.steven.aq.simpleminecraftlauncher.plugin.api.signalbus;
+    exports org.lro.steven.aq.simpleminecraftlauncher.plugin.api.downloader;
 
     opens org.lro.steven.aq.simpleminecraftlauncher;
     opens org.lro.steven.aq.simpleminecraftlauncher.plugin;

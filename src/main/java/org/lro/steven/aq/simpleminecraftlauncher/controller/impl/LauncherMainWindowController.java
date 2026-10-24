@@ -195,8 +195,33 @@ public class LauncherMainWindowController extends Controller {
         String jsonPath = selectedVersionJsonPath(settings);
         if (jsonPath == null) {
             installVersionAndLaunch();
-        } else {
-            executeLaunch(jsonPath, command);
+            return;
+        }
+        String missingVersion = missingClientJarVersion(jsonPath);
+        if (missingVersion != null) {
+            startInstall(missingVersion);
+            return;
+        }
+        executeLaunch(jsonPath, command);
+    }
+
+    private String missingClientJarVersion(String jsonPath) {
+        try {
+            GameMetadataManifest manifest = Json.GSON.fromJson(
+                    Files.readString(Path.of(jsonPath)), GameMetadataManifest.class);
+            if (manifest == null || manifest.id() == null) {
+                return null;
+            }
+            Path gameDirectory = GameDirectory.resolve(metadata.configurationMapper());
+            Path versionDirectory = GameDirectory.versionDirectory(gameDirectory, manifest.id());
+            String jarName = manifest.jar() != null && !manifest.jar().isBlank()
+                    ? manifest.jar()
+                    : manifest.id();
+            return Files.isRegularFile(versionDirectory.resolve(jarName + ".jar"))
+                    ? null
+                    : manifest.id();
+        } catch (IOException | RuntimeException e) {
+            return null;
         }
     }
 

@@ -16,6 +16,9 @@
  */
 package org.lro.steven.aq.simpleminecraftlauncher.version.impl;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -37,21 +40,24 @@ import org.lro.steven.aq.simpleminecraftlauncher.metadata.game.versionmanifest.V
 import org.lro.steven.aq.simpleminecraftlauncher.metadata.game.versionmanifest.VersionManifest;
 import org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.conf.ApplicationConfiguration;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.PluginManager;
+import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.impl.DownloadEvent;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.impl.LogEvent;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.signalbus.SignalBus;
 import org.lro.steven.aq.simpleminecraftlauncher.version.VersionManager;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
-import java.nio.file.OpenOption;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-import java.nio.file.StandardOpenOption;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -63,6 +69,7 @@ public class DefaultImplementationVersionManager implements VersionManager {
     private static final SignalBus SIGNAL_BUS = PluginManager.get().getSignalBus();
     private static final OkHttpClient HTTP_CLIENT = new OkHttpClient();
     private static final int JAVA_RUNTIME_FEATURE = 25;
+    private static final String ASSET_BASE_URL = "https://resources.download.minecraft.net/";
 
     private final WebURL versionManifestUrl;
     private final ApplicationConfiguration configuration;
@@ -114,21 +121,23 @@ public class DefaultImplementationVersionManager implements VersionManager {
         if (cachedManifest != null) {
             return cachedManifest;
         }
-        try (Response response = execute(versionManifestUrl.toString())) {
-            cachedManifest = readManifest(response);
+        DownloadEvent event = DownloadEvent.of(versionManifestUrl.toString());
+        PluginManager.get().getSignalBus().emit("download.read", event);
+        if (!event.handled()) {
+            SIGNAL_BUS.emit("log.error", LogEvent.of("Downloader plugin is not loaded"));
+            return null;
+        }
+        if (event.error() != null) {
+            SIGNAL_BUS.emit("log.error", LogEvent.of("Can't download version manifest: " + event.error().getMessage()));
+            return null;
+        }
+        try {
+            cachedManifest = Json.GSON.fromJson(event.content(), VersionManifest.class);
             return cachedManifest;
-        } catch (IOException | RuntimeException e) {
+        } catch (RuntimeException e) {
             SIGNAL_BUS.emit("log.error", LogEvent.of("Can't download version manifest: " + e.getMessage()));
             return null;
         }
-    }
-
-    private VersionManifest readManifest(Response response) throws IOException {
-        if (!response.isSuccessful() || response.body() == null) {
-            SIGNAL_BUS.emit("log.error", LogEvent.of("Can't download version manifest: HTTP " + response.code()));
-            return null;
-        }
-        return Json.GSON.fromJson(response.body().string(), VersionManifest.class);
     }
 
     @Override
@@ -159,8 +168,6 @@ public class DefaultImplementationVersionManager implements VersionManager {
 
     private static void logInstalled(String version) {
         SIGNAL_BUS.emit("log.info", LogEvent.of("Version installed: " + version));
-        SIGNAL_BUS.emit("log.warn", LogEvent.of(
-                "Asset objects are not downloaded; run the official launcher once if textures/sounds are missing."));
     }
 
     private boolean canInstall(String version) {
@@ -202,6 +209,7 @@ public class DefaultImplementationVersionManager implements VersionManager {
         downloadClientJar(versionDirectory, version, metadata);
         downloadLibraries(gameDirectory, metadata);
         downloadAssetIndex(gameDirectory, metadata);
+        downloadAssetObjects(gameDirectory, metadata);
     }
 
     private void saveInstalledVersion(Path jsonFile) {
@@ -283,6 +291,68 @@ public class DefaultImplementationVersionManager implements VersionManager {
         }
     }
 
+    private void downloadAssetObjects(Path gameDirectory, GameMetadataManifest metadata) {
+        if (metadata == null || metadata.assetIndex() == null || metadata.assetIndex().id() == null) {
+            return;
+        }
+        Path indexFile = GameDirectory.assetsDirectory(gameDirectory)
+                .resolve("indexes")
+                .resolve(metadata.assetIndex().id() + ".json");
+        if (!Files.isRegularFile(indexFile)) {
+            return;
+        }
+        try {
+            JsonObject root = JsonParser.parseString(Files.readString(indexFile)).getAsJsonObject();
+            JsonObject objects = root.getAsJsonObject("objects");
+            if (objects != null && !objects.isEmpty()) {
+                downloadObjects(GameDirectory.assetsDirectory(gameDirectory).resolve("objects"), objects);
+            }
+        } catch (IOException | RuntimeException e) {
+            SIGNAL_BUS.emit("log.warn", LogEvent.of("Can't read asset index: " + e.getMessage()));
+        }
+    }
+
+    private void downloadObjects(Path objectsDirectory, JsonObject objects) {
+        Set<String> hashes = new LinkedHashSet<>();
+        for (Map.Entry<String, JsonElement> entry : objects.entrySet()) {
+            JsonObject object = entry.getValue().getAsJsonObject();
+            if (object.has("hash")) {
+                hashes.add(object.get("hash").getAsString());
+            }
+        }
+        AtomicInteger completed = new AtomicInteger();
+        AtomicInteger failed = new AtomicInteger();
+        ExecutorService executor = Executors.newFixedThreadPool(8);
+        for (String hash : hashes) {
+            executor.submit(() -> downloadAssetObject(objectsDirectory, hash, completed, failed, hashes.size()));
+        }
+        executor.shutdown();
+        try {
+            executor.awaitTermination(30, TimeUnit.MINUTES);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        SIGNAL_BUS.emit("log.info", LogEvent.of("Assets ready: %d/%d (failed %d)"
+                .formatted(completed.get(), hashes.size(), failed.get())));
+    }
+
+    private void downloadAssetObject(Path objectsDirectory, String hash,
+                                     AtomicInteger completed, AtomicInteger failed, int total) {
+        try {
+            Path target = objectsDirectory.resolve(hash.substring(0, 2)).resolve(hash);
+            if (!Files.isRegularFile(target)) {
+                download(ASSET_BASE_URL + hash.substring(0, 2) + "/" + hash, target);
+            }
+            int count = completed.incrementAndGet();
+            if (count % 500 == 0) {
+                SIGNAL_BUS.emit("log.info", LogEvent.of("Assets: " + count + "/" + total));
+            }
+        } catch (IOException | RuntimeException e) {
+            failed.incrementAndGet();
+            SIGNAL_BUS.emit("log.warn", LogEvent.of("Can't download asset %s: %s".formatted(hash, e.getMessage())));
+        }
+    }
+
     @Override
     public void enqueue(Callback callback) {
         Request request = new Request.Builder().url(versionManifestUrl.toString()).build();
@@ -340,7 +410,7 @@ public class DefaultImplementationVersionManager implements VersionManager {
     private Path downloadAndExtractRuntime(Path targetDirectory, Path runtimeDirectory) throws Exception {
         boolean windows = OperatingSystem.getOs() == OperatingSystem.WINDOWS;
         Path archive = targetDirectory.resolve("java-runtime." + (windows ? "zip" : "tar.gz"));
-        downloadResumable(javaRuntimeUrl(), archive);
+        download(javaRuntimeUrl(), archive);
         if (windows) {
             unzip(archive, runtimeDirectory);
         } else {
@@ -369,146 +439,12 @@ public class DefaultImplementationVersionManager implements VersionManager {
         if (url == null || url.isBlank()) {
             return;
         }
-        if (Files.isRegularFile(target) && Files.size(target) > 0) {
-            return;
+        DownloadEvent event = DownloadEvent.of(url, target);
+        PluginManager.get().getSignalBus().emit("download.file", event);
+        if (!event.handled()) {
+            throw new IOException("Downloader plugin is not loaded");
         }
-        try (Response response = execute(url)) {
-            writeBody(response, target);
-        }
-    }
-
-    private static void writeBody(Response response, Path target) throws IOException {
-        if (!response.isSuccessful() || response.body() == null) {
-            throw new IOException("HTTP " + response.code());
-        }
-        Files.createDirectories(target.getParent());
-        try (InputStream input = response.body().byteStream()) {
-            Files.copy(input, target, StandardCopyOption.REPLACE_EXISTING);
-        }
-    }
-
-    private static Response execute(String url) throws IOException {
-        Request request = new Request.Builder().url(url).build();
-        return HTTP_CLIENT.newCall(request).execute();
-    }
-
-    /**
-     * 支持断点续传的下载：先写入 .part，完成后再移动到目标文件。
-     * <br/>
-     * 如果之前的 .part 已存在，会带 Range 头从已有字节处继续。
-     */
-    private void downloadResumable(String url, Path target) throws IOException {
-        if (Files.isRegularFile(target) && Files.size(target) > 0) {
-            return;
-        }
-        downloadResumable(url, target, false);
-    }
-
-    private void downloadResumable(String url, Path target, boolean restarted) throws IOException {
-        Path part = partFile(target);
-        long existing = sizeOf(part);
-        try (Response response = requestWithRange(url, existing)) {
-            if (response.code() == 416) {
-                handleUnsatisfiableRange(url, target, part, response, restarted);
-                return;
-            }
-            downloadIntoPart(response, part, target, existing, url);
-        }
-    }
-
-    private void handleUnsatisfiableRange(String url, Path target, Path part, Response response, boolean restarted)
-            throws IOException {
-        if (moveIfComplete(part, target, response)) {
-            return;
-        }
-        Files.deleteIfExists(part);
-        if (restarted) {
-            throw new IOException("Server rejected range request: " + url);
-        }
-        downloadResumable(url, target, true);
-    }
-
-    private static void downloadIntoPart(Response response, Path part, Path target, long existing, String url)
-            throws IOException {
-        if (!response.isSuccessful() || response.body() == null) {
-            throw new IOException("HTTP " + response.code() + " for " + url);
-        }
-        boolean append = response.code() == 206;
-        if (!append) {
-            Files.deleteIfExists(part);
-            existing = 0;
-        }
-        appendBody(response, part, append);
-        verifyComplete(part, response, existing);
-        Files.move(part, target, StandardCopyOption.REPLACE_EXISTING);
-    }
-
-    private static Response requestWithRange(String url, long existing) throws IOException {
-        Request.Builder builder = new Request.Builder().url(url);
-        if (existing > 0) {
-            builder.header("Range", "bytes=" + existing + "-");
-        }
-        return HTTP_CLIENT.newCall(builder.build()).execute();
-    }
-
-    private static void appendBody(Response response, Path part, boolean append) throws IOException {
-        Files.createDirectories(part.getParent());
-        OpenOption[] options = append
-                ? new OpenOption[]{StandardOpenOption.CREATE, StandardOpenOption.APPEND}
-                : new OpenOption[]{StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING};
-        try (InputStream input = response.body().byteStream();
-             OutputStream output = Files.newOutputStream(part, options)) {
-            input.transferTo(output);
-        }
-    }
-
-    private static void verifyComplete(Path part, Response response, long existing) throws IOException {
-        long total = totalSize(response, existing);
-        if (total > 0 && Files.size(part) < total) {
-            throw new IOException("Incomplete download: " + Files.size(part) + "/" + total);
-        }
-    }
-
-    private static long totalSize(Response response, long existing) {
-        long total = contentRangeTotal(response.header("Content-Range"));
-        if (total > 0) {
-            return total;
-        }
-        String contentLength = response.header("Content-Length");
-        return contentLength == null ? 0 : existing + parseLong(contentLength);
-    }
-
-    private static long contentRangeTotal(String header) {
-        if (header == null) {
-            return 0;
-        }
-        int slash = header.lastIndexOf('/');
-        return slash < 0 ? 0 : parseLong(header.substring(slash + 1));
-    }
-
-    private static long parseLong(String value) {
-        try {
-            return Long.parseLong(value.trim());
-        } catch (NumberFormatException e) {
-            return 0;
-        }
-    }
-
-    private static boolean moveIfComplete(Path part, Path target, Response response) throws IOException {
-        long total = contentRangeTotal(response.header("Content-Range"));
-        if (total > 0 && Files.isRegularFile(part) && Files.size(part) == total) {
-            Files.move(part, target, StandardCopyOption.REPLACE_EXISTING);
-            return true;
-        }
-        return false;
-    }
-
-    private static Path partFile(Path target) {
-        return target.resolveSibling(target.getFileName() + ".part");
-    }
-
-    private static long sizeOf(Path path) throws IOException {
-        return Files.isRegularFile(path) ? Files.size(path) : 0;
+        event.throwIfFailed();
     }
 
     private static void untar(Path archive, Path target) throws IOException, InterruptedException {

@@ -18,9 +18,9 @@ package org.lro.steven.aq.simpleminecraftlauncher.metadata.game.version;
 
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.Nullable;
+import org.lro.steven.aq.simpleminecraftlauncher.metadata.game.OperatingSystem;
 
 import java.util.List;
-import java.util.Map;
 
 /** 版本依赖库。 */
 public record Library(
@@ -30,7 +30,7 @@ public record Library(
 
         Downloads downloads,
         List<Rule> rules,
-        List<String> natives,
+        Natives natives,
 
         @Nullable
         Extract extract
@@ -41,7 +41,36 @@ public record Library(
                 @Nullable
                 Artifact artifact,
 
-                Map<String, Artifact> classifiers
+                Classifiers classifiers
         ) {
+        }
+
+        /** 依赖库的原生库分类器，按操作系统区分。 */
+        public record Classifiers(
+                @SerializedName("natives-linux") @Nullable Artifact linux,
+                @SerializedName("natives-osx") @Nullable Artifact osx,
+                @SerializedName("natives-windows") @Nullable Artifact windows
+        ) {
+        }
+
+        /** 依赖库的原生库名称，按操作系统区分。 */
+        public record Natives(
+                @SerializedName("linux") String linux,
+                @SerializedName("osx") String osx,
+                @SerializedName("windows") String windows
+        ) {
+                /**
+                 * 返回指定操作系统对应的原生库名称。
+                 * @param os 操作系统
+                 * @return 原生库名称；没有时返回 null
+                 */
+                public String forOs(OperatingSystem os) {
+                        return switch (os) {
+                                case LINUX -> linux;
+                                case OSX -> osx;
+                                case WINDOWS -> windows;
+                                case null -> null;
+                        };
+                }
         }
 }
