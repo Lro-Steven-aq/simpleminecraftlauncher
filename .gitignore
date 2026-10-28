@@ -1,4 +1,4 @@
-plugins/
+.simpleminecraftlauncher/plugins/
 .simpleminecraftlauncher/log/
 target/
 !.mvn/wrapper/maven-wrapper.jar

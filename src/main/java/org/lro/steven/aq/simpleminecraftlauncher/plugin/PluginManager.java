@@ -50,7 +50,7 @@ public class PluginManager {
     private boolean started;
     private static PluginManager manager = null;
 
-    public final static String PLUGIN_PATH = "plugins";
+    public final static String PLUGIN_PATH = ".simpleminecraft/plugins";
 
     /**
      * 唯一示例化。
