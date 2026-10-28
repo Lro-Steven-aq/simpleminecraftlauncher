@@ -13,6 +13,13 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * Plugin Exception:
+ * Plugins that use the package org.lro.steven.aq.simpleminecraftlauncher.plugin.api
+ * and its subpackages, together with the JAR files they call, are not required
+ * to be licensed under the GPLv3 and may be distributed under any license
+ * terms. See the LICENSE file ("SimpleMinecraftLauncher Plugin Exception")
+ * for the full definition and conditions.
  */
 package org.lro.steven.aq.simpleminecraftlauncher.json.configuaration;
 
@@ -57,7 +64,6 @@ public interface Parser {
     /**
      * 按照给定的配置来解析而忽略已经设置的配置来解析.
      * <br/>
-     * 如果需要使用已设置的配置，请使用{@link #parse()}<br/>
      * 注意：不覆盖字段，只是不使用字段的configuration。<br/>
      * @param configuration 配置
      * @return 配置结束的命令
@@ -67,6 +73,7 @@ public interface Parser {
     /**
      * 使用已有的配置解析，返回一个可执行的命令.
      * <br>
+     * 其内部委托于{@link #parse(Command, Configuration)}
      * @return 配置好的命令
      */
     Command parse(Command command);

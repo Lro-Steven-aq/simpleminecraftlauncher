@@ -13,6 +13,13 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * Plugin Exception:
+ * Plugins that use the package org.lro.steven.aq.simpleminecraftlauncher.plugin.api
+ * and its subpackages, together with the JAR files they call, are not required
+ * to be licensed under the GPLv3 and may be distributed under any license
+ * terms. See the LICENSE file ("SimpleMinecraftLauncher Plugin Exception")
+ * for the full definition and conditions.
  */
 /**
  * 这里真的是太糟糕了。
