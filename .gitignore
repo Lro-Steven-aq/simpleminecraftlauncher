@@ -1,9 +1,12 @@
-plugins/
+.simpleminecraftlauncher/plugins/
 .simpleminecraftlauncher/log/
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+.minecraft/
+logs/
+.simpleminecraftlauncher/configurations.json
 .kotlin
 
 ### IntelliJ IDEA ###
@@ -11,6 +14,7 @@ target/
 .idea/jarRepositories.xml
 .idea/compiler.xml
 .idea/libraries/
+.idea/inspectionProfiles/
 *.iws
 *.iml
 *.ipr

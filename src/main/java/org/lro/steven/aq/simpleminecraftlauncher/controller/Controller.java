@@ -13,8 +13,17 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * Plugin Exception:
+ * Plugins that use the package org.lro.steven.aq.simpleminecraftlauncher.plugin.api
+ * and its subpackages, together with the JAR files they call, are not required
+ * to be licensed under the GPLv3 and may be distributed under any license
+ * terms. See the LICENSE file ("SimpleMinecraftLauncher Plugin Exception")
+ * for the full definition and conditions.
  */
 package org.lro.steven.aq.simpleminecraftlauncher.controller;
+
+import javafx.fxml.Initializable;
 
 /**
  * 这是一个给图形界面的Controller的父类。
@@ -23,5 +32,5 @@ package org.lro.steven.aq.simpleminecraftlauncher.controller;
  * 而且考虑到接口并不合适（以后可能会涉及default方法和字段）
  * @author Lro.Steven.aq
  */
-public abstract class Controller {
+public abstract class Controller implements Initializable {
 }

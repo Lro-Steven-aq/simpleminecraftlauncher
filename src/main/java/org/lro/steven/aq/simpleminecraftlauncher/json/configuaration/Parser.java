@@ -13,24 +13,38 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * Plugin Exception:
+ * Plugins that use the package org.lro.steven.aq.simpleminecraftlauncher.plugin.api
+ * and its subpackages, together with the JAR files they call, are not required
+ * to be licensed under the GPLv3 and may be distributed under any license
+ * terms. See the LICENSE file ("SimpleMinecraftLauncher Plugin Exception")
+ * for the full definition and conditions.
  */
-package org.lro.steven.aq.simpleminecraftlauncher.configuaration;
+package org.lro.steven.aq.simpleminecraftlauncher.json.configuaration;
 
-import org.lro.steven.aq.simpleminecraftlauncher.configuaration.impl.DefaultImplementationParser;
+import org.lro.steven.aq.simpleminecraftlauncher.json.configuaration.impl.DefaultImplementationJsonParser;
 
 /**
  * Parser类是用于解析参数json的接口.
  * <br/>
  * 所有适于解析的类都应该实现它。<br>
- * 关于其parse返回值 {@link org.lro.steven.aq.simpleminecraftlauncher.configuaration.Command}
+ * 关于其parse返回值 {@link Command}
  * @author Lro.Steven.aq
  * @since 0.1
  *
  */
 public interface Parser {
 
+    /**
+     * 创建版本 JSON 参数解析器。
+     * @param jsonRawContent 版本 JSON 文本
+     * @param configuration 参数配置
+     * @param features features 开关
+     * @return 解析器
+     */
     static Parser create(String jsonRawContent, Configuration configuration, Features features) {
-        return new DefaultImplementationParser(jsonRawContent, configuration, features);
+        return new DefaultImplementationJsonParser(jsonRawContent, configuration, features);
     }
 
     /**
@@ -50,17 +64,17 @@ public interface Parser {
     /**
      * 按照给定的配置来解析而忽略已经设置的配置来解析.
      * <br/>
-     * 如果需要使用已设置的配置，请使用{@link #parse()}<br/>
      * 注意：不覆盖字段，只是不使用字段的configuration。<br/>
      * @param configuration 配置
      * @return 配置结束的命令
      */
-    Command parse(Configuration configuration);
+    Command parse(Command command, Configuration configuration);
 
     /**
      * 使用已有的配置解析，返回一个可执行的命令.
      * <br>
+     * 其内部委托于{@link #parse(Command, Configuration)}
      * @return 配置好的命令
      */
-    Command parse();
+    Command parse(Command command);
 }

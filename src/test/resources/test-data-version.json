@@ -1,0 +1,40 @@
+{
+  "id": "test-version",
+  "jar": "test-version",
+  "mainClass": "com.example.Main",
+  "type": "release",
+  "assetIndex": {
+    "id": "1",
+    "sha1": "x",
+    "size": 1,
+    "totalSize": 1,
+    "url": "https://example.com/1.json"
+  },
+  "arguments": {
+    "jvm": [
+      "-Djava.library.path=${natives_directory}",
+      "-cp",
+      "${classpath}"
+    ],
+    "game": [
+      "--username",
+      "${auth_player_name}",
+      "--version",
+      "${version_name}",
+      {
+        "rules": [
+          {
+            "action": "allow",
+            "features": {
+              "is_demo_user": true
+            }
+          }
+        ],
+        "value": [
+          "--demo"
+        ]
+      }
+    ]
+  },
+  "libraries": []
+}

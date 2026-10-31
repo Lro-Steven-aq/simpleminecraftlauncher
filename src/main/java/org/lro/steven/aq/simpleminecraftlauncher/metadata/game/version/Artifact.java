@@ -13,12 +13,20 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * Plugin Exception:
+ * Plugins that use the package org.lro.steven.aq.simpleminecraftlauncher.plugin.api
+ * and its subpackages, together with the JAR files they call, are not required
+ * to be licensed under the GPLv3 and may be distributed under any license
+ * terms. See the LICENSE file ("SimpleMinecraftLauncher Plugin Exception")
+ * for the full definition and conditions.
  */
 package org.lro.steven.aq.simpleminecraftlauncher.metadata.game.version;
 
 import org.glavo.url.WebURL;
 import org.jetbrains.annotations.Nullable;
 
+/** 可下载文件的路径、哈希、大小和 URL。 */
 public record Artifact(
         String path,
         String sha1,

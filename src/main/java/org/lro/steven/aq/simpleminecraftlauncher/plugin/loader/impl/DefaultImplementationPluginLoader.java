@@ -13,6 +13,13 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * Plugin Exception:
+ * Plugins that use the package org.lro.steven.aq.simpleminecraftlauncher.plugin.api
+ * and its subpackages, together with the JAR files they call, are not required
+ * to be licensed under the GPLv3 and may be distributed under any license
+ * terms. See the LICENSE file ("SimpleMinecraftLauncher Plugin Exception")
+ * for the full definition and conditions.
  */
 package org.lro.steven.aq.simpleminecraftlauncher.plugin.loader.impl;
 
@@ -27,8 +34,8 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 实现加载。
@@ -38,8 +45,11 @@ import java.util.Map;
 public class DefaultImplementationPluginLoader implements PluginLoader {
     private final Map<String, ClassLoader> loaderMap;
 
+    /**
+     * 创建插件加载器。
+     */
     public DefaultImplementationPluginLoader() {
-        this.loaderMap = new HashMap<>();
+        this.loaderMap = new ConcurrentHashMap<>();
     }
 
     @Override
@@ -83,5 +93,6 @@ public class DefaultImplementationPluginLoader implements PluginLoader {
                 ploader.close();
             }
         }
+        loaderMap.clear();
     }
 }

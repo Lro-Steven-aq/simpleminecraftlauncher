@@ -672,3 +672,76 @@ may consider it more useful to permit linking proprietary applications with
 the library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.  But first, please read
 <http://www.gnu.org/philosophy/why-not-lgpl.html>.
+
+================================================================================
+SimpleMinecraftLauncher Plugin Exception
+Version 1.0
+================================================================================
+
+As a special exception, the copyright holders of SimpleMinecraftLauncher
+(the "Program") grant you the additional permission described below, under
+Section 7 of the GNU General Public License version 3 (the "GPLv3").
+
+1. Definitions
+
+   "Plugin API" means the package
+   org.lro.steven.aq.simpleminecraftlauncher.plugin.api and each of its
+   subpackages, including the public interfaces, classes, annotations, and
+   documentation contained in those packages, as exposed by the Program for
+   developing Plugins.
+
+   "Plugin" means a program that:
+
+     (a) uses the Plugin API, including by importing, compiling against,
+         linking to, or calling the Plugin API; and
+
+     (b) is distributed as, or together with, the JAR file or JAR files that
+         the program calls or requires at runtime, including the JAR file
+         loaded by the Program through its plugin loading mechanism and any
+         dependency JAR files bundled with, or called by, that program.
+
+   A Plugin includes the JAR files described in (b). A Plugin does not
+   include the Program itself, any modified version of the Program, or any
+   code that is part of the Program. A program that does not meet this
+   definition is not a Plugin and does not receive the permission in
+   Section 2.
+
+2. Additional permission
+
+   You may use the Plugin API to develop, compile, link, load, and run
+   Plugins. You may combine the Program with Plugins and distribute the
+   resulting combination, and you may distribute Plugins under any license
+   terms you choose, including proprietary terms, without those Plugins
+   being required to be licensed under the GPLv3.
+
+   For the avoidance of doubt, the permission in this Section covers the
+   Plugin and the JAR files described in Section 1(b), including dependency
+   JAR files that the Plugin calls at runtime.
+
+   This permission applies only to Plugins and to the act of combining them
+   with the Program. It does not apply to the Program itself, to modified
+   versions of the Program, or to any code that is part of the Program.
+   The Program and modified versions of it remain governed by the GPLv3.
+
+3. Relationship to the GPLv3
+
+   This exception is an additional permission under Section 7 of the GPLv3.
+   It does not alter the GPLv3 except as expressly stated. If you
+   redistribute the Program, you may keep or remove this exception; however,
+   if you remove it, you may not rely on it for any combination of the
+   Program with Plugins. The copyright holders do not require a Plugin to
+   be licensed under the GPLv3 solely because it uses the Plugin API or is
+   loaded by the Program.
+
+4. No warranty; trust your plugins
+
+   Plugins are separate executable code and are not reviewed, endorsed,
+   certified, or supported by the copyright holders of the Program. The
+   Program provides no warranty of any kind for Plugins. Plugins can read,
+   modify, or delete your data, execute arbitrary code with your user
+   permissions, and contact the network. Only install and run Plugins from
+   sources you trust. You are solely responsible for the Plugins you choose
+   to use and for any consequences of running them.
+
+This exception is not legal advice. If you intend to rely on it for a
+commercial distribution, consult a qualified lawyer.

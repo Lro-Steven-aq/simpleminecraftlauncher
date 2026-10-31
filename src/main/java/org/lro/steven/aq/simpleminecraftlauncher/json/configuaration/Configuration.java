@@ -13,25 +13,50 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * Plugin Exception:
+ * Plugins that use the package org.lro.steven.aq.simpleminecraftlauncher.plugin.api
+ * and its subpackages, together with the JAR files they call, are not required
+ * to be licensed under the GPLv3 and may be distributed under any license
+ * terms. See the LICENSE file ("SimpleMinecraftLauncher Plugin Exception")
+ * for the full definition and conditions.
  */
-package org.lro.steven.aq.simpleminecraftlauncher.configuaration;
+package org.lro.steven.aq.simpleminecraftlauncher.json.configuaration;
 
-import org.lro.steven.aq.simpleminecraftlauncher.configuaration.impl.DefaultImplementationConfiguration;
+import org.lro.steven.aq.simpleminecraftlauncher.json.configuaration.impl.DefaultImplementationJsonConfiguration;
 
+import java.io.File;
 import java.util.Map;
 
 /**
- * 处理配置的json的 变量引用 "${abc}"
+ * 对于json解析的配置.
  * <br/>
+ * 其实就是一一对应.
  * 比如：${classpath}<br>
  * 其本质就是一个 Map，这是在内部维护的。
  * @author Lro.Steven.aq
  * @since 0.1
  */
 public interface Configuration {
+    /**
+     * 创建参数配置表。
+     * @return 配置表
+     */
     static Configuration create() {
-        return new DefaultImplementationConfiguration();
+        return new DefaultImplementationJsonConfiguration();
     }
+
+    /**
+     * 字符串加载配置.
+     * @param string 配置字符串
+     */
+    default void load(String string) {}
+
+    /**
+     * 文件加载配置.
+     * @param file 配置字符串
+     */
+    default void load(File file) {}
 
     /**
      * 获取Configuration内部的表.

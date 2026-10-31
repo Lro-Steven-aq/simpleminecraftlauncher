@@ -13,6 +13,13 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * Plugin Exception:
+ * Plugins that use the package org.lro.steven.aq.simpleminecraftlauncher.plugin.api
+ * and its subpackages, together with the JAR files they call, are not required
+ * to be licensed under the GPLv3 and may be distributed under any license
+ * terms. See the LICENSE file ("SimpleMinecraftLauncher Plugin Exception")
+ * for the full definition and conditions.
  */
 module org.lro.steven.aq.simpleminecraftlauncher {
     requires javafx.controls;
@@ -20,10 +27,12 @@ module org.lro.steven.aq.simpleminecraftlauncher {
     requires org.glavo.url;
     requires com.google.gson;
     requires org.jetbrains.annotations;
+    requires org.apache.commons.io;
+    requires okhttp3;
 
     // ui
-    opens org.lro.steven.aq.simpleminecraftlauncher.controller to javafx.fxml;
-    exports org.lro.steven.aq.simpleminecraftlauncher.controller to javafx.graphics;
+    opens org.lro.steven.aq.simpleminecraftlauncher.controller.impl to javafx.fxml;
+    exports org.lro.steven.aq.simpleminecraftlauncher.controller.impl to javafx.graphics;
 
     // for plugin-system.
     exports org.lro.steven.aq.simpleminecraftlauncher;
@@ -32,6 +41,7 @@ module org.lro.steven.aq.simpleminecraftlauncher {
     exports org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event;
     exports org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.impl;
     exports org.lro.steven.aq.simpleminecraftlauncher.plugin.api.signalbus;
+    exports org.lro.steven.aq.simpleminecraftlauncher.plugin.api.downloader;
 
     opens org.lro.steven.aq.simpleminecraftlauncher;
     opens org.lro.steven.aq.simpleminecraftlauncher.plugin;
@@ -40,7 +50,14 @@ module org.lro.steven.aq.simpleminecraftlauncher {
     opens org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.impl;
     opens org.lro.steven.aq.simpleminecraftlauncher.plugin.api.signalbus;
 
-    exports org.lro.steven.aq.simpleminecraftlauncher.metadata.game to com.google.gson;
+    // for Gson
+    exports org.lro.steven.aq.simpleminecraftlauncher.metadata.game;
+    exports org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.conf to com.google.gson;
+    exports org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.conf.settings to com.google.gson;
     exports org.lro.steven.aq.simpleminecraftlauncher.metadata.game.version;
     exports org.lro.steven.aq.simpleminecraftlauncher.metadata.game.versionmanifest;
+    exports org.lro.steven.aq.simpleminecraftlauncher.json.configuaration;
+    exports org.lro.steven.aq.simpleminecraftlauncher.launch;
+    opens org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.conf to com.google.gson;
+    opens org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.conf.settings to com.google.gson;
 }

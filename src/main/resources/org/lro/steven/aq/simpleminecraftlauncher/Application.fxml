@@ -1,37 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.image.Image?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="577.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1">
+<Pane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="507.0" prefWidth="900.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.lro.steven.aq.simpleminecraftlauncher.controller.impl.LauncherMainWindowController">
+   <!--opacity="0.6"-->
    <children>
-      <ImageView fitHeight="577.0" fitWidth="900.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@background.jpg" />
-         </image>
-      </ImageView>
-      <AnchorPane layoutX="14.0" layoutY="14.0" prefHeight="200.0" prefWidth="873.0" />
-      <AnchorPane layoutX="14.0" layoutY="355.0" prefHeight="200.0" prefWidth="873.0">
+      <ImageView fx:id="backgroundImage" fitHeight="577.0" fitWidth="900.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="frostImage" fitHeight="577.0" fitWidth="900.0" pickOnBounds="false" preserveRatio="true" />
+      <AnchorPane id="rightPane" fx:id="rightPane" layoutX="489.0" prefHeight="507.0" prefWidth="411.0">
          <children>
-            <Button fx:id="launchButton" layoutX="664.0" layoutY="40.0" mnemonicParsing="false" prefHeight="141.0" prefWidth="199.0" text="启动" AnchorPane.bottomAnchor="19.0" AnchorPane.rightAnchor="10.0">
-               <font>
-                  <Font name="LXGW WenKai Mono" size="48.0" />
-               </font>
-            </Button>
+            <Button fx:id="launchButton" mnemonicParsing="false" prefHeight="141.0" prefWidth="199.0" text="launch!" AnchorPane.bottomAnchor="50.0" AnchorPane.rightAnchor="27.0" />
+            <ComboBox fx:id="versionSelector" layoutX="206.0" layoutY="288.0" prefHeight="28.0" prefWidth="176.0" promptText="Select your version" AnchorPane.bottomAnchor="191.0" AnchorPane.leftAnchor="206.0" />
          </children>
       </AnchorPane>
+      <Pane id="topBar" prefHeight="28.0" prefWidth="900.0">
+         <children>
+            <MenuBar fx:id="menuBar" prefHeight="28.0" prefWidth="900.0">
+              <menus>
+                <Menu mnemonicParsing="false" text="Quick Start">
+                  <items>
+                    <MenuItem mnemonicParsing="false" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Downloads">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Download New Version(s)" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                  <items>
+                        <MenuItem mnemonicParsing="false" text="Online Documents" />
+                    <MenuItem mnemonicParsing="false" text="About" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+            <ButtonBar layoutX="700.0" prefHeight="28.0" prefWidth="200.0">
+               <buttons>
+                  <Button fx:id="minimizeButton" mnemonicParsing="false" prefHeight="28.0" prefWidth="101.0" text="--">
+                     <font>
+                        <Font name="LXGW WenKai Mono" size="13.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="exitButton" mnemonicParsing="false" prefHeight="28.0" prefWidth="61.0" text="❌">
+                     <font>
+                        <Font name="LXGW WenKai Mono" size="13.0" />
+                     </font>
+                  </Button>
+               </buttons>
+            </ButtonBar>
+         </children>
+      </Pane>
    </children>
    <style>
       @font-face {
          font-family: "LXGWWenKaiMono-Regular";
          src: url("LXGWWenKaiMono-Regular.ttf");
       }
-      .label {
+      .* {
          -fx-font-family: "LXGWWenKaiMono-Regular";
       }
+       .Menu {
+           -fx-font-family: "LXGWWenKaiMono-Regular";
+       }
+       .MenuItem {
+           -fx-font-family: "LXGWWenKaiMono-Regular";
+       }
    </style>
 </Pane>

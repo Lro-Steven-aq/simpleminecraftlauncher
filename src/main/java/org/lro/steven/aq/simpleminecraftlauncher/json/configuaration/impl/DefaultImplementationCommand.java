@@ -13,11 +13,19 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * Plugin Exception:
+ * Plugins that use the package org.lro.steven.aq.simpleminecraftlauncher.plugin.api
+ * and its subpackages, together with the JAR files they call, are not required
+ * to be licensed under the GPLv3 and may be distributed under any license
+ * terms. See the LICENSE file ("SimpleMinecraftLauncher Plugin Exception")
+ * for the full definition and conditions.
  */
-package org.lro.steven.aq.simpleminecraftlauncher.configuaration.impl;
+package org.lro.steven.aq.simpleminecraftlauncher.json.configuaration.impl;
 
-import org.lro.steven.aq.simpleminecraftlauncher.configuaration.Command;
+import org.lro.steven.aq.simpleminecraftlauncher.json.configuaration.Command;
 import org.lro.steven.aq.simpleminecraftlauncher.internationalization.Internationalization;
+import org.lro.steven.aq.simpleminecraftlauncher.metadata.game.OperatingSystem;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.PluginManager;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.impl.LogEvent;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.impl.PopupEvent;
@@ -25,8 +33,11 @@ import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.signalbus.SignalBus;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -41,6 +52,9 @@ public class DefaultImplementationCommand implements Command {
     private List<String> command;
     private ExecutorService executor;
 
+    /**
+     * 创建一个命令构建器。
+     */
     public DefaultImplementationCommand() {
         command = new ArrayList<>();
         executor = Executors.newCachedThreadPool();
@@ -49,7 +63,9 @@ public class DefaultImplementationCommand implements Command {
     @Override
     public void execute() throws IOException, InterruptedException {
         SignalBus signalBus = PluginManager.get().getSignalBus();
-        try (Process process = new ProcessBuilder(command) .start()) {
+        ProcessBuilder builder = new ProcessBuilder(command);
+        applyLinuxDisplayWorkarounds(builder);
+        try (Process process = builder.start()) {
             // Get stdout.
             Process finalProcess = process; // 绕过限制
             CompletableFuture<Void> outputFuture = CompletableFuture.runAsync(() -> {
@@ -83,10 +99,32 @@ public class DefaultImplementationCommand implements Command {
                         PopupEvent.of(
                                 Internationalization.get("launch.error.title"),
                                 Internationalization.get("launch.error.head"),
-                                Internationalization.get("launch.error.content")
+                                Internationalization.get("launch.error.content"),
+                                () -> {},
+                                () -> {},
+                                () -> {}
                         )
                 ); // Use I18n
             }
+        }
+    }
+
+    /**
+     * Wayland 下 SDL 窗口没有标题栏和关闭/最小化按钮，强制使用 X11；
+     * 同时优先使用 Mesa EGL，规避部分 NVIDIA EGL 驱动崩溃。
+     * @param builder 游戏进程构建器
+     */
+    private static void applyLinuxDisplayWorkarounds(ProcessBuilder builder) {
+        if (OperatingSystem.getOs() != OperatingSystem.LINUX
+                || System.getenv("WAYLAND_DISPLAY") == null
+                || System.getenv("DISPLAY") == null) {
+            return;
+        }
+        Map<String, String> environment = builder.environment();
+        environment.putIfAbsent("SDL_VIDEODRIVER", "x11");
+        Path mesa = Path.of("/usr/share/glvnd/egl_vendor.d/50_mesa.json");
+        if (Files.isRegularFile(mesa)) {
+            environment.putIfAbsent("__EGL_VENDOR_LIBRARY_FILENAMES", mesa.toString());
         }
     }
 

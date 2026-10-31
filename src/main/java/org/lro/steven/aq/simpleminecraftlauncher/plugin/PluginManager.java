@@ -13,6 +13,13 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * Plugin Exception:
+ * Plugins that use the package org.lro.steven.aq.simpleminecraftlauncher.plugin.api
+ * and its subpackages, together with the JAR files they call, are not required
+ * to be licensed under the GPLv3 and may be distributed under any license
+ * terms. See the LICENSE file ("SimpleMinecraftLauncher Plugin Exception")
+ * for the full definition and conditions.
  */
 package org.lro.steven.aq.simpleminecraftlauncher.plugin;
 
@@ -50,7 +57,7 @@ public class PluginManager {
     private boolean started;
     private static PluginManager manager = null;
 
-    public final static String PLUGIN_PATH = "plugins";
+    public final static String PLUGIN_PATH = ".simpleminecraftlauncher/plugins";
 
     /**
      * 唯一示例化。
@@ -61,6 +68,10 @@ public class PluginManager {
         plugins = new ArrayList<>();
         pluginMap = new HashMap<>();
     }
+    /**
+     * 返回插件管理器单例。
+     * @return 返回值
+     */
     public static PluginManager get() {
         if (manager == null) {
             manager = new PluginManager();
@@ -156,6 +167,10 @@ public class PluginManager {
         }
     }
 
+    /**
+     * 返回全局信号总线。
+     * @return 返回值
+     */
     public SignalBus getSignalBus() {
         return signalBus;
     }

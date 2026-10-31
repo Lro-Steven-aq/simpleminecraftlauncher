@@ -13,21 +13,45 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * Plugin Exception:
+ * Plugins that use the package org.lro.steven.aq.simpleminecraftlauncher.plugin.api
+ * and its subpackages, together with the JAR files they call, are not required
+ * to be licensed under the GPLv3 and may be distributed under any license
+ * terms. See the LICENSE file ("SimpleMinecraftLauncher Plugin Exception")
+ * for the full definition and conditions.
  */
 package org.lro.steven.aq.simpleminecraftlauncher.deserializer;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import org.glavo.url.WebURL;
 
 import java.lang.reflect.Type;
 
-public class WebURLDeserializer implements JsonDeserializer<WebURL> {
+/**
+ * WebURL 与 JSON 字符串互转。
+ * <br/>
+ * 反序列化时解析 URL，序列化时写回 {@code toString()}，避免 Gson 反射 WebURL 内部字段。
+ */
+public class WebURLDeserializer implements JsonDeserializer<WebURL>, JsonSerializer<WebURL> {
 
     @Override
     public WebURL deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        if (json == null || json.isJsonNull()) {
+            return null;
+        }
         return WebURL.parse(json.getAsString());
+    }
+
+    @Override
+    public JsonElement serialize(WebURL src, Type typeOfSrc, JsonSerializationContext context) {
+        return src == null ? JsonNull.INSTANCE : new JsonPrimitive(src.toString());
     }
 }

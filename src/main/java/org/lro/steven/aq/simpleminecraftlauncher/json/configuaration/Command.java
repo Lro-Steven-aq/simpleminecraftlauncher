@@ -13,10 +13,17 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * Plugin Exception:
+ * Plugins that use the package org.lro.steven.aq.simpleminecraftlauncher.plugin.api
+ * and its subpackages, together with the JAR files they call, are not required
+ * to be licensed under the GPLv3 and may be distributed under any license
+ * terms. See the LICENSE file ("SimpleMinecraftLauncher Plugin Exception")
+ * for the full definition and conditions.
  */
-package org.lro.steven.aq.simpleminecraftlauncher.configuaration;
+package org.lro.steven.aq.simpleminecraftlauncher.json.configuaration;
 
-import org.lro.steven.aq.simpleminecraftlauncher.configuaration.impl.DefaultImplementationCommand;
+import org.lro.steven.aq.simpleminecraftlauncher.json.configuaration.impl.DefaultImplementationCommand;
 
 import java.io.IOException;
 
@@ -29,6 +36,10 @@ import java.io.IOException;
  */
 public interface Command {
 
+    /**
+     * 创建命令构建器。
+     * @return 命令构建器
+     */
     static Command create() {
         return new DefaultImplementationCommand();
     }
@@ -46,5 +57,9 @@ public interface Command {
      */
     String getAsString();
 
+    /**
+     * 追加一条命令参数。
+     * @param commands 参数
+     */
     void add(String...commands);
 }

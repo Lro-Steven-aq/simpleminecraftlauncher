@@ -13,21 +13,35 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * Plugin Exception:
+ * Plugins that use the package org.lro.steven.aq.simpleminecraftlauncher.plugin.api
+ * and its subpackages, together with the JAR files they call, are not required
+ * to be licensed under the GPLv3 and may be distributed under any license
+ * terms. See the LICENSE file ("SimpleMinecraftLauncher Plugin Exception")
+ * for the full definition and conditions.
  */
 package org.lro.steven.aq.simpleminecraftlauncher.test.plugin;
 
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.PluginManager;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.impl.LogEvent;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.impl.PopupEvent;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.signalbus.SignalBus;
 
-
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class TestLoader {
 
+    private final static String LOGGER_PLUGIN_JAR =
+            PluginManager.PLUGIN_PATH + "/simpleminecraftlauncher-plugin-logger-1.0-SNAPSHOT.jar";
+
     @Test
     public void test() throws InterruptedException {
+        Assumptions.assumeTrue(Files.isRegularFile(Path.of(LOGGER_PLUGIN_JAR)),
+                "缺少 " + LOGGER_PLUGIN_JAR + "，跳过插件集成测试");
         PluginManager manager = PluginManager.get();
         try {
             manager.startAll();
@@ -41,10 +55,15 @@ public class TestLoader {
             bus.emit("log.trace", LogEvent.of("test...trace"));
 
             //
-            bus.emit("ui.popup.error", PopupEvent.of("test","?error happens!" ,"Test Content"));
+            bus.emit("ui.popup.error", PopupEvent.of("test",
+                    "?error happens!" ,
+                    "Test Content",
+                    () -> {},
+                    () -> {},
+                    () -> {}));
             bus.emit("log.error", LogEvent.of("L"));
 
-            manager.stop(PluginManager.PLUGIN_PATH + "/simpleminecraftlauncher-plugin-logger-1.0-SNAPSHOT.jar");
+            manager.stop(LOGGER_PLUGIN_JAR);
             bus.emit("log.error", LogEvent.of("You should not see it"));
         } catch (Exception e) {
             throw new RuntimeException(e);
