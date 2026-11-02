@@ -1,4 +1,52 @@
-is_fast_launch 未实现 快速启动：打开启动器时，直接安装settings里面的配置启动minecraft
-menu bar 未实现按钮
-breakhandler 在另一个项目里实现
-理清类之间的调用关系（和依赖）
+1. is_fast_launch 未实现 快速启动：打开启动器时，直接安装settings里面的配置启动minecraft
+2. menu bar 未实现按钮
+3. breakhandler 在另一个项目里实现
+3.1. 移除okhttp依赖。将依赖转移至下载插件。主程序只依赖Downloader接口。
+4. 对于插件的Event接口进行完善、添加Channel接口以实现[ 主程序 -> 插件 -> 主程序 ] 的信息流。
+        注意：添加空实现类：NoneEvent、NoneChannel，其仅记录日志。
+        问题：兼容性 -> 重载.
+    interface Channel<T> {
+        void send(T value);
+        T receive();
+    }
+
+5. Downloader 接口完善：
+    interface Downloader {
+        DownloaderHandle submit(Task task);
+        String readString(WebURL url) throws IOException;
+    }
+    interface Task {
+        void execute();
+    }
+
+    // 一个任务一个文件下载.
+    final class DownloaderTask implements Task {
+        Path targetOutput;
+        WebURL url;
+        String sha1;  // 自动检查
+        boolean async; // 是否异步.
+        boolean breakpointRetry; // 断点是否自连.
+        List<WebURL> mirrorUrls; // 镜像源
+        boolean useMirrorFirst; // 默认使用镜像源.
+        boolean usePart; // 分段下载.
+
+        @Override void execute();
+        static DownloaderTask of(xxx);
+    }
+    interface DownloaderHandle {
+        DownloaderProgress getProgress();
+        void cancel();
+        CompletableFuture<Void> getFuture();
+    }
+    interface Progress {
+
+    }
+    class DownloaderProgress implements Progress {
+        long downloadedBytes;
+        long totalBytes;
+        double speed-bps;
+        String currentUrl;
+        double getRatio(){
+            xxxxxxx
+        }
+    }
