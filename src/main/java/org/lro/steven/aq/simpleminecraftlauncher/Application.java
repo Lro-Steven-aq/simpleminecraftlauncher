@@ -32,26 +32,37 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
+import org.lro.steven.aq.simpleminecraftlauncher.json.Json;
+import org.lro.steven.aq.simpleminecraftlauncher.json.configuaration.Command;
+import org.lro.steven.aq.simpleminecraftlauncher.json.configuaration.Configuration;
 import org.lro.steven.aq.simpleminecraftlauncher.json.configuaration.Features;
+import org.lro.steven.aq.simpleminecraftlauncher.json.configuaration.Parser;
 import org.lro.steven.aq.simpleminecraftlauncher.controller.impl.LauncherMainWindowController;
+import org.lro.steven.aq.simpleminecraftlauncher.launch.GameDirectory;
+import org.lro.steven.aq.simpleminecraftlauncher.launch.LaunchConfiguration;
+import org.lro.steven.aq.simpleminecraftlauncher.metadata.game.OperatingSystem;
+import org.lro.steven.aq.simpleminecraftlauncher.metadata.game.version.GameMetadataManifest;
 import org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.Metadata;
 import org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.conf.ApplicationConfiguration;
+import org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.conf.settings.UserSettings;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.PluginManager;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.impl.LogEvent;
 import org.lro.steven.aq.simpleminecraftlauncher.window.DesktopFrost;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 
 /** 启动器主类：加载配置、构建界面并在 JavaFX 中显示主窗口。 */
 public class Application extends javafx.application.Application {
 
     private LauncherMainWindowController launcherController;
+    private static ApplicationConfiguration configurations;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        ApplicationConfiguration configurations = loadConfiguration().getConfigurations();
         Metadata metadata = Metadata.from(Features.create(new HashMap<>()), configurations);
         Parent root = loadRoot(metadata);
         Font.loadFont(getClass().getResourceAsStream("LXGWWenKaiMono-Regular.ttf"), 48);
@@ -113,13 +124,118 @@ public class Application extends javafx.application.Application {
      * @throws IOException 异常
      */
     public static void _main(String[] args) throws IOException {
+        configurations = loadConfiguration().getConfigurations();
         // start signalBus to load the plugins.
         PluginManager manager = PluginManager.get();
 
         manager.startAll();
         manager.getSignalBus().emit("log.info", LogEvent.of("initialize"));
         // ///////////////////////////////////
-        javafx.application.Application.launch(Application.class, args);
+        UserSettings settings = configurations.userSettings();
+        if (settings == null || !settings.fastLaunch()) {
+            javafx.application.Application.launch(Application.class, args);
+            return;
+        }
+        fastLaunch(args);
+    }
+
+    /**
+     * 快速启动：不创建 JavaFX 窗口，直接用上次的版本 JSON 启动游戏。
+     * 没有可用的已安装版本时回退到正常 UI。
+     * @param args 启动参数
+     * @throws IOException 读取配置/版本文件失败
+     */
+    private static void fastLaunch(String[] args) {
+        Command command;
+        try {
+            command = createFastLaunchCommand(configurations);
+        } catch (IOException | RuntimeException e) {
+            PluginManager.get().getSignalBus().emit("log.error",
+                    LogEvent.of("Fast launch failed: " + e.getMessage() + "; opening the launcher."));
+            javafx.application.Application.launch(Application.class, args);
+            return;
+        }
+        if (command == null) {
+            PluginManager.get().getSignalBus().emit("log.warn",
+                    LogEvent.of("Fast launch is enabled, but no installed version is available; opening the launcher."));
+            javafx.application.Application.launch(Application.class, args);
+            return;
+        }
+        PluginManager.get().getSignalBus().emit("log.info", LogEvent.of("Fast launch"));
+        try {
+            command.execute();
+            System.exit(0);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            System.exit(1);
+        } catch (IOException e) {
+            PluginManager.get().getSignalBus().emit("log.error",
+                    LogEvent.of("Fast launch failed: " + e.getMessage()));
+            javafx.application.Application.launch(Application.class, args);
+        }
+    }
+
+    /**
+     * 构建快速启动命令；版本 JSON、客户端 jar 或主类缺失时返回 null。
+     * @param configuration 启动器配置
+     * @return 可直接执行的游戏命令，或 null
+     * @throws IOException 读取版本 JSON 失败
+     */
+    private static Command createFastLaunchCommand(ApplicationConfiguration configuration) throws IOException {
+        UserSettings settings = configuration.userSettings();
+        if (settings == null || settings.lastVersionJsonFile() == null
+                || settings.lastVersionJsonFile().isBlank()) {
+            return null;
+        }
+        Path jsonFile = Path.of(settings.lastVersionJsonFile());
+        if (!Files.isRegularFile(jsonFile)) {
+            return null;
+        }
+        String content = Files.readString(jsonFile);
+        GameMetadataManifest manifest = Json.GSON.fromJson(content, GameMetadataManifest.class);
+        if (manifest == null || manifest.id() == null || manifest.mainClass() == null) {
+            return null;
+        }
+        Path gameDirectory = GameDirectory.resolve(configuration);
+        Path versionDirectory = GameDirectory.versionDirectory(gameDirectory, manifest.id());
+        String jarName = manifest.jar() != null && !manifest.jar().isBlank()
+                ? manifest.jar()
+                : manifest.id();
+        if (!Files.isRegularFile(versionDirectory.resolve(jarName + ".jar"))) {
+            return null;
+        }
+        Features features = Features.create(new HashMap<>());
+        Configuration launchConfiguration = LaunchConfiguration.create(
+                configuration, manifest, gameDirectory, features);
+        Command command = Command.create();
+        command.add(resolveJavaExecutable(settings));
+        Parser.create(content, launchConfiguration, features).parse(command);
+        return command;
+    }
+
+    /**
+     * 优先使用配置里的 Java，其次使用启动器自身的 Java。
+     * @param settings 用户设置
+     * @return java 可执行文件路径
+     */
+    private static String resolveJavaExecutable(UserSettings settings) {
+        String executable = settings.executableJavaCommand();
+        if (executable != null && Files.isRegularFile(Path.of(executable))) {
+            return executable;
+        }
+        String javaHome = settings.javaHome();
+        if (javaHome != null) {
+            Path candidate = Path.of(javaHome, "bin", javaExecutableName());
+            if (Files.isRegularFile(candidate)) {
+                return candidate.toString();
+            }
+        }
+        Path current = Path.of(System.getProperty("java.home", ""), "bin", javaExecutableName());
+        return Files.isRegularFile(current) ? current.toString() : "java";
+    }
+
+    private static String javaExecutableName() {
+        return OperatingSystem.getOs() == OperatingSystem.WINDOWS ? "java.exe" : "java";
     }
 
     /**

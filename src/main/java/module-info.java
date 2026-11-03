@@ -42,6 +42,7 @@ module org.lro.steven.aq.simpleminecraftlauncher {
     exports org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.impl;
     exports org.lro.steven.aq.simpleminecraftlauncher.plugin.api.signalbus;
     exports org.lro.steven.aq.simpleminecraftlauncher.plugin.api.downloader;
+    exports org.lro.steven.aq.simpleminecraftlauncher.json.configuaration;
 
     opens org.lro.steven.aq.simpleminecraftlauncher;
     opens org.lro.steven.aq.simpleminecraftlauncher.plugin;
@@ -49,6 +50,7 @@ module org.lro.steven.aq.simpleminecraftlauncher {
     opens org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event;
     opens org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.impl;
     opens org.lro.steven.aq.simpleminecraftlauncher.plugin.api.signalbus;
+    opens org.lro.steven.aq.simpleminecraftlauncher.json.configuaration;
 
     // for Gson
     exports org.lro.steven.aq.simpleminecraftlauncher.metadata.game;
@@ -56,7 +58,6 @@ module org.lro.steven.aq.simpleminecraftlauncher {
     exports org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.conf.settings to com.google.gson;
     exports org.lro.steven.aq.simpleminecraftlauncher.metadata.game.version;
     exports org.lro.steven.aq.simpleminecraftlauncher.metadata.game.versionmanifest;
-    exports org.lro.steven.aq.simpleminecraftlauncher.json.configuaration;
     exports org.lro.steven.aq.simpleminecraftlauncher.launch;
     opens org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.conf to com.google.gson;
     opens org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.conf.settings to com.google.gson;
