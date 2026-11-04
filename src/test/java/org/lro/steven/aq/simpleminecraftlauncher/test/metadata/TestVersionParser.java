@@ -41,6 +41,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -59,7 +60,7 @@ public class TestVersionParser {
         configuration.add("auth_player_name", "Steve");
         configuration.add("version_name", "test-version");
 
-        Command command = Command.create();
+        Command command = newCommand();
         command.add("java");
         Parser parser = Parser.create(json, configuration, Features.create(Map.of()));
         String line = parser.parse(command).getAsString();
@@ -131,7 +132,7 @@ public class TestVersionParser {
                 }
                 """;
 
-        Command command = Command.create();
+        Command command = newCommand();
         command.add("java");
         Parser parser = Parser.create(json, Configuration.create(), Features.create(Map.of()));
         String line = parser.parse(command).getAsString();
@@ -153,11 +154,37 @@ public class TestVersionParser {
                 }
                 """;
 
-        Command command = Command.create();
+        Command command = newCommand();
         command.add("java");
         Parser parser = Parser.create(json, Configuration.create(), Features.create(Map.of()));
         String line = parser.parse(command).getAsString();
 
         assertTrue(line.contains("--demo"), line);
+    }
+
+    private static Command newCommand() {
+        return new Command() {
+            private final List<String> arguments = new ArrayList<>();
+
+            @Override
+            public void add(String... commands) {
+                arguments.addAll(List.of(commands));
+            }
+
+            @Override
+            public String getAsString() {
+                return String.join(" ", arguments);
+            }
+
+            @Override
+            public List<String> getCommand() {
+                return List.copyOf(arguments);
+            }
+
+            @Override
+            public void execute() {
+                throw new UnsupportedOperationException("Test command");
+            }
+        };
     }
 }

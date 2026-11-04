@@ -26,8 +26,10 @@ package org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event;
 /**
  * 所有事件的接口.
  * <br/>
- * 在SignalBus里面传入的就是它。
- *
+ * 在SignalBus里面传入的就是它或{@link Channel}。
+ * <br/>
+ * Event仅单向发射，Event<b><i>不应该</i></b>用于双向。<br/>
+ * Event<b>应该</b>用完即<b>销毁</b>.
  * @author lro.steven.aq
  * @since 0.1
  */

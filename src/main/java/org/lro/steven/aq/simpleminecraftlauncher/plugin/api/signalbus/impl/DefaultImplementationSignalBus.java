@@ -23,7 +23,10 @@
  */
 package org.lro.steven.aq.simpleminecraftlauncher.plugin.api.signalbus.impl;
 
+import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.Channel;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.Event;
+import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.signalbus.ChannelConsumer;
+import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.signalbus.EventConsumer;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.signalbus.SignalBus;
 
 import java.util.ArrayList;
@@ -40,13 +43,15 @@ import java.util.function.Consumer;
  * @since 0.1
  */
 public final class DefaultImplementationSignalBus implements SignalBus {
-    private final Map<String, List<Consumer<Event>>> map;
+    private final Map<String, List<Consumer<Event>>> mapOfEvent;
+    private final Map<String, List<Consumer<Channel>>> mapOfChannel;
 
     /**
      * 拒绝外部实例化
      */
     private DefaultImplementationSignalBus() {
-        map = new HashMap<>();
+        mapOfEvent = new HashMap<>();
+        mapOfChannel = new HashMap<>();
     }
 
     /**
@@ -66,14 +71,34 @@ public final class DefaultImplementationSignalBus implements SignalBus {
 
     /// Implement its interface:
     @Override
-    public void connect(String signal, Consumer<Event> consumer) {
-        map.computeIfAbsent(signal, (string) -> new ArrayList<>()).add(consumer);
+    public void connect(String signal, EventConsumer consumer) {
+        mapOfEvent.computeIfAbsent(signal, (string) -> new ArrayList<>()).add(consumer);
+    }
+
+    /// Implement its interface:
+    @Override
+    public void connect(String signal, ChannelConsumer consumer) {
+        mapOfChannel.computeIfAbsent(signal, (string) -> new ArrayList<>()).add(consumer);
     }
 
     /// Implement its interface:
     @Override
     public void emit(String signal, Event payload) {
-        map.getOrDefault(signal, List.of())
+        mapOfEvent.getOrDefault(signal, List.of())
+                .forEach((e) -> {
+                    try {
+                        e.accept(payload);
+                    } catch (Throwable throwable) {
+                        // ignored
+                        throwable.printStackTrace();
+                    }
+                });
+    }
+
+    /// Implement its interface:
+    @Override
+    public void emit(String signal, Channel payload) {
+        mapOfChannel.getOrDefault(signal, List.of())
                 .forEach((e) -> {
                     try {
                         e.accept(payload);

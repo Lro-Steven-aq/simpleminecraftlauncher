@@ -44,9 +44,7 @@ import org.lro.steven.aq.simpleminecraftlauncher.ApplicationConfigurationLoader;
 import org.lro.steven.aq.simpleminecraftlauncher.controller.Controller;
 import org.lro.steven.aq.simpleminecraftlauncher.environment.Environment;
 import org.lro.steven.aq.simpleminecraftlauncher.json.Json;
-import org.lro.steven.aq.simpleminecraftlauncher.json.configuaration.Command;
 import org.lro.steven.aq.simpleminecraftlauncher.json.configuaration.Configuration;
-import org.lro.steven.aq.simpleminecraftlauncher.json.configuaration.Parser;
 import org.lro.steven.aq.simpleminecraftlauncher.launch.GameDirectory;
 import org.lro.steven.aq.simpleminecraftlauncher.launch.LaunchConfiguration;
 import org.lro.steven.aq.simpleminecraftlauncher.metadata.game.OperatingSystem;
@@ -57,6 +55,7 @@ import org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.Metadata;
 import org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.conf.ApplicationConfiguration;
 import org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.conf.settings.UserSettings;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.PluginManager;
+import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.impl.LaunchEvent;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.impl.LogEvent;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.impl.PopupEvent;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.signalbus.SignalBus;
@@ -256,8 +255,12 @@ public class LauncherMainWindowController extends Controller {
 
     private void startLaunch() throws IOException {
         UserSettings settings = requireSettings();
-        Command command = settings == null ? null : createLaunchCommand();
-        if (command == null) {
+        if (settings == null) {
+            return;
+        }
+        String javaExecutable = resolveLaunchJava();
+        if (javaExecutable == null) {
+            launchButton.setDisable(false);
             return;
         }
         String jsonPath = selectedVersionJsonPath(settings);
@@ -270,7 +273,7 @@ public class LauncherMainWindowController extends Controller {
             startInstall(missingVersion);
             return;
         }
-        executeLaunch(jsonPath, command);
+        executeLaunch(jsonPath, javaExecutable);
     }
 
     private String missingClientJarVersion(String jsonPath) {
@@ -301,57 +304,51 @@ public class LauncherMainWindowController extends Controller {
         return settings;
     }
 
-    private Command createLaunchCommand() {
-        Command command = Command.create();
-        if (addJavaExecutableFileToCommand(command)) {
-            return command;
+    private String resolveLaunchJava() {
+        ApplicationConfiguration configuration = metadata.configurationMapper();
+        UserSettings settings = configuration.userSettings();
+        if (settings == null) {
+            fail("User settings are missing");
+            return null;
         }
-        launchButton.setDisable(false);
-        return null;
+        String javaExecutable = resolveJavaExecutable(configuration, settings);
+        if (javaExecutable == null || !Files.isRegularFile(Path.of(javaExecutable))) {
+            showJavaPopup(configuration);
+            return null;
+        }
+        return javaExecutable;
     }
 
-    private void executeLaunch(String jsonPath, Command command) throws IOException {
+    private void executeLaunch(String jsonPath, String javaExecutable) throws IOException {
         String content = Files.readString(Path.of(jsonPath));
         GameMetadataManifest manifest = Json.GSON.fromJson(content, GameMetadataManifest.class);
         if (!isValidManifest(manifest)) {
             fail("Invalid version JSON: " + jsonPath);
             return;
         }
-        Command parsed = parseCommand(content, manifest, command);
-        if (parsed == null) {
-            fail("Can't parse version JSON: " + jsonPath);
-            return;
-        }
-        startGame(parsed, manifest.id());
+        ApplicationConfiguration configuration = metadata.configurationMapper();
+        Path gameDirectory = GameDirectory.resolve(configuration);
+        Configuration launchConfiguration = LaunchConfiguration.create(
+                configuration, manifest, gameDirectory, metadata.features());
+        LaunchEvent event = LaunchEvent.of(
+                manifest.id(), content, launchConfiguration, metadata.features(), javaExecutable);
+        startGame(event);
     }
 
     private static boolean isValidManifest(GameMetadataManifest manifest) {
         return manifest != null && manifest.mainClass() != null && !manifest.mainClass().isBlank();
     }
 
-    private Command parseCommand(String content, GameMetadataManifest manifest, Command command) {
-        ApplicationConfiguration configuration = metadata.configurationMapper();
-        Path gameDirectory = GameDirectory.resolve(configuration);
-        Configuration launchConfiguration = LaunchConfiguration.create(
-                configuration, manifest, gameDirectory, metadata.features());
-        return Parser.create(content, launchConfiguration, metadata.features()).parse(command);
-    }
-
-    private void startGame(Command command, String version) {
-        SIGNAL_BUS.emit("log.info", LogEvent.of("Starting Minecraft " + version));
-        Thread thread = new Thread(() -> runGame(command), "minecraft-launch");
+    private void startGame(LaunchEvent event) {
+        SIGNAL_BUS.emit("log.info", LogEvent.of("Starting Minecraft " + event.version()));
+        Thread thread = new Thread(() -> runGame(event), "minecraft-launch");
         thread.setDaemon(true);
         thread.start();
     }
 
-    private void runGame(Command command) {
-        try {
-            command.execute();
-        } catch (IOException | InterruptedException e) {
-            SIGNAL_BUS.emit("log.error", LogEvent.of("Minecraft exited with error: " + e.getMessage()));
-        } finally {
-            Platform.runLater(() -> launchButton.setDisable(false));
-        }
+    private void runGame(LaunchEvent event) {
+        SIGNAL_BUS.emit("launch.game", event);
+        Platform.runLater(() -> launchButton.setDisable(false));
     }
 
     private void fail(String message) {
@@ -409,22 +406,6 @@ public class LauncherMainWindowController extends Controller {
         versionSelector.setValue(version);
         launchButton.setDisable(false);
         launch(null);
-    }
-
-    private boolean addJavaExecutableFileToCommand(Command command) {
-        ApplicationConfiguration configuration = metadata.configurationMapper();
-        UserSettings settings = configuration.userSettings();
-        if (settings == null) {
-            fail("User settings are missing");
-            return false;
-        }
-        String javaExecutable = resolveJavaExecutable(configuration, settings);
-        if (javaExecutable == null || !Files.isRegularFile(Path.of(javaExecutable))) {
-            showJavaPopup(configuration);
-            return false;
-        }
-        command.add(javaExecutable);
-        return true;
     }
 
     private String resolveJavaExecutable(ApplicationConfiguration configuration, UserSettings settings) {

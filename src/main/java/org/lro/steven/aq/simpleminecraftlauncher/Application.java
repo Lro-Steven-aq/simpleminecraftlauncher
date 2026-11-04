@@ -33,10 +33,8 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import org.lro.steven.aq.simpleminecraftlauncher.json.Json;
-import org.lro.steven.aq.simpleminecraftlauncher.json.configuaration.Command;
 import org.lro.steven.aq.simpleminecraftlauncher.json.configuaration.Configuration;
 import org.lro.steven.aq.simpleminecraftlauncher.json.configuaration.Features;
-import org.lro.steven.aq.simpleminecraftlauncher.json.configuaration.Parser;
 import org.lro.steven.aq.simpleminecraftlauncher.controller.impl.LauncherMainWindowController;
 import org.lro.steven.aq.simpleminecraftlauncher.launch.GameDirectory;
 import org.lro.steven.aq.simpleminecraftlauncher.launch.LaunchConfiguration;
@@ -46,6 +44,7 @@ import org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.Metadata;
 import org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.conf.ApplicationConfiguration;
 import org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.conf.settings.UserSettings;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.PluginManager;
+import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.impl.LaunchEvent;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.impl.LogEvent;
 import org.lro.steven.aq.simpleminecraftlauncher.window.DesktopFrost;
 
@@ -146,42 +145,33 @@ public class Application extends javafx.application.Application {
      * @throws IOException 读取配置/版本文件失败
      */
     private static void fastLaunch(String[] args) {
-        Command command;
+        LaunchEvent launch;
         try {
-            command = createFastLaunchCommand(configurations);
+            launch = createFastLaunchEvent(configurations);
         } catch (IOException | RuntimeException e) {
             PluginManager.get().getSignalBus().emit("log.error",
                     LogEvent.of("Fast launch failed: " + e.getMessage() + "; opening the launcher."));
             javafx.application.Application.launch(Application.class, args);
             return;
         }
-        if (command == null) {
+        if (launch == null) {
             PluginManager.get().getSignalBus().emit("log.warn",
                     LogEvent.of("Fast launch is enabled, but no installed version is available; opening the launcher."));
             javafx.application.Application.launch(Application.class, args);
             return;
         }
         PluginManager.get().getSignalBus().emit("log.info", LogEvent.of("Fast launch"));
-        try {
-            command.execute();
-            System.exit(0);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            System.exit(1);
-        } catch (IOException e) {
-            PluginManager.get().getSignalBus().emit("log.error",
-                    LogEvent.of("Fast launch failed: " + e.getMessage()));
-            javafx.application.Application.launch(Application.class, args);
-        }
+        PluginManager.get().getSignalBus().emit("launch.fast", launch);
+        System.exit(0);
     }
 
     /**
-     * 构建快速启动命令；版本 JSON、客户端 jar 或主类缺失时返回 null。
+     * 构建快速启动事件；版本 JSON、客户端 jar 或主类缺失时返回 null。
      * @param configuration 启动器配置
-     * @return 可直接执行的游戏命令，或 null
+     * @return 启动事件，或 null
      * @throws IOException 读取版本 JSON 失败
      */
-    private static Command createFastLaunchCommand(ApplicationConfiguration configuration) throws IOException {
+    private static LaunchEvent createFastLaunchEvent(ApplicationConfiguration configuration) throws IOException {
         UserSettings settings = configuration.userSettings();
         if (settings == null || settings.lastVersionJsonFile() == null
                 || settings.lastVersionJsonFile().isBlank()) {
@@ -207,10 +197,8 @@ public class Application extends javafx.application.Application {
         Features features = Features.create(new HashMap<>());
         Configuration launchConfiguration = LaunchConfiguration.create(
                 configuration, manifest, gameDirectory, features);
-        Command command = Command.create();
-        command.add(resolveJavaExecutable(settings));
-        Parser.create(content, launchConfiguration, features).parse(command);
-        return command;
+        return LaunchEvent.of(manifest.id(), content, launchConfiguration, features,
+                resolveJavaExecutable(settings));
     }
 
     /**

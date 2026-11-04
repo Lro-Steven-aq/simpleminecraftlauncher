@@ -23,9 +23,8 @@
  */
 package org.lro.steven.aq.simpleminecraftlauncher.json.configuaration;
 
-import org.lro.steven.aq.simpleminecraftlauncher.json.configuaration.impl.DefaultImplementationCommand;
-
 import java.io.IOException;
+import java.util.List;
 
 /**
  * 一个可执行的命令，它是Parser的解析结果。
@@ -35,14 +34,6 @@ import java.io.IOException;
  * @since 0.1
  */
 public interface Command {
-
-    /**
-     * 创建命令构建器。
-     * @return 命令构建器
-     */
-    static Command create() {
-        return new DefaultImplementationCommand();
-    }
 
     /**
      * 创建一个子进程运行命令.
@@ -56,6 +47,12 @@ public interface Command {
      * @return 拼接为命令行的字符串
      */
     String getAsString();
+
+    /**
+     * 返回命令参数列表的副本。
+     * @return 命令参数列表
+     */
+    List<String> getCommand();
 
     /**
      * 追加一条命令参数。

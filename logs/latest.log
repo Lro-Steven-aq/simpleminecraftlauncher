@@ -1,28 +1,29 @@
-[14:47:02] [Datafixer Bootstrap #0/INFO]: 307 Datafixer optimizations took 690 milliseconds
-[14:47:08] [Render thread/INFO]: Environment: Environment[discoveryUrl=https://discovery.minecraftservices.com/minecraft/client, name=PROD]
-[14:47:08] [Render thread/INFO]: Setting user: NormalTable5801
-[14:47:08] [Render thread/INFO]: Backend library: LWJGL version 3.4.3+4
-[14:47:08] [Render thread/INFO]: SDL [SYSTEM]: App name: Minecraft
-[14:47:08] [Render thread/INFO]: SDL [SYSTEM]: App version: 26.3
-[14:47:08] [Render thread/INFO]: SDL [SYSTEM]: App ID: com.mojang.minecraft
-[14:47:08] [Render thread/INFO]: SDL [SYSTEM]: SDL revision: SDL-3.4.14--128-NOTFOUND
-[14:47:08] [Render thread/INFO]: SDL [VIDEO]: Detected XWayland
-[14:47:08] [Render thread/ERROR]: Failed to create backend OpenGL
+[21:29:48] [Datafixer Bootstrap #0/INFO]: 307 Datafixer optimizations took 1061 milliseconds
+[21:29:56] [Render thread/INFO]: Environment: Environment[discoveryUrl=https://discovery.minecraftservices.com/minecraft/client, name=PROD]
+[21:29:56] [Render thread/INFO]: Setting user: NormalTable5801
+[21:29:56] [Render thread/INFO]: Backend library: LWJGL version 3.4.3+4
+[21:29:56] [Render thread/WARN]: Detected unexpected shutdown during last game startup: resetting fullscreen mode
+[21:29:56] [Render thread/INFO]: SDL [SYSTEM]: App name: Minecraft
+[21:29:56] [Render thread/INFO]: SDL [SYSTEM]: App version: 26.3
+[21:29:56] [Render thread/INFO]: SDL [SYSTEM]: App ID: com.mojang.minecraft
+[21:29:56] [Render thread/INFO]: SDL [SYSTEM]: SDL revision: SDL-3.4.14--128-NOTFOUND
+[21:29:56] [Render thread/INFO]: SDL [VIDEO]: Detected XWayland
+[21:29:56] [Render thread/ERROR]: Failed to create backend OpenGL
 com.mojang.renderpearl.api.device.BackendCreationException: OpenGL is not supported: Could not retrieve OpenGL functions
 	at com.mojang.renderpearl.backend.opengl.GlBackend.loadLibrary(GlBackend.java:36)
 	at net.minecraft.client.Minecraft.<init>(Minecraft.java:530)
 	at net.minecraft.client.main.Main.main(Main.java:278)
-[14:47:09] [Render thread/INFO]: Preferring discrete GPU: NVIDIA GeForce 940MX
-[14:47:09] [Render thread/INFO]: Optional FeatureSet [NV Diagnostic Checkpoint] supported but device condition failed and will not be enabled
-[14:47:09] [Render thread/INFO]: Enabling optional FeatureSet [Calibrated Timestamps]
-[14:47:09] [Render thread/INFO]: Enabling optional FeatureSet [AMD Buffer Marker]
-[14:47:09] [Render thread/INFO]: Enabling optional FeatureSet [EXT MultiDraw]
-[14:47:09] [Render thread/INFO]: Enabling optional FeatureSet [Wireframe]
-[14:47:09] [Render thread/INFO]: Using graphics backend Vulkan, using drivers: 1.4.312 NVIDIA 580.178.04
-[14:47:09] [Render thread/INFO]: Using graphics device: NVIDIA GeForce 940MX (NVIDIA)
-[14:47:09] [Render thread/INFO]: Using graphics device extensions: VK_EXT_calibrated_timestamps (D), VK_KHR_synchronization2 (D), VK_EXT_multi_draw (D), VK_AMD_buffer_marker (D), VK_EXT_vertex_attribute_divisor (D), VK_KHR_swapchain (D), VK_KHR_surface (I), VK_KHR_push_descriptor (D), VK_KHR_xlib_surface (I), VK_EXT_debug_utils (I), VK_KHR_dynamic_rendering (D)
-[14:47:09] [Render thread/INFO]: Created window using SDL video driver: x11
-[14:47:10] [Download-2/ERROR]: Failed to fetch user properties
+[21:29:56] [Render thread/INFO]: Preferring discrete GPU: NVIDIA GeForce 940MX
+[21:29:56] [Render thread/INFO]: Enabling optional FeatureSet [Calibrated Timestamps]
+[21:29:56] [Render thread/INFO]: Enabling optional FeatureSet [Wireframe]
+[21:29:56] [Render thread/INFO]: Enabling optional FeatureSet [AMD Buffer Marker]
+[21:29:56] [Render thread/INFO]: Enabling optional FeatureSet [EXT MultiDraw]
+[21:29:56] [Render thread/INFO]: Optional FeatureSet [NV Diagnostic Checkpoint] supported but device condition failed and will not be enabled
+[21:29:57] [Render thread/INFO]: Using graphics backend Vulkan, using drivers: 1.4.312 NVIDIA 580.178.04
+[21:29:57] [Render thread/INFO]: Using graphics device: NVIDIA GeForce 940MX (NVIDIA)
+[21:29:57] [Render thread/INFO]: Using graphics device extensions: VK_EXT_calibrated_timestamps (D), VK_KHR_synchronization2 (D), VK_EXT_multi_draw (D), VK_AMD_buffer_marker (D), VK_EXT_vertex_attribute_divisor (D), VK_KHR_swapchain (D), VK_KHR_surface (I), VK_KHR_push_descriptor (D), VK_KHR_xlib_surface (I), VK_EXT_debug_utils (I), VK_KHR_dynamic_rendering (D)
+[21:29:57] [Render thread/INFO]: Created window using SDL video driver: x11
+[21:29:59] [Download-2/ERROR]: Failed to fetch user properties
 com.mojang.authlib.exceptions.InvalidCredentialsException: Status: 401
 	at com.mojang.authlib.exceptions.MinecraftClientHttpException.toAuthenticationException(MinecraftClientHttpException.java:70)
 	at com.mojang.authlib.services.MinecraftServicesUserApiService.fetchProperties(MinecraftServicesUserApiService.java:168)
@@ -38,82 +39,4 @@ Caused by: MinecraftClientHttpException[type=HTTP_ERROR, status=401, response=Er
 	at com.mojang.authlib.minecraft.client.MinecraftClient.get(MinecraftClient.java:65)
 	at com.mojang.authlib.services.MinecraftServicesUserApiService.fetchProperties(MinecraftServicesUserApiService.java:118)
 	... 5 more
-[14:47:11] [Render thread/INFO]: Reloading ResourceManager: vanilla, vanilla
-[14:47:11] [Download-1/INFO]: Could not authorize you against Realms server: java.lang.RuntimeException: Failed to parse into SignedJWT: 0
-[14:47:11] [Download-1/ERROR]: Failed to fetch Realms feature flags
-com.mojang.realmsclient.exception.RealmsServiceException: Realms authentication error with message 'java.lang.RuntimeException: Failed to parse into SignedJWT: 0'
-	at com.mojang.realmsclient.client.RealmsClient.execute(RealmsClient.java:625)
-	at com.mojang.realmsclient.client.RealmsClient.fetchFeatureFlags(RealmsClient.java:204)
-	at java.base/java.util.concurrent.CompletableFuture$AsyncSupply.run(CompletableFuture.java:1789)
-	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
-	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
-	at java.base/java.lang.Thread.run(Thread.java:1516)
-[14:47:11] [Worker-Main-3/INFO]: Found unifont_all_no_pua-17.0.01.hex, loading
-[14:47:11] [Worker-Main-2/INFO]: Found unifont_pua-17.0.01.hex, loading
-[14:47:12] [Worker-Main-3/INFO]: Found unifont_jp_patch-17.0.01.hex, loading
-[14:47:15] [Render thread/INFO]: OpenAL initialized on device 内置音频 模拟立体声
-[14:47:15] [Render thread/INFO]: Sound engine started
-[14:47:15] [Render thread/INFO]: Created: 512x256x0 minecraft:textures/atlas/particles.png-atlas
-[14:47:15] [Render thread/INFO]: Created: 256x128x0 minecraft:textures/atlas/celestials.png-atlas
-[14:47:15] [Render thread/INFO]: Created: 128x128x0 minecraft:textures/atlas/decorated_pot.png-atlas
-[14:47:15] [Render thread/INFO]: Created: 512x256x0 minecraft:textures/atlas/paintings.png-atlas
-[14:47:15] [Render thread/INFO]: Created: 1024x512x0 minecraft:textures/atlas/shield_patterns.png-atlas
-[14:47:15] [Render thread/INFO]: Created: 1024x512x0 minecraft:textures/atlas/banner_patterns.png-atlas
-[14:47:15] [Render thread/INFO]: Created: 2048x2048x4 minecraft:textures/atlas/blocks.png-atlas
-[14:47:15] [Render thread/INFO]: Created: 1024x512x0 minecraft:textures/atlas/items.png-atlas
-[14:47:15] [Render thread/INFO]: Created: 1024x1024x0 minecraft:textures/atlas/gui.png-atlas
-[14:47:15] [Render thread/INFO]: Created: 128x64x0 minecraft:textures/atlas/map_decorations.png-atlas
-[14:47:15] [Render thread/INFO]: Created: 512x512x0 minecraft:textures/atlas/chest.png-atlas
-[14:47:15] [Render thread/INFO]: Created: 512x512x0 minecraft:textures/atlas/shulker_boxes.png-atlas
-[14:47:16] [Download-1/INFO]: Could not authorize you against Realms server: java.lang.RuntimeException: Failed to parse into SignedJWT: 0
-[14:47:16] [Download-1/ERROR]: Couldn't connect to realms
-com.mojang.realmsclient.exception.RealmsServiceException: Realms authentication error with message 'java.lang.RuntimeException: Failed to parse into SignedJWT: 0'
-	at com.mojang.realmsclient.client.RealmsClient.execute(RealmsClient.java:625)
-	at com.mojang.realmsclient.client.RealmsClient.clientCompatible(RealmsClient.java:354)
-	at com.mojang.realmsclient.RealmsAvailability.lambda$check$0(RealmsAvailability.java:48)
-	at java.base/java.util.concurrent.CompletableFuture$AsyncSupply.run(CompletableFuture.java:1789)
-	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
-	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
-	at java.base/java.lang.Thread.run(Thread.java:1516)
-[14:47:25] [Worker-Main-1/INFO]: Loaded 1866 advancements
-[14:47:26] [Server thread/INFO]: Starting integrated minecraft server version 26.3
-[14:47:26] [Server thread/INFO]: Generating keypair
-[14:47:26] [Server thread/INFO]: Loading 0 persistent chunks...
-[14:47:26] [Server thread/INFO]: 准备生成区域中：16%
-[14:47:26] [Server thread/INFO]: Saving chunks for level 'ServerLevel[新的世界2]'/minecraft:overworld
-[14:47:26] [Server thread/INFO]: Saving chunks for level 'ServerLevel[新的世界2]'/minecraft:the_end
-[14:47:26] [Server thread/INFO]: Saving chunks for level 'ServerLevel[新的世界2]'/minecraft:the_nether
-[14:47:27] [Server thread/INFO]: Loading 49 chunks for player spawn...
-[14:47:27] [Server thread/INFO]: 准备生成区域中：16%
-[14:47:27] [Server thread/INFO]: Time elapsed: 857 ms
-[14:47:27] [Server thread/INFO]: NormalTable5801[local:E:0b036d17] logged in with entity id 1 at (3.076521071602078, -33.0, 9.930590381984036)
-[14:47:27] [Server thread/INFO]: System chat: NormalTable5801加入了游戏
-[14:47:28] [Server thread/INFO]: Changing view distance to 16, from 10
-[14:47:28] [Render thread/INFO]: Loaded 13 advancements
-[14:47:28] [Server thread/INFO]: Changing simulation distance to 12, from 0
-[14:47:28] [Render thread/WARN]: Requested post effect does not exist: minecraft:end_of_frame
-[14:47:28] [Render thread/INFO]: Resizing Dynamic Transforms UBO, capacity limit of 2 reached during a single frame. New capacity will be 4.
-[14:47:28] [Render thread/INFO]: Resizing Dynamic Transforms UBO, capacity limit of 4 reached during a single frame. New capacity will be 8.
-[14:47:29] [Render thread/INFO]: Resizing Dynamic Transforms UBO, capacity limit of 8 reached during a single frame. New capacity will be 16.
-[14:47:29] [Render thread/INFO]: Resizing Chunk Sections Command Buffer, capacity limit of 2 reached during a single frame. New capacity will be 4.
-[14:47:29] [Render thread/INFO]: Resizing Chunk Sections Instanced, capacity limit of 2 reached during a single frame. New capacity will be 4.
-[14:47:29] [Render thread/INFO]: Resizing Chunk Sections Command Buffer, capacity limit of 4 reached during a single frame. New capacity will be 16.
-[14:47:29] [Render thread/INFO]: Resizing Chunk Sections Instanced, capacity limit of 4 reached during a single frame. New capacity will be 16.
-[14:47:29] [Render thread/INFO]: Resizing Chunk Sections Command Buffer, capacity limit of 16 reached during a single frame. New capacity will be 32.
-[14:47:29] [Render thread/INFO]: Resizing Chunk Sections Instanced, capacity limit of 16 reached during a single frame. New capacity will be 32.
-[14:47:29] [Render thread/INFO]: Resizing Chunk Sections Command Buffer, capacity limit of 32 reached during a single frame. New capacity will be 64.
-[14:47:29] [Render thread/INFO]: Resizing Chunk Sections Instanced, capacity limit of 32 reached during a single frame. New capacity will be 64.
-[14:47:42] [Server thread/INFO]: Saving and pausing game...
-[14:47:42] [Server thread/INFO]: Saving chunks for level 'ServerLevel[新的世界2]'/minecraft:overworld
-[14:47:42] [Server thread/INFO]: Saving chunks for level 'ServerLevel[新的世界2]'/minecraft:the_end
-[14:47:42] [Server thread/INFO]: Saving chunks for level 'ServerLevel[新的世界2]'/minecraft:the_nether
-[14:47:43] [Server thread/INFO]: Stopping server
-[14:47:43] [Server thread/INFO]: Saving players
-[14:47:43] [Server thread/INFO]: NormalTable5801 lost connection: 连接中断
-[14:47:43] [Server thread/INFO]: System chat: NormalTable5801退出了游戏
-[14:47:43] [Server thread/INFO]: Stopping singleplayer server as player logged out
-[14:47:43] [Server thread/INFO]: Saving worlds
-[14:47:44] [Server thread/INFO]: Saving chunks for level 'ServerLevel[新的世界2]'/minecraft:overworld
-[14:47:44] [Server thread/INFO]: Saving chunks for level 'ServerLevel[新的世界2]'/minecraft:the_end
-[14:47:44] [Server thread/INFO]: Saving chunks for level 'ServerLevel[新的世界2]'/minecraft:the_nether
-[14:47:45] [Render thread/INFO]: Stopping!
+[21:29:59] [Render thread/INFO]: Reloading ResourceManager: vanilla, vanilla

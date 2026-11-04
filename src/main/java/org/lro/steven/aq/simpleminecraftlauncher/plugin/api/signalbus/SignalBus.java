@@ -23,13 +23,10 @@
  */
 package org.lro.steven.aq.simpleminecraftlauncher.plugin.api.signalbus;
 
-import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.Plugin;
+import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.Channel;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.Event;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.signalbus.impl.DefaultImplementationSignalBus;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
 import java.util.function.Consumer;
 
 /**
@@ -54,7 +51,8 @@ public interface SignalBus {
      * @param signal 信号
      * @param consumer 触发信号时，所执行的函数
      */
-    void connect(String signal, Consumer<Event> consumer);
+    void connect(String signal, EventConsumer consumer);
+    void connect(String signal, ChannelConsumer consumer);
 
     /**
      * 发送信号
@@ -62,5 +60,6 @@ public interface SignalBus {
      * @param payload 事件对象；可携带附属信息.
      */
     void emit(String signal, Event payload);
+    void emit(String signal, Channel payload);
 
 }

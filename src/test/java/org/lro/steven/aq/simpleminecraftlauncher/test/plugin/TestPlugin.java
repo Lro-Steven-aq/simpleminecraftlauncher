@@ -26,6 +26,7 @@ package org.lro.steven.aq.simpleminecraftlauncher.test.plugin;
 import org.junit.jupiter.api.Test;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.Event;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.Plugin;
+import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.signalbus.EventConsumer;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.signalbus.SignalBus;
 
 public class TestPlugin {
@@ -41,8 +42,11 @@ public class TestPlugin {
 class TePlugin implements Plugin {
     @Override
     public void start(SignalBus signalBus) {
-        signalBus.connect("launcher.initialize", (e) -> {
-            IO.println(e.source());
+        signalBus.connect("launcher.initialize", new EventConsumer() {
+            @Override
+            public void accept(Event event) {
+                IO.println(event.source());
+            }
         });
     }
 }
