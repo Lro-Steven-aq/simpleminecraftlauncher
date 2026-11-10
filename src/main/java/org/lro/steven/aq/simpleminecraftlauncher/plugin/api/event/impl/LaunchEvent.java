@@ -43,6 +43,14 @@ public class LaunchEvent implements Event {
     private final Features features;
     private final String javaExecutable;
 
+    /**
+     * 创建 {@code LaunchEvent} 实例。
+     * @param version 参数
+     * @param versionJson 参数
+     * @param launchConfiguration 参数
+     * @param features 参数
+     * @param javaExecutable 参数
+     */
     private LaunchEvent(String version, String versionJson, Configuration launchConfiguration,
                         Features features, String javaExecutable) {
         this.version = version;
@@ -66,6 +74,10 @@ public class LaunchEvent implements Event {
         return new LaunchEvent(version, versionJson, launchConfiguration, features, javaExecutable);
     }
 
+    /**
+     * 实现/覆写接口或父类方法。
+     * @return 返回值
+     */
     @Override
     public String source() {
         return "launch event";

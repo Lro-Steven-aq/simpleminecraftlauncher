@@ -47,6 +47,9 @@ public final class Internationalization {
         internationalization = new Internationalization();
         initialize();
     }
+    /**
+     * 内部方法：initialize。
+     */
     private static void initialize() {
         try {
             internationalization.addProperties(
@@ -83,22 +86,41 @@ public final class Internationalization {
     public void setLocale(Locale locale) {
         Locale.setDefault(locale);
     }
+    /**
+     * 创建 {@code Internationalization} 实例。
+     */
     private Internationalization() {}
 
 
     private void addProperties(Locale locale, Properties properties) {
         this.properties.put(locale, properties);
     }
+    /**
+     * 内部方法：load。
+     * @param propertiesFile 参数
+     * @return 返回值
+     * @throws IOException 异常
+     */
     private Properties load(String propertiesFile) throws IOException {
         Properties properties = new Properties();
         properties.load(new FileInputStream(propertiesFile));
         return properties;
     }
+    /**
+     * 解析 Language Tag。
+     * @param fileName 参数
+     * @return 返回值
+     */
     private static String parseLanguageTag(String fileName) {
         Pattern pattern = Pattern.compile("language_(.+)");
         Matcher matcher = pattern.matcher(fileName);
         return matcher.matches() ? matcher.group(1) : fileName;
     }
+    /**
+     * 构建 Properties From File。
+     * @param file 参数
+     * @return 返回值
+     */
     private static Properties buildPropertiesFromFile(File file) {
         Properties properties = new Properties();
         try (InputStream stream = new FileInputStream(file)) {

@@ -98,6 +98,12 @@ public class PluginManager {
     }
 
 
+    /**
+     * 获取 Manifest。
+     * @param file 参数
+     * @return 返回值
+     * @throws IOException 异常
+     */
     private Manifest getManifest(File file) throws IOException {
         try (ZipInputStream inputStream = new ZipInputStream(new FileInputStream(file))) {
             ZipEntry entry;
@@ -110,6 +116,12 @@ public class PluginManager {
         return null;
     }
 
+    /**
+     * 获取 Plugin Class。
+     * @param file 参数
+     * @return 返回值
+     * @throws IOException 异常
+     */
     private String getPluginClass(File file) throws IOException {
         Manifest manifest = getManifest(file);
         if (manifest == null) {

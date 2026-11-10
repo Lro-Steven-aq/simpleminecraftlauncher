@@ -44,6 +44,14 @@ public class ArgumentDeserializer implements JsonDeserializer<Argument> {
     private static final Type RULE_LIST = new TypeToken<List<Rule>>() { }.getType();
     private static final Type STRING_LIST = new TypeToken<List<String>>() { }.getType();
 
+    /**
+     * 实现/覆写接口或父类方法。
+     * @param json 参数
+     * @param typeOfT 参数
+     * @param context 参数
+     * @return 返回值
+     * @throws JsonParseException 异常
+     */
     @Override
     public Argument deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         if (json == null || json.isJsonNull()) {
@@ -58,10 +66,22 @@ public class ArgumentDeserializer implements JsonDeserializer<Argument> {
         return fromObject(json.getAsJsonObject(), context);
     }
 
+    /**
+     * 内部方法：from Object。
+     * @param object 参数
+     * @param context 参数
+     * @return 返回值
+     */
     private Argument fromObject(JsonObject object, JsonDeserializationContext context) {
         return new Argument(readRules(object, context), readValue(object, context));
     }
 
+    /**
+     * 读取 Rules。
+     * @param object 参数
+     * @param context 参数
+     * @return 返回值
+     */
     private List<Rule> readRules(JsonObject object, JsonDeserializationContext context) {
         if (!object.has("rules")) {
             return null;
@@ -73,6 +93,12 @@ public class ArgumentDeserializer implements JsonDeserializer<Argument> {
         return context.deserialize(rules, RULE_LIST);
     }
 
+    /**
+     * 读取 Value。
+     * @param object 参数
+     * @param context 参数
+     * @return 返回值
+     */
     private List<String> readValue(JsonObject object, JsonDeserializationContext context) {
         if (!object.has("value")) {
             return List.of();

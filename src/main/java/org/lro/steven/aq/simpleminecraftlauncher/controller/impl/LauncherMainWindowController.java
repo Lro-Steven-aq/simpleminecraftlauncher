@@ -25,10 +25,7 @@ package org.lro.steven.aq.simpleminecraftlauncher.controller.impl;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceDialog;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.MenuBar;
+import javafx.scene.control.*;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -59,6 +56,7 @@ import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.impl.LaunchEve
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.impl.LogEvent;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.impl.PopupEvent;
 import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.signalbus.SignalBus;
+import org.lro.steven.aq.simpleminecraftlauncher.utils.UIManager;
 import org.lro.steven.aq.simpleminecraftlauncher.version.VersionManager;
 
 import java.io.IOException;
@@ -99,6 +97,27 @@ public class LauncherMainWindowController extends Controller {
     @FXML
     private Button exitButton;
 
+    @FXML
+    private MenuItem enableFastLaunchButton;
+
+    @FXML
+    private MenuItem disableFastLaunchButton;
+
+    @FXML
+    private Menu downloadsButton;
+
+    @FXML
+    private MenuItem downloadNewVersionsButton;
+
+    @FXML
+    private Menu helpButton;
+
+    @FXML
+    private MenuItem aboutButton;
+
+    // 如果可以，尽量不要在Controller里面塞非@FXML字段。
+    // 已有的不用改。
+
     private final Metadata metadata;
 
     private static final SignalBus SIGNAL_BUS = PluginManager.get().getSignalBus();
@@ -123,6 +142,11 @@ public class LauncherMainWindowController extends Controller {
         this.versionManager = VersionManager.create(metadata.configurationMapper());
     }
 
+    /**
+     * 实现/覆写接口或父类方法。
+     * @param location 参数
+     * @param resources 参数
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initializeStyle();
@@ -131,6 +155,9 @@ public class LauncherMainWindowController extends Controller {
         launchButton.setOnMouseClicked(this::launch);
     }
 
+    /**
+     * 初始化 Style。
+     */
     private void initializeStyle() {
         var image = metadata.preciousBackgroundImage();
         backgroundImage.setImage(image);
@@ -189,6 +216,9 @@ public class LauncherMainWindowController extends Controller {
         return Math.max(0.0, Math.min(1.0, settings.alpha()));
     }
 
+    /**
+     * 初始化 Version Selector。
+     */
     private void initializeVersionSelector() {
         List<String> versions = versionManager.listAvailableVersions();
         versionSelector.getItems().setAll(versions);
@@ -202,15 +232,33 @@ public class LauncherMainWindowController extends Controller {
         }
     }
 
+    /**
+     * 绑定 Window Controls。
+     */
     private void bindWindowControls() {
         bindDrag();
         exitButton.setOnMouseClicked(event -> {
+            metadata.save();
             Platform.exit();
             System.exit(0);
         });
         minimizeButton.setOnMouseClicked(event -> minimize());
+        enableFastLaunchButton.setOnAction(event -> {
+            SIGNAL_BUS.emit("log.info", LogEvent.of("switch to fastLaunch mode"));
+            metadata.configurationMapper().userSettings().fastLaunch(true);
+        });
+        disableFastLaunchButton.setOnAction(event -> {
+            SIGNAL_BUS.emit("log.info", LogEvent.of("switch off fastLaunch mode"));
+            metadata.configurationMapper().userSettings().fastLaunch(false);
+        });
+        downloadNewVersionsButton.setOnAction(event -> downloadNewVersions());
+        aboutButton.setOnAction(event -> showAbout());
+
     }
 
+    /**
+     * 绑定 Drag。
+     */
     private void bindDrag() {
         final double[] offsetX = new double[1];
         final double[] offsetY = new double[1];
@@ -218,6 +266,12 @@ public class LauncherMainWindowController extends Controller {
         menuBar.setOnMouseDragged(event -> onMenuDragged(event, offsetX, offsetY));
     }
 
+    /**
+     * 处理 Menu Pressed。
+     * @param event 参数
+     * @param offsetX 参数
+     * @param offsetY 参数
+     */
     private void onMenuPressed(MouseEvent event, double[] offsetX, double[] offsetY) {
         if (!event.isPrimaryButtonDown()) {
             return;
@@ -229,6 +283,12 @@ public class LauncherMainWindowController extends Controller {
         event.consume();
     }
 
+    /**
+     * 处理 Menu Dragged。
+     * @param event 参数
+     * @param offsetX 参数
+     * @param offsetY 参数
+     */
     private void onMenuDragged(MouseEvent event, double[] offsetX, double[] offsetY) {
         if (!event.isPrimaryButtonDown()) {
             return;
@@ -238,12 +298,19 @@ public class LauncherMainWindowController extends Controller {
         stage.setY(event.getScreenY() - offsetY[0]);
     }
 
+    /**
+     * 内部方法：minimize。
+     */
     private void minimize() {
         if (root.getScene() != null && root.getScene().getWindow() instanceof Stage stage) {
             stage.setIconified(true);
         }
     }
 
+    /**
+     * 内部方法：launch。
+     * @param event 参数
+     */
     private void launch(MouseEvent event) {
         launchButton.setDisable(true);
         try {
@@ -253,6 +320,10 @@ public class LauncherMainWindowController extends Controller {
         }
     }
 
+    /**
+     * 启动 Launch。
+     * @throws IOException 异常
+     */
     private void startLaunch() throws IOException {
         UserSettings settings = requireSettings();
         if (settings == null) {
@@ -270,12 +341,17 @@ public class LauncherMainWindowController extends Controller {
         }
         String missingVersion = missingClientJarVersion(jsonPath);
         if (missingVersion != null) {
-            startInstall(missingVersion);
+            startInstall(missingVersion, true);
             return;
         }
         executeLaunch(jsonPath, javaExecutable);
     }
 
+    /**
+     * 内部方法：missing Client Jar Version。
+     * @param jsonPath 参数
+     * @return 返回值
+     */
     private String missingClientJarVersion(String jsonPath) {
         try {
             GameMetadataManifest manifest = Json.GSON.fromJson(
@@ -296,6 +372,10 @@ public class LauncherMainWindowController extends Controller {
         }
     }
 
+    /**
+     * 内部方法：require Settings。
+     * @return 返回值
+     */
     private UserSettings requireSettings() {
         UserSettings settings = metadata.configurationMapper().userSettings();
         if (settings == null) {
@@ -304,6 +384,10 @@ public class LauncherMainWindowController extends Controller {
         return settings;
     }
 
+    /**
+     * 解析 Launch Java。
+     * @return 返回值
+     */
     private String resolveLaunchJava() {
         ApplicationConfiguration configuration = metadata.configurationMapper();
         UserSettings settings = configuration.userSettings();
@@ -319,6 +403,12 @@ public class LauncherMainWindowController extends Controller {
         return javaExecutable;
     }
 
+    /**
+     * 执行 Launch。
+     * @param jsonPath 参数
+     * @param javaExecutable 参数
+     * @throws IOException 异常
+     */
     private void executeLaunch(String jsonPath, String javaExecutable) throws IOException {
         String content = Files.readString(Path.of(jsonPath));
         GameMetadataManifest manifest = Json.GSON.fromJson(content, GameMetadataManifest.class);
@@ -335,10 +425,19 @@ public class LauncherMainWindowController extends Controller {
         startGame(event);
     }
 
+    /**
+     * 判断是否 Valid Manifest。
+     * @param manifest 参数
+     * @return 返回值
+     */
     private static boolean isValidManifest(GameMetadataManifest manifest) {
         return manifest != null && manifest.mainClass() != null && !manifest.mainClass().isBlank();
     }
 
+    /**
+     * 启动 Game。
+     * @param event 参数
+     */
     private void startGame(LaunchEvent event) {
         SIGNAL_BUS.emit("log.info", LogEvent.of("Starting Minecraft " + event.version()));
         Thread thread = new Thread(() -> runGame(event), "minecraft-launch");
@@ -346,27 +445,73 @@ public class LauncherMainWindowController extends Controller {
         thread.start();
     }
 
+    /**
+     * 执行 Game。
+     * @param event 参数
+     */
     private void runGame(LaunchEvent event) {
         SIGNAL_BUS.emit("launch.game", event);
         Platform.runLater(() -> launchButton.setDisable(false));
     }
 
+    /**
+     * 内部方法：fail。
+     * @param message 参数
+     */
     private void fail(String message) {
         SIGNAL_BUS.emit("log.error", LogEvent.of(message));
         Platform.runLater(() -> launchButton.setDisable(false));
     }
 
+    /**
+     * 安装 Version And Launch。
+     */
     private void installVersionAndLaunch() {
-        versionManager.enqueue(new ManifestCallback());
+        versionManager.enqueue(new ManifestCallback(true));
+    }
+
+    /**
+     * 下载 New Versions。
+     */
+    private void downloadNewVersions() {
+        launchButton.setDisable(true);
+        versionManager.enqueue(new ManifestCallback(false));
+    }
+
+    /**
+     * 显示 About。
+     */
+    private void showAbout() {
+        UIManager.showAbout(root.getScene() == null ? null : root.getScene().getWindow());
     }
 
     /** 版本清单请求的回调，负责选择并安装版本。 */
     private final class ManifestCallback implements Callback {
+        private final boolean launchAfterInstall;
+
+        /**
+         * 创建 {@code ManifestCallback} 实例。
+         * @param launchAfterInstall 参数
+         */
+        private ManifestCallback(boolean launchAfterInstall) {
+            this.launchAfterInstall = launchAfterInstall;
+        }
+
+        /**
+         * 实现/覆写接口或父类方法。
+         * @param call 参数
+         * @param e 参数
+         */
         @Override
         public void onFailure(@NotNull Call call, @NotNull IOException e) {
             fail("Network error. Try again: " + e.getMessage());
         }
 
+        /**
+         * 实现/覆写接口或父类方法。
+         * @param call 参数
+         * @param response 参数
+         */
         @Override
         public void onResponse(@NotNull Call call, @NotNull Response response) {
             try (response) {
@@ -375,37 +520,108 @@ public class LauncherMainWindowController extends Controller {
                     fail("Can't read version manifest");
                     return;
                 }
-                Platform.runLater(() -> selectAndInstall(manifest));
+                Platform.runLater(() -> selectAndInstall(manifest, launchAfterInstall));
             }
         }
+    /**
+     * 内部方法：select And Install。
+     * @param manifest 参数
+     * @param launchAfterInstall 参数
+     * @return 返回值
+     */
     }
 
-    private void selectAndInstall(VersionManifest manifest) {
+    private void selectAndInstall(VersionManifest manifest, boolean launchAfterInstall) {
         String version = userSelectVersion(manifest);
         if (version == null) {
             launchButton.setDisable(false);
             return;
         }
-        startInstall(version);
+        /**
+         * 启动 Install。
+         * @param version 参数
+         * @param launchAfterInstall 参数
+         */
+        startInstall(version, launchAfterInstall);
+    /**
+     * 启动 Install。
+     * @param version 参数
+     * @param launchAfterInstall 参数
+     * @return 返回值
+     */
     }
 
-    private void startInstall(String version) {
-        Thread installer = new Thread(() -> installThenRelaunch(version), "version-install");
+    private void startInstall(String version, boolean launchAfterInstall) {
+        Thread installer = new Thread(() -> installThenRelaunch(version, launchAfterInstall), "version-install");
+        /**
+         * 设置 Daemon。
+         * @param true 参数
+         * @return 返回值
+         */
         installer.setDaemon(true);
+        /**
+         * 内部方法：start。
+         * @return 返回值
+         */
         installer.start();
+    /**
+     * 安装 Then Relaunch。
+     * @param version 参数
+     * @param launchAfterInstall 参数
+     * @return 返回值
+     */
     }
 
-    private void installThenRelaunch(String version) {
+    private void installThenRelaunch(String version, boolean launchAfterInstall) {
+        /**
+         * 内部方法：install。
+         * @param version 参数
+         * @return 返回值
+         */
         versionManager.install(version);
-        Platform.runLater(() -> afterInstall(version));
+        /**
+         * 执行 Later。
+         * @param afterInstall(version 参数
+         * @param launchAfterInstall) 参数
+         * @return 返回值
+         */
+        Platform.runLater(() -> afterInstall(version, launchAfterInstall));
+    /**
+     * 内部方法：after Install。
+     * @param version 参数
+     * @param launchAfterInstall 参数
+     * @return 返回值
+     */
     }
 
-    private void afterInstall(String version) {
+    private void afterInstall(String version, boolean launchAfterInstall) {
         List<String> versions = versionManager.listAvailableVersions();
+        /**
+         * 获取 Items。
+         * @return 返回值
+         */
         versionSelector.getItems().setAll(versions);
+        /**
+         * 设置 Value。
+         * @param version 参数
+         * @return 返回值
+         */
         versionSelector.setValue(version);
+        /**
+         * 设置 Disable。
+         * @param false 参数
+         * @return 返回值
+         */
         launchButton.setDisable(false);
-        launch(null);
+        if (launchAfterInstall) {
+            launch(null);
+        }
+    /**
+     * 解析 Java Executable。
+     * @param configuration 参数
+     * @param settings 参数
+     * @return 返回值
+     */
     }
 
     private String resolveJavaExecutable(ApplicationConfiguration configuration, UserSettings settings) {
@@ -415,7 +631,19 @@ public class LauncherMainWindowController extends Controller {
         if (settings.executableJavaCommand() != null) {
             return settings.executableJavaCommand();
         }
+        /**
+         * Java Executable From Environment。
+         * @param configuration 参数
+         * @param settings 参数
+         * @return 返回值
+         */
         return javaExecutableFromEnvironment(configuration, settings);
+    /**
+     * Java Executable From Environment。
+     * @param configuration 参数
+     * @param settings 参数
+     * @return 返回值
+     */
     }
 
     private String javaExecutableFromEnvironment(ApplicationConfiguration configuration, UserSettings settings) {
@@ -423,32 +651,59 @@ public class LauncherMainWindowController extends Controller {
         if (javaHome == null) {
             return null;
         }
+        /**
+         * Java Home。
+         * @param javaHome 参数
+         * @return 返回值
+         */
         settings.javaHome(javaHome);
         String executable = javaExecutableIn(javaHome);
         if (executable != null && Files.isRegularFile(Path.of(executable))) {
             configuration.save(ApplicationConfigurationLoader.DEFAULT_PATH);
         }
         return executable;
+    /**
+     * 显示 Java Popup。
+     * @param configuration 参数
+     * @return 返回值
+     */
     }
 
     private void showJavaPopup(ApplicationConfiguration configuration) {
-        SIGNAL_BUS.emit("log.error",
-                LogEvent.of("Can't find your java, Do you want to scan your disk or download from Internet for it?"));
-        SIGNAL_BUS.emit("ui.popup.confirmation",
-                PopupEvent.of("Java",
-                        "Do you want to scan for java? Or Download it from internet?",
-                        "Click \"Yes\" to scan Java Runtime Environment; \nClick \"No\" to download runtime from internet. (jdk.java.net)",
-                        () -> {
-                            Environment.scanJavaRuntime(configuration);
-                            launch(null);
-                        },
-                        () -> versionManager.downloadJavaRuntimeFromInternet(configuration),
-                        this::noChoice));
+        /**
+         * 显示 Java Prompt。
+         * @param this::noChoice 参数
+         * @return 返回值
+         */
+        UIManager.showJavaPrompt(
+                () -> {
+                    Environment.scanJavaRuntime(configuration);
+                    launch(null);
+                },
+                () -> versionManager.downloadJavaRuntimeFromInternet(configuration),
+                this::noChoice);
+    /**
+     * Java Executable In。
+     * @param javaHome 参数
+     * @return 返回值
+     */
     }
 
     private static String javaExecutableIn(String javaHome) {
         String executable = OperatingSystem.getOs() == OperatingSystem.WINDOWS ? "java.exe" : "java";
+        /**
+         * 内部方法：of。
+         * @param javaHome 参数
+         * @param "bin" 参数
+         * @param executable 参数
+         * @return 返回值
+         */
         return Path.of(javaHome, "bin", executable).toString();
+    /**
+     * 内部方法：selected Version Json Path。
+     * @param settings 参数
+     * @return 返回值
+     */
     }
 
     private String selectedVersionJsonPath(UserSettings settings) {
@@ -466,6 +721,11 @@ public class LauncherMainWindowController extends Controller {
             return configured;
         }
         return null;
+    /**
+     * 内部方法：user Select Version。
+     * @param manifest 参数
+     * @return 返回值
+     */
     }
 
     private String userSelectVersion(VersionManifest manifest) {
@@ -474,7 +734,29 @@ public class LauncherMainWindowController extends Controller {
             SIGNAL_BUS.emit("log.error", LogEvent.of("No versions available"));
             return null;
         }
-        return createVersionDialog(manifest, versions).showAndWait().orElse(null);
+        /**
+         * 内部方法：choose Version。
+         * @param root.getScene().getWindow() 参数
+         * @param versions 参数
+         * @param versions) 参数
+         * @param version" 参数
+         * @param install" 参数
+         * @param "Version:" 参数
+         * @return 返回值
+         */
+        return UIManager.chooseVersion(
+                        root.getScene() == null ? null : root.getScene().getWindow(),
+                        versions,
+                        initialVersion(manifest, versions),
+                        "Minecraft version",
+                        "Select the version to install",
+                        "Version:")
+                .orElse(null);
+    /**
+     * 内部方法：version Ids。
+     * @param manifest 参数
+     * @return 返回值
+     */
     }
 
     private static List<String> versionIds(VersionManifest manifest) {
@@ -488,27 +770,41 @@ public class LauncherMainWindowController extends Controller {
             }
         }
         return versions;
-    }
-
-    private ChoiceDialog<String> createVersionDialog(VersionManifest manifest, List<String> versions) {
-        ChoiceDialog<String> dialog = new ChoiceDialog<>(initialVersion(manifest, versions), versions);
-        if (root.getScene() != null) {
-            dialog.initOwner(root.getScene().getWindow());
-        }
-        dialog.setTitle("Minecraft version");
-        dialog.setHeaderText("Select the version to install");
-        dialog.setContentText("Version:");
-        return dialog;
+    /**
+     * 内部方法：initial Version。
+     * @param manifest 参数
+     * @param versions 参数
+     * @return 返回值
+     */
     }
 
     private static String initialVersion(VersionManifest manifest, List<String> versions) {
         String initial = manifest.latest() != null && manifest.latest().release() != null
+                /**
+                 * 内部方法：latest。
+                 * @return 返回值
+                 */
                 ? manifest.latest().release()
                 : versions.get(0);
+        /**
+         * 内部方法：contains。
+         * @param initial 参数
+         * @return 返回值
+         */
         return versions.contains(initial) ? initial : versions.get(0);
+    /**
+     * 内部方法：no Choice。
+     * @return 返回值
+     */
     }
 
     private void noChoice() {
+        /**
+         * 内部方法：emit。
+         * @param "log.error" 参数
+         * @param choice") 参数
+         * @return 返回值
+         */
         SIGNAL_BUS.emit("log.error", LogEvent.of("No choice"));
     }
 }

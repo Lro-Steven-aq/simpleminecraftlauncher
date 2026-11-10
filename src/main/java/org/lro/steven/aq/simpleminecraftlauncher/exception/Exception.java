@@ -35,6 +35,10 @@ public abstract class Exception extends java.lang.RuntimeException {
         message = msg;
     }
 
+    /**
+     * 实现/覆写接口或父类方法。
+     * @return 返回值
+     */
     @Override
     public String toString() {
         return message;

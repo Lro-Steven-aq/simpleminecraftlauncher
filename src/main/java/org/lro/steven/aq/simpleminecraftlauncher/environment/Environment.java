@@ -51,6 +51,9 @@ public final class Environment {
     private static final Pattern VERSION_NUMBER = Pattern.compile("(\\d+)(?:\\.(\\d+))?");
     private static final Pattern DIRECTORY_VERSION = Pattern.compile("(?:jdk|java|temurin|graalvm)[-_]?(\\d+)", Pattern.CASE_INSENSITIVE);
 
+    /**
+     * 创建 {@code Environment} 实例。
+     */
     private Environment() {
     }
 
@@ -72,10 +75,19 @@ public final class Environment {
         saveJavaHome(configuration, settings, javaHome);
     }
 
+    /**
+     * 内部方法：user Settings。
+     * @param configuration 参数
+     * @return 返回值
+     */
     private static UserSettings userSettings(ApplicationConfiguration configuration) {
         return configuration == null ? null : configuration.userSettings();
     }
 
+    /**
+     * 内部方法：collect Candidates。
+     * @return 返回值
+     */
     private static Set<Path> collectCandidates() {
         Set<Path> candidates = new LinkedHashSet<>();
         addJavaHome(candidates, System.getenv("JAVA_HOME"));
@@ -84,6 +96,10 @@ public final class Environment {
         return candidates;
     }
 
+    /**
+     * 添加 Common Locations。
+     * @param candidates 参数
+     */
     private static void addCommonLocations(Set<Path> candidates) {
         Path home = Path.of(System.getProperty("user.home", "."));
         addChildren(candidates, home.resolve(".jdks"), false);
@@ -94,6 +110,10 @@ public final class Environment {
         addChildren(candidates, Path.of("/opt"), true);
     }
 
+    /**
+     * 添加 Platform Locations。
+     * @param candidates 参数
+     */
     private static void addPlatformLocations(Set<Path> candidates) {
         if (OperatingSystem.getOs() == OperatingSystem.OSX) {
             addMacJavaHomes(candidates, Path.of("/Library/Java/JavaVirtualMachines"));
@@ -103,6 +123,10 @@ public final class Environment {
         }
     }
 
+    /**
+     * 添加 Windows Java Homes。
+     * @param candidates 参数
+     */
     private static void addWindowsJavaHomes(Set<Path> candidates) {
         String programFiles = System.getenv("ProgramFiles");
         if (programFiles == null) {
@@ -113,6 +137,11 @@ public final class Environment {
         addChildren(candidates, Path.of(programFiles, "Microsoft"), false);
     }
 
+    /**
+     * 查找 Best Java Home。
+     * @param candidates 参数
+     * @return 返回值
+     */
     private static Path findBestJavaHome(Set<Path> candidates) {
         Path best = null;
         int bestVersion = Integer.MIN_VALUE;
@@ -129,12 +158,23 @@ public final class Environment {
         return best;
     }
 
+    /**
+     * 保存 Java Home。
+     * @param configuration 参数
+     * @param settings 参数
+     * @param javaHome 参数
+     */
     private static void saveJavaHome(ApplicationConfiguration configuration, UserSettings settings, Path javaHome) {
         settings.javaHome(javaHome.toString());
         configuration.save(ApplicationConfigurationLoader.DEFAULT_PATH);
         SIGNAL_BUS.emit("log.info", LogEvent.of("Java home: " + javaHome));
     }
 
+    /**
+     * 添加 Java Home。
+     * @param candidates 参数
+     * @param javaHome 参数
+     */
     private static void addJavaHome(Set<Path> candidates, String javaHome) {
         if (javaHome == null || javaHome.isBlank()) {
             return;
@@ -149,6 +189,12 @@ public final class Environment {
         }
     }
 
+    /**
+     * 添加 Children。
+     * @param candidates 参数
+     * @param directory 参数
+     * @param filterNames 参数
+     */
     private static void addChildren(Set<Path> candidates, Path directory, boolean filterNames) {
         if (!Files.isDirectory(directory)) {
             return;
@@ -160,6 +206,12 @@ public final class Environment {
         }
     }
 
+    /**
+     * 添加 Matching Java Homes。
+     * @param candidates 参数
+     * @param stream 参数
+     * @param filterNames 参数
+     */
     private static void addMatchingJavaHomes(Set<Path> candidates, Stream<Path> stream, boolean filterNames) {
         stream.filter(Files::isDirectory)
                 .filter(path -> !filterNames || isJavaLike(path))
@@ -167,17 +219,32 @@ public final class Environment {
                 .forEach(path -> addIfJavaHome(candidates, path));
     }
 
+    /**
+     * 添加 If Java Home。
+     * @param candidates 参数
+     * @param path 参数
+     */
     private static void addIfJavaHome(Set<Path> candidates, Path path) {
         if (isJavaHome(path)) {
             candidates.add(path.toAbsolutePath().normalize());
         }
     }
 
+    /**
+     * 判断是否 Java Like。
+     * @param path 参数
+     * @return 返回值
+     */
     private static boolean isJavaLike(Path path) {
         String name = path.getFileName().toString().toLowerCase(Locale.ROOT);
         return name.contains("jdk") || name.contains("java") || name.contains("temurin") || name.contains("graalvm");
     }
 
+    /**
+     * 添加 Mac Java Homes。
+     * @param candidates 参数
+     * @param directory 参数
+     */
     private static void addMacJavaHomes(Set<Path> candidates, Path directory) {
         if (!Files.isDirectory(directory)) {
             return;
@@ -192,6 +259,11 @@ public final class Environment {
         }
     }
 
+    /**
+     * 判断是否 Java Home。
+     * @param home 参数
+     * @return 返回值
+     */
     private static boolean isJavaHome(Path home) {
         if (home == null) {
             return false;
@@ -208,6 +280,11 @@ public final class Environment {
         return version > 0 ? version : directoryVersion(home);
     }
 
+    /**
+     * 读取 Release Version。
+     * @param home 参数
+     * @return 返回值
+     */
     private static int readReleaseVersion(Path home) {
         Path release = home.resolve("release");
         if (!Files.isRegularFile(release)) {
@@ -221,6 +298,11 @@ public final class Environment {
         }
     }
 
+    /**
+     * 内部方法：directory Version。
+     * @param home 参数
+     * @return 返回值
+     */
     private static int directoryVersion(Path home) {
         Matcher matcher = DIRECTORY_VERSION.matcher(home.getFileName().toString());
         if (!matcher.find()) {
@@ -233,6 +315,11 @@ public final class Environment {
         }
     }
 
+    /**
+     * 解析 Major。
+     * @param version 参数
+     * @return 返回值
+     */
     private static int parseMajor(String version) {
         Matcher matcher = VERSION_NUMBER.matcher(version);
         if (!matcher.find()) {

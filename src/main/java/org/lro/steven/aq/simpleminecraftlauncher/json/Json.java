@@ -36,10 +36,19 @@ import org.lro.steven.aq.simpleminecraftlauncher.metadata.game.version.Argument;
 public final class Json {
 
     public static final Gson GSON = new GsonBuilder()
+            /**
+             * 内部方法：register Type Adapter。
+             * @param WebURL.class 参数
+             * @param WebURLDeserializer() 参数
+             * @return 返回值
+             */
             .registerTypeAdapter(WebURL.class, new WebURLDeserializer())
             .registerTypeAdapter(Argument.class, new ArgumentDeserializer())
             .create();
 
+    /**
+     * 创建 {@code Json} 实例。
+     */
     private Json() {
     }
 }

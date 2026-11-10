@@ -46,6 +46,9 @@ import java.util.UUID;
  */
 public final class LaunchConfiguration {
 
+    /**
+     * 创建 {@code LaunchConfiguration} 实例。
+     */
     private LaunchConfiguration() {
     }
 
@@ -72,17 +75,33 @@ public final class LaunchConfiguration {
         return result;
     }
 
+    /**
+     * 内部方法：username。
+     * @param settings 参数
+     * @return 返回值
+     */
     private static String username(UserSettings settings) {
         return settings != null && settings.username() != null && !settings.username().isBlank()
                 ? settings.username()
                 : "Player";
     }
 
+    /**
+     * 内部方法：client Jar。
+     * @param manifest 参数
+     * @param versionDirectory 参数
+     * @return 返回值
+     */
     private static Path clientJar(GameMetadataManifest manifest, Path versionDirectory) {
         String jarName = manifest.jar() != null && !manifest.jar().isBlank() ? manifest.jar() : manifest.id();
         return versionDirectory.resolve(jarName + ".jar");
     }
 
+    /**
+     * 添加 Auth。
+     * @param result 参数
+     * @param username 参数
+     */
     private static void addAuth(Configuration result, String username) {
         UUID uuid = UUID.nameUUIDFromBytes(("OfflinePlayer:" + username).getBytes(StandardCharsets.UTF_8));
         result.add("auth_player_name", username);
@@ -93,6 +112,13 @@ public final class LaunchConfiguration {
         result.add("user_type", "legacy");
     }
 
+    /**
+     * 添加 Paths。
+     * @param result 参数
+     * @param manifest 参数
+     * @param gameDirectory 参数
+     * @param versionDirectory 参数
+     */
     private static void addPaths(Configuration result,
                                  GameMetadataManifest manifest,
                                  Path gameDirectory,
@@ -127,12 +153,24 @@ public final class LaunchConfiguration {
         return String.join(File.pathSeparator, entries);
     }
 
+    /**
+     * 添加 Client Jar。
+     * @param entries 参数
+     * @param clientJar 参数
+     */
     private static void addClientJar(List<String> entries, Path clientJar) {
         if (clientJar != null && Files.isRegularFile(clientJar)) {
             entries.add(clientJar.toString());
         }
     }
 
+    /**
+     * 添加 Libraries。
+     * @param entries 参数
+     * @param gameDirectory 参数
+     * @param manifest 参数
+     * @param features 参数
+     */
     private static void addLibraries(List<String> entries,
                                      Path gameDirectory,
                                      GameMetadataManifest manifest,
@@ -146,6 +184,13 @@ public final class LaunchConfiguration {
         }
     }
 
+    /**
+     * 添加 Library。
+     * @param entries 参数
+     * @param library 参数
+     * @param libraries 参数
+     * @param features 参数
+     */
     private static void addLibrary(List<String> entries, Library library, Path libraries, Features features) {
         if (library == null || library.mavenArtifactId() == null) {
             return;
@@ -159,6 +204,11 @@ public final class LaunchConfiguration {
         }
     }
 
+    /**
+     * 添加 Library Jar。
+     * @param entries 参数
+     * @param jar 参数
+     */
     private static void addLibraryJar(List<String> entries, Path jar) {
         if (Files.isRegularFile(jar)) {
             entries.add(jar.toString());
@@ -167,6 +217,11 @@ public final class LaunchConfiguration {
         }
     }
 
+    /**
+     * 内部方法：asset Index。
+     * @param manifest 参数
+     * @return 返回值
+     */
     private static String assetIndex(GameMetadataManifest manifest) {
         if (manifest.assetIndex() != null && manifest.assetIndex().id() != null) {
             return manifest.assetIndex().id();
@@ -182,6 +237,11 @@ public final class LaunchConfiguration {
         return path != null ? path : artifactPathFromCoordinates(library.mavenArtifactId());
     }
 
+    /**
+     * 内部方法：artifact Path From Downloads。
+     * @param library 参数
+     * @return 返回值
+     */
     private static String artifactPathFromDownloads(Library library) {
         if (library.downloads() != null
                 && library.downloads().artifact() != null
@@ -191,6 +251,11 @@ public final class LaunchConfiguration {
         return null;
     }
 
+    /**
+     * 内部方法：artifact Path From Coordinates。
+     * @param mavenArtifactId 参数
+     * @return 返回值
+     */
     private static String artifactPathFromCoordinates(String mavenArtifactId) {
         if (mavenArtifactId == null) {
             return null;

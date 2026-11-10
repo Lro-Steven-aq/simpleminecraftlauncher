@@ -37,6 +37,9 @@ import java.util.Objects;
  */
 public final class RuleEvaluator {
 
+    /**
+     * 创建 {@code RuleEvaluator} 实例。
+     */
     private RuleEvaluator() {
     }
 
@@ -60,10 +63,21 @@ public final class RuleEvaluator {
         return allowed;
     }
 
+    /**
+     * 内部方法：matches。
+     * @param rule 参数
+     * @param features 参数
+     * @return 返回值
+     */
     private static boolean matches(Rule rule, Features features) {
         return matchesOs(rule.os()) && matchesFeatures(rule.features(), features);
     }
 
+    /**
+     * 内部方法：matches Os。
+     * @param os 参数
+     * @return 返回值
+     */
     private static boolean matchesOs(Rule.Os os) {
         if (os == null) {
             return true;
@@ -74,6 +88,12 @@ public final class RuleEvaluator {
         return os.versionRange() == null || checkVersionRange(os.versionRange());
     }
 
+    /**
+     * 内部方法：matches Features。
+     * @param required 参数
+     * @param features 参数
+     * @return 返回值
+     */
     private static boolean matchesFeatures(Map<String, Boolean> required, Features features) {
         if (required == null) {
             return true;
@@ -106,6 +126,12 @@ public final class RuleEvaluator {
         return versionRange.min() == null || isGreaterThan(currentVersion, versionRange.min().split("\\."));
     }
 
+    /**
+     * 判断是否 Greater Than。
+     * @param a 参数
+     * @param b 参数
+     * @return 返回值
+     */
     private static boolean isGreaterThan(String[] a, String[] b) {
         int length = Math.max(a.length, b.length);
         for (int i = 0; i < length; i++) {
@@ -121,6 +147,11 @@ public final class RuleEvaluator {
         return false;
     }
 
+    /**
+     * 内部方法：string To Integer。
+     * @param string 参数
+     * @return 返回值
+     */
     private static int stringToInteger(String string) {
         try {
             return Integer.parseInt(string);

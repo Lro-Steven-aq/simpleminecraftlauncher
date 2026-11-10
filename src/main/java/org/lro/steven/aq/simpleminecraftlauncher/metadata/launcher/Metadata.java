@@ -25,6 +25,7 @@ package org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher;
 
 import javafx.scene.image.Image;
 import org.glavo.url.WebURL;
+import org.lro.steven.aq.simpleminecraftlauncher.ApplicationConfigurationLoader;
 import org.lro.steven.aq.simpleminecraftlauncher.json.configuaration.Features;
 import org.lro.steven.aq.simpleminecraftlauncher.metadata.game.OperatingSystem;
 import org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.conf.ApplicationConfiguration;
@@ -40,6 +41,14 @@ public final class Metadata {
     private final Image preciousBackgroundImage;
     private final ApplicationConfiguration configurationMapper;
 
+    /**
+     * 创建 {@code Metadata} 实例。
+     * @param system 参数
+     * @param systemVersion 参数
+     * @param features 参数
+     * @param preciousBackgroundImage 参数
+     * @param configurationMapper 参数
+     */
     private Metadata(OperatingSystem system, String systemVersion, Features features, Image preciousBackgroundImage, ApplicationConfiguration configurationMapper) {
         this.system = system;
         this.systemVersion = systemVersion;
@@ -65,6 +74,11 @@ public final class Metadata {
                 configurationMapper);
     }
 
+    /**
+     * 加载 Background。
+     * @param url 参数
+     * @return 返回值
+     */
     private static Image loadBackground(WebURL url) {
         if (url != null) {
             try {
@@ -119,5 +133,12 @@ public final class Metadata {
      */
     public ApplicationConfiguration configurationMapper() {
         return configurationMapper;
+    }
+
+    /**
+     * 把运行期配置（包括快速启动开关、Java 路径、游戏目录等）保存到默认配置文件。
+     */
+    public void save() {
+        configurationMapper.save(ApplicationConfigurationLoader.DEFAULT_PATH);
     }
 }

@@ -50,6 +50,10 @@ public class DefaultImplementationJsonConfiguration implements Configuration {
         configuration = new HashMap<>();
     }
 
+    /**
+     * 实现/覆写接口或父类方法。
+     * @param string 参数
+     */
     @Override
     public void load(String string) {
         if (string == null || string.isBlank()) {
@@ -62,6 +66,10 @@ public class DefaultImplementationJsonConfiguration implements Configuration {
         }
     }
 
+    /**
+     * 实现/覆写接口或父类方法。
+     * @param file 参数
+     */
     @Override
     public void load(File file) {
         try {
@@ -71,6 +79,10 @@ public class DefaultImplementationJsonConfiguration implements Configuration {
         }
     }
 
+    /**
+     * 实现/覆写接口或父类方法。
+     * @return 返回值
+     */
     @Override
     public Map<String, String> getMap() {
         return configuration;

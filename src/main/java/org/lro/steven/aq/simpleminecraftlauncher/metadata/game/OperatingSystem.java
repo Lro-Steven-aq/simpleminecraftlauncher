@@ -33,6 +33,11 @@ import java.util.regex.Pattern;
 /** 启动器支持的操作系统及其版本信息。 */
 public enum OperatingSystem {
 
+    /**
+     * 内部方法：Serialized Name。
+     * @param "linux" 参数
+     * @return 返回值
+     */
     @SerializedName("osx")
     OSX,
 

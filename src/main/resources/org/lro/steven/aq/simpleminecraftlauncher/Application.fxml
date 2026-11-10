@@ -28,18 +28,19 @@
               <menus>
                 <Menu mnemonicParsing="false" text="Quick Start">
                   <items>
-                    <MenuItem mnemonicParsing="false" />
+                    <MenuItem fx:id="enableFastLaunchButton" mnemonicParsing="false" text="Enable Fast Launch" />
+                        <MenuItem fx:id="disableFastLaunchButton" mnemonicParsing="false" text="Disable Fast Launch" />
                   </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Downloads">
+                <Menu fx:id="downloadsButton" mnemonicParsing="false" text="Downloads">
                   <items>
-                    <MenuItem mnemonicParsing="false" text="Download New Version(s)" />
+                    <MenuItem fx:id="downloadNewVersionsButton" mnemonicParsing="false" text="Download New Version(s)" />
                   </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Help">
+                <Menu fx:id="helpButton" mnemonicParsing="false" text="Help">
                   <items>
                         <MenuItem mnemonicParsing="false" text="Online Documents" />
-                    <MenuItem mnemonicParsing="false" text="About" />
+                    <MenuItem fx:id="aboutButton" mnemonicParsing="false" text="About" />
                   </items>
                 </Menu>
               </menus>

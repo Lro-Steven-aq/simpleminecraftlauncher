@@ -39,15 +39,30 @@ import java.lang.reflect.Type;
 
 import com.google.gson.*;
 import org.junit.jupiter.api.Test;
+import org.lro.steven.aq.simpleminecraftlauncher.json.Json;
 import org.lro.steven.aq.simpleminecraftlauncher.metadata.game.version.GameMetadataManifest;
 import org.lro.steven.aq.simpleminecraftlauncher.metadata.game.versionmanifest.VersionManifest;
+import org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.conf.settings.UserSettings;
 
 import java.lang.reflect.Type;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class TestJSON {
+
+    /**
+     * 验证 WebURL 以字符串形式序列化。
+     */
+    @Test
+    public void serializesWebUrlAsString() {
+        UserSettings settings = Json.GSON.fromJson(
+                "{\"background_image\":\"https://example.com/a.png\"}", UserSettings.class);
+        String json = Json.GSON.toJson(settings);
+        assertTrue(json.contains("\"background_image\":\"https://example.com/a.png\""), json);
+    }
 
     @Test
     public void test() throws IOException {

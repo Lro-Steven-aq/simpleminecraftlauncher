@@ -42,6 +42,11 @@ public class DownloadEvent implements Event {
     private IOException error;
     private boolean handled;
 
+    /**
+     * 创建 {@code DownloadEvent} 实例。
+     * @param url 参数
+     * @param target 参数
+     */
     private DownloadEvent(String url, Path target) {
         this.url = url;
         this.target = target;
@@ -66,6 +71,10 @@ public class DownloadEvent implements Event {
         return new DownloadEvent(url, null);
     }
 
+    /**
+     * 实现/覆写接口或父类方法。
+     * @return 返回值
+     */
     @Override
     public String source() {
         return "download event";

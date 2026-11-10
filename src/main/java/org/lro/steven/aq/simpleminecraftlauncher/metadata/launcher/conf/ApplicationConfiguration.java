@@ -28,6 +28,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
 import org.glavo.url.WebURL;
 import org.lro.steven.aq.simpleminecraftlauncher.deserializer.WebURLDeserializer;
+import org.lro.steven.aq.simpleminecraftlauncher.json.Json;
 import org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.conf.settings.UserSettings;
 
 import java.io.IOException;
@@ -50,10 +51,7 @@ public class ApplicationConfiguration {
         public ApplicationConfiguration() {}
 
         public void save(String configurationFilePath) {
-                Gson gson = new GsonBuilder()
-                        .registerTypeAdapter(WebURL.class, new WebURLDeserializer())
-                        .create();
-                String content = gson.toJson(this);
+                String content = Json.GSON.toJson(this);
                 Path target = Path.of(configurationFilePath);
                 Path temporary = target.resolveSibling(target.getFileName() + ".tmp");
                 try {
@@ -65,6 +63,12 @@ public class ApplicationConfiguration {
                 }
         }
 
+        /**
+         * 内部方法：move Into Place。
+         * @param temporary 参数
+         * @param target 参数
+         * @throws IOException 异常
+         */
         private static void moveIntoPlace(Path temporary, Path target) throws IOException {
                 try {
                         Files.move(temporary, target,

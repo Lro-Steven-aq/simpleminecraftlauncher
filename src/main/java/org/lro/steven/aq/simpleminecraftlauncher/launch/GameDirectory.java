@@ -35,6 +35,9 @@ import java.nio.file.Path;
  */
 public final class GameDirectory {
 
+    /**
+     * 创建 {@code GameDirectory} 实例。
+     */
     private GameDirectory() {
     }
 
@@ -94,6 +97,10 @@ public final class GameDirectory {
         return directory != null ? directory : versionDirectory;
     }
 
+    /**
+     * 内部方法：os Name。
+     * @return 返回值
+     */
     private static String osName() {
         return switch (OperatingSystem.getOs()) {
             case WINDOWS -> "windows";
@@ -103,6 +110,13 @@ public final class GameDirectory {
         };
     }
 
+    /**
+     * 内部方法：first Existing。
+     * @param versionDirectory 参数
+     * @param os 参数
+     * @param arch 参数
+     * @return 返回值
+     */
     private static Path firstExisting(Path versionDirectory, String os, String arch) {
         for (String name : java.util.List.of("natives-" + os + "-" + arch, "natives-" + os, "natives")) {
             Path candidate = versionDirectory.resolve(name);

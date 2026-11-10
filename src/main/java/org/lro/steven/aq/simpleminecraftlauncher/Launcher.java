@@ -27,10 +27,15 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 /**
+ * 启动器进程入口。
  * @author lro.steven.aq
  * @since 0.1
  */
 public class Launcher {
+    /**
+     * 启动器入口：调用 {@link Application#_main(String[])}，失败时打印并返回退出码。
+     * @param args 参数
+     */
     static void main(String[] args) {
         // only depend on the java standard library.
         try {
@@ -41,6 +46,11 @@ public class Launcher {
             System.exit(getExitCode(e));
         }
     }
+    /**
+     * 获取 Exit Code。
+     * @param e 参数
+     * @return 返回值
+     */
     private static int getExitCode(Exception e) {
         return switch (e) {
             case IOException ignored -> 1;

@@ -60,6 +60,11 @@ public class Application extends javafx.application.Application {
     private LauncherMainWindowController launcherController;
     private static ApplicationConfiguration configurations;
 
+    /**
+     * 实现/覆写接口或父类方法。
+     * @param primaryStage 参数
+     * @throws Exception 异常
+     */
     @Override
     public void start(Stage primaryStage) throws Exception {
         Metadata metadata = Metadata.from(Features.create(new HashMap<>()), configurations);
@@ -68,6 +73,12 @@ public class Application extends javafx.application.Application {
         showStage(primaryStage, root);
     }
 
+    /**
+     * 加载 Root。
+     * @param metadata 参数
+     * @return 返回值
+     * @throws IOException 异常
+     */
     private Parent loadRoot(Metadata metadata) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Application.fxml"));
         loader.setControllerFactory(controllerClass -> createController(controllerClass, metadata));
@@ -78,6 +89,12 @@ public class Application extends javafx.application.Application {
         return root;
     }
 
+    /**
+     * 创建 Controller。
+     * @param controllerClass 参数
+     * @param metadata 参数
+     * @return 返回值
+     */
     private Object createController(Class<?> controllerClass, Metadata metadata) {
         if (controllerClass.equals(LauncherMainWindowController.class)) {
             return new LauncherMainWindowController(metadata);
@@ -89,6 +106,11 @@ public class Application extends javafx.application.Application {
         }
     }
 
+    /**
+     * 显示 Stage。
+     * @param stage 参数
+     * @param root 参数
+     */
     private void showStage(Stage stage, Parent root) {
         stage.setTitle("Simple Launcher");
         stage.setResizable(false);
@@ -124,6 +146,7 @@ public class Application extends javafx.application.Application {
      */
     public static void _main(String[] args) throws IOException {
         configurations = loadConfiguration().getConfigurations();
+        Runtime.getRuntime().addShutdownHook(new Thread(Application::saveConfiguration, "save-metadata"));
         // start signalBus to load the plugins.
         PluginManager manager = PluginManager.get();
 
@@ -222,6 +245,10 @@ public class Application extends javafx.application.Application {
         return Files.isRegularFile(current) ? current.toString() : "java";
     }
 
+    /**
+     * Java Executable Name。
+     * @return 返回值
+     */
     private static String javaExecutableName() {
         return OperatingSystem.getOs() == OperatingSystem.WINDOWS ? "java.exe" : "java";
     }
@@ -234,5 +261,19 @@ public class Application extends javafx.application.Application {
         ApplicationConfigurationLoader configuration = new ApplicationConfigurationLoader();
         configuration.load(new File(ApplicationConfigurationLoader.DEFAULT_PATH));
         return configuration;
+    }
+
+    /**
+     * 保存当前配置；由 JVM 退出钩子调用，覆盖正常退出和快速启动退出。
+     */
+    private static void saveConfiguration() {
+        if (configurations == null) {
+            return;
+        }
+        try {
+            configurations.save(ApplicationConfigurationLoader.DEFAULT_PATH);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        }
     }
 }

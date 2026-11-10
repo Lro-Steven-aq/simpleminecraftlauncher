@@ -50,6 +50,9 @@ public final class DesktopFrost {
 
     private static final SignalBus SIGNAL_BUS = PluginManager.get().getSignalBus();
 
+    /**
+     * 创建 {@code DesktopFrost} 实例。
+     */
     private DesktopFrost() {
     }
 
@@ -111,6 +114,10 @@ public final class DesktopFrost {
         }
     }
 
+    /**
+     * 判断是否 Windows。
+     * @return 返回值
+     */
     private static boolean isWindows() {
         return System.getProperty("os.name", "").toLowerCase().contains("win");
     }

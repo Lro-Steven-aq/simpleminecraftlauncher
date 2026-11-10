@@ -52,6 +52,11 @@ public interface SignalBus {
      * @param consumer 触发信号时，所执行的函数
      */
     void connect(String signal, EventConsumer consumer);
+    /**
+     * 内部方法：connect。
+     * @param signal 参数
+     * @param consumer 参数
+     */
     void connect(String signal, ChannelConsumer consumer);
 
     /**
@@ -60,6 +65,11 @@ public interface SignalBus {
      * @param payload 事件对象；可携带附属信息.
      */
     void emit(String signal, Event payload);
+    /**
+     * 内部方法：emit。
+     * @param signal 参数
+     * @param payload 参数
+     */
     void emit(String signal, Channel payload);
 
 }

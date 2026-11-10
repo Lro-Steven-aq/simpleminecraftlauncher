@@ -23,11 +23,14 @@
  */
 package org.lro.steven.aq.simpleminecraftlauncher.metadata.launcher.conf.settings;
 
+import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import org.glavo.url.WebURL;
+import org.lro.steven.aq.simpleminecraftlauncher.deserializer.WebURLDeserializer;
 
 /** 用户设置。 */
 public class UserSettings {
+        @JsonAdapter(WebURLDeserializer.class)
         @SerializedName("background_image")
         private WebURL preciousBackgroundImageUrl;
 
@@ -93,6 +96,14 @@ public class UserSettings {
          */
         public boolean fastLaunch() {
                 return fastLaunch;
+        }
+
+        /**
+         * 返回是否启用快速启动。
+         * @return 是否快速启动
+         */
+        public void fastLaunch(boolean enableFastLaunch) {
+                fastLaunch = enableFastLaunch;
         }
 
         /**

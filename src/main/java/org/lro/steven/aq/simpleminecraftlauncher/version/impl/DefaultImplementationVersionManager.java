@@ -92,6 +92,10 @@ public class DefaultImplementationVersionManager implements VersionManager {
         this.configuration = configuration;
     }
 
+    /**
+     * 实现/覆写接口或父类方法。
+     * @return 返回值
+     */
     @Override
     public List<String> getVersions() {
         VersionManifest manifest = getVersionManifest();
@@ -105,6 +109,10 @@ public class DefaultImplementationVersionManager implements VersionManager {
                 .toList();
     }
 
+    /**
+     * 实现/覆写接口或父类方法。
+     * @return 返回值
+     */
     @Override
     public List<String> listAvailableVersions() {
         Path versionsDirectory = GameDirectory.resolve(configuration).resolve("versions");
@@ -123,6 +131,10 @@ public class DefaultImplementationVersionManager implements VersionManager {
         }
     }
 
+    /**
+     * 实现/覆写接口或父类方法。
+     * @return 返回值
+     */
     @Override
     public VersionManifest getVersionManifest() {
         if (cachedManifest != null) {
@@ -147,6 +159,10 @@ public class DefaultImplementationVersionManager implements VersionManager {
         }
     }
 
+    /**
+     * 实现/覆写接口或父类方法。
+     * @param version 参数
+     */
     @Override
     public void install(String version) {
         if (!canInstall(version)) {
@@ -162,6 +178,14 @@ public class DefaultImplementationVersionManager implements VersionManager {
         installFiles(selected, gameDirectory, versionDirectory, version, jsonFile);
     }
 
+    /**
+     * 安装 Files。
+     * @param selected 参数
+     * @param gameDirectory 参数
+     * @param versionDirectory 参数
+     * @param version 参数
+     * @param jsonFile 参数
+     */
     private void installFiles(Version selected, Path gameDirectory, Path versionDirectory, String version, Path jsonFile) {
         try {
             downloadVersionJson(selected, versionDirectory, jsonFile);
@@ -173,10 +197,19 @@ public class DefaultImplementationVersionManager implements VersionManager {
         }
     }
 
+    /**
+     * 内部方法：log Installed。
+     * @param version 参数
+     */
     private static void logInstalled(String version) {
         SIGNAL_BUS.emit("log.info", LogEvent.of("Version installed: " + version));
     }
 
+    /**
+     * 判断是否 Install。
+     * @param version 参数
+     * @return 返回值
+     */
     private boolean canInstall(String version) {
         if (version == null || version.isBlank()) {
             return false;
@@ -188,6 +221,11 @@ public class DefaultImplementationVersionManager implements VersionManager {
         return false;
     }
 
+    /**
+     * 查找 Version。
+     * @param version 参数
+     * @return 返回值
+     */
     private Version findVersion(String version) {
         VersionManifest manifest = getVersionManifest();
         if (manifest == null || manifest.versions() == null) {
@@ -205,12 +243,27 @@ public class DefaultImplementationVersionManager implements VersionManager {
         return selected;
     }
 
+    /**
+     * 下载 Version Json。
+     * @param selected 参数
+     * @param versionDirectory 参数
+     * @param jsonFile 参数
+     * @throws IOException 异常
+     */
     private void downloadVersionJson(Version selected, Path versionDirectory, Path jsonFile) throws IOException {
         Files.createDirectories(versionDirectory);
         SIGNAL_BUS.emit("log.info", LogEvent.of("Downloading version JSON: " + selected.id()));
         download(selected.url().toString(), jsonFile);
     }
 
+    /**
+     * 安装 Version Files。
+     * @param gameDirectory 参数
+     * @param versionDirectory 参数
+     * @param version 参数
+     * @param jsonFile 参数
+     * @throws IOException 异常
+     */
     private void installVersionFiles(Path gameDirectory, Path versionDirectory, String version, Path jsonFile) throws IOException {
         GameMetadataManifest metadata = Json.GSON.fromJson(Files.readString(jsonFile), GameMetadataManifest.class);
         downloadClientJar(versionDirectory, version, metadata);
@@ -219,11 +272,22 @@ public class DefaultImplementationVersionManager implements VersionManager {
         downloadAssetObjects(gameDirectory, metadata);
     }
 
+    /**
+     * 保存 Installed Version。
+     * @param jsonFile 参数
+     */
     private void saveInstalledVersion(Path jsonFile) {
         configuration.userSettings().lastVersionJsonFile(jsonFile.toString());
         configuration.save(ApplicationConfigurationLoader.DEFAULT_PATH);
     }
 
+    /**
+     * 下载 Client Jar。
+     * @param versionDirectory 参数
+     * @param version 参数
+     * @param metadata 参数
+     * @throws IOException 异常
+     */
     private void downloadClientJar(Path versionDirectory, String version, GameMetadataManifest metadata) throws IOException {
         if (metadata == null || metadata.downloads() == null || metadata.downloads().client() == null
                 || metadata.downloads().client().url() == null) {
@@ -233,6 +297,11 @@ public class DefaultImplementationVersionManager implements VersionManager {
         download(metadata.downloads().client().url().toString(), versionDirectory.resolve(jarName + ".jar"));
     }
 
+    /**
+     * 下载 Libraries。
+     * @param gameDirectory 参数
+     * @param metadata 参数
+     */
     private void downloadLibraries(Path gameDirectory, GameMetadataManifest metadata) {
         if (metadata == null || metadata.libraries() == null) {
             return;
@@ -250,6 +319,13 @@ public class DefaultImplementationVersionManager implements VersionManager {
         }
     }
 
+    /**
+     * 下载 Library。
+     * @param library 参数
+     * @param libraries 参数
+     * @param features 参数
+     * @return 返回值
+     */
     private boolean downloadLibrary(Library library, Path libraries, Features features) {
         if (library == null || library.mavenArtifactId() == null) {
             return false;
@@ -265,6 +341,13 @@ public class DefaultImplementationVersionManager implements VersionManager {
         return downloadLibraryJar(url, libraries.resolve(path), path);
     }
 
+    /**
+     * 下载 Library Jar。
+     * @param url 参数
+     * @param target 参数
+     * @param path 参数
+     * @return 返回值
+     */
     private boolean downloadLibraryJar(String url, Path target, String path) {
         try {
             download(url, target);
@@ -275,6 +358,11 @@ public class DefaultImplementationVersionManager implements VersionManager {
         }
     }
 
+    /**
+     * 内部方法：artifact Url。
+     * @param library 参数
+     * @return 返回值
+     */
     private String artifactUrl(Library library) {
         if (library.downloads() == null || library.downloads().artifact() == null
                 || library.downloads().artifact().url() == null) {
@@ -283,6 +371,11 @@ public class DefaultImplementationVersionManager implements VersionManager {
         return library.downloads().artifact().url().toString();
     }
 
+    /**
+     * 下载 Asset Index。
+     * @param gameDirectory 参数
+     * @param metadata 参数
+     */
     private void downloadAssetIndex(Path gameDirectory, GameMetadataManifest metadata) {
         if (metadata == null || metadata.assetIndex() == null
                 || metadata.assetIndex().url() == null || metadata.assetIndex().id() == null) {
@@ -298,6 +391,11 @@ public class DefaultImplementationVersionManager implements VersionManager {
         }
     }
 
+    /**
+     * 下载 Asset Objects。
+     * @param gameDirectory 参数
+     * @param metadata 参数
+     */
     private void downloadAssetObjects(Path gameDirectory, GameMetadataManifest metadata) {
         if (metadata == null || metadata.assetIndex() == null || metadata.assetIndex().id() == null) {
             return;
@@ -319,6 +417,11 @@ public class DefaultImplementationVersionManager implements VersionManager {
         }
     }
 
+    /**
+     * 下载 Objects。
+     * @param objectsDirectory 参数
+     * @param objects 参数
+     */
     private void downloadObjects(Path objectsDirectory, JsonObject objects) {
         Set<String> hashes = new LinkedHashSet<>();
         for (Map.Entry<String, JsonElement> entry : objects.entrySet()) {
@@ -343,6 +446,14 @@ public class DefaultImplementationVersionManager implements VersionManager {
                 .formatted(completed.get(), hashes.size(), failed.get())));
     }
 
+    /**
+     * 下载 Asset Object。
+     * @param objectsDirectory 参数
+     * @param hash 参数
+     * @param completed 参数
+     * @param failed 参数
+     * @param total 参数
+     */
     private void downloadAssetObject(Path objectsDirectory, String hash,
                                      AtomicInteger completed, AtomicInteger failed, int total) {
         try {
@@ -360,12 +471,22 @@ public class DefaultImplementationVersionManager implements VersionManager {
         }
     }
 
+    /**
+     * 实现/覆写接口或父类方法。
+     * @param callback 参数
+     */
     @Override
     public void enqueue(Callback callback) {
         Request request = new Request.Builder().url(versionManifestUrl.toString()).build();
         HTTP_CLIENT.newCall(request).enqueue(callback);
     }
 
+    /**
+     * 实现/覆写接口或父类方法。
+     * @param call 参数
+     * @param response 参数
+     * @return 返回值
+     */
     @Override
     public VersionManifest parseVersionManifest(@NotNull Call call, @NotNull Response response) {
         ResponseBody body = response.body();
@@ -381,6 +502,10 @@ public class DefaultImplementationVersionManager implements VersionManager {
         }
     }
 
+    /**
+     * 实现/覆写接口或父类方法。
+     * @param configuration 参数
+     */
     @Override
     public void downloadJavaRuntimeFromInternet(ApplicationConfiguration configuration) {
         Thread thread = new Thread(() -> downloadJavaRuntime(configuration), "java-runtime-download");
@@ -388,6 +513,10 @@ public class DefaultImplementationVersionManager implements VersionManager {
         thread.start();
     }
 
+    /**
+     * 下载 Java Runtime。
+     * @param configuration 参数
+     */
     private void downloadJavaRuntime(ApplicationConfiguration configuration) {
         try {
             Path javaHome = resolveJavaRuntime();
@@ -403,6 +532,11 @@ public class DefaultImplementationVersionManager implements VersionManager {
         }
     }
 
+    /**
+     * 解析 Java Runtime。
+     * @return 返回值
+     * @throws Exception 异常
+     */
     private Path resolveJavaRuntime() throws Exception {
         Path targetDirectory = Path.of(".simpleminecraftlauncher", "java");
         Files.createDirectories(targetDirectory);
@@ -414,6 +548,13 @@ public class DefaultImplementationVersionManager implements VersionManager {
         return downloadAndExtractRuntime(targetDirectory, runtimeDirectory);
     }
 
+    /**
+     * 下载 And Extract Runtime。
+     * @param targetDirectory 参数
+     * @param runtimeDirectory 参数
+     * @return 返回值
+     * @throws Exception 异常
+     */
     private Path downloadAndExtractRuntime(Path targetDirectory, Path runtimeDirectory) throws Exception {
         boolean windows = OperatingSystem.getOs() == OperatingSystem.WINDOWS;
         Path archive = targetDirectory.resolve("java-runtime." + (windows ? "zip" : "tar.gz"));
@@ -426,6 +567,10 @@ public class DefaultImplementationVersionManager implements VersionManager {
         return findJavaHome(runtimeDirectory);
     }
 
+    /**
+     * Java Runtime Url。
+     * @return 返回值
+     */
     private static String javaRuntimeUrl() {
         String os = switch (OperatingSystem.getOs()) {
             case WINDOWS -> "windows";
@@ -442,6 +587,12 @@ public class DefaultImplementationVersionManager implements VersionManager {
                 .formatted(JAVA_RUNTIME_FEATURE, os, arch));
     }
 
+    /**
+     * 内部方法：download。
+     * @param url 参数
+     * @param target 参数
+     * @throws IOException 异常
+     */
     private void download(String url, Path target) throws IOException {
         if (url == null || url.isBlank()) {
             return;
@@ -454,6 +605,13 @@ public class DefaultImplementationVersionManager implements VersionManager {
         event.throwIfFailed();
     }
 
+    /**
+     * 内部方法：untar。
+     * @param archive 参数
+     * @param target 参数
+     * @throws IOException 异常
+     * @throws InterruptedException 异常
+     */
     private static void untar(Path archive, Path target) throws IOException, InterruptedException {
         Files.createDirectories(target);
         Process process = new ProcessBuilder("tar", "-xzf", archive.toString(), "-C", target.toString())
@@ -465,6 +623,12 @@ public class DefaultImplementationVersionManager implements VersionManager {
         }
     }
 
+    /**
+     * 内部方法：unzip。
+     * @param archive 参数
+     * @param target 参数
+     * @throws IOException 异常
+     */
     private static void unzip(Path archive, Path target) throws IOException {
         Files.createDirectories(target);
         try (ZipInputStream zip = new ZipInputStream(Files.newInputStream(archive))) {
@@ -475,6 +639,13 @@ public class DefaultImplementationVersionManager implements VersionManager {
         }
     }
 
+    /**
+     * 写入 Zip Entry。
+     * @param zip 参数
+     * @param entry 参数
+     * @param target 参数
+     * @throws IOException 异常
+     */
     private static void writeZipEntry(ZipInputStream zip, ZipEntry entry, Path target) throws IOException {
         Path output = target.resolve(entry.getName()).normalize();
         if (!output.startsWith(target)) {
@@ -490,6 +661,11 @@ public class DefaultImplementationVersionManager implements VersionManager {
         }
     }
 
+    /**
+     * 查找 Java Home。
+     * @param root 参数
+     * @return 返回值
+     */
     private static Path findJavaHome(Path root) {
         if (root == null || !Files.isDirectory(root)) {
             return null;
@@ -504,6 +680,11 @@ public class DefaultImplementationVersionManager implements VersionManager {
         }
     }
 
+    /**
+     * 判断是否 Java Executable。
+     * @param path 参数
+     * @return 返回值
+     */
     private static boolean isJavaExecutable(Path path) {
         if (!Files.isRegularFile(path) || path.getParent() == null) {
             return false;

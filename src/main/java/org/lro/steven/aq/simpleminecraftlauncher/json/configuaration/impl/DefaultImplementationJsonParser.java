@@ -68,16 +68,30 @@ public class DefaultImplementationJsonParser implements Parser {
         this.features = features;
     }
 
+    /**
+     * 实现/覆写接口或父类方法。
+     * @param configuration 参数
+     */
     @Override
     public void setConfiguration(Configuration configuration) {
         this.configuration = configuration;
     }
 
+    /**
+     * 实现/覆写接口或父类方法。
+     * @return 返回值
+     */
     @Override
     public Configuration getConfiguration() {
         return configuration;
     }
 
+    /**
+     * 实现/覆写接口或父类方法。
+     * @param command 参数
+     * @param configuration 参数
+     * @return 返回值
+     */
     @Override
     public Command parse(Command command, Configuration configuration) {
         GameMetadataManifest manifest = Json.GSON.fromJson(jsonRawContent, GameMetadataManifest.class);
@@ -91,6 +105,11 @@ public class DefaultImplementationJsonParser implements Parser {
         return command;
     }
 
+    /**
+     * 内部方法：effective Configuration。
+     * @param configuration 参数
+     * @return 返回值
+     */
     private Configuration effectiveConfiguration(Configuration configuration) {
         if (configuration != null) {
             return configuration;
@@ -98,6 +117,12 @@ public class DefaultImplementationJsonParser implements Parser {
         return this.configuration != null ? this.configuration : Configuration.create();
     }
 
+    /**
+     * 添加 Jvm Arguments。
+     * @param command 参数
+     * @param arguments 参数
+     * @param configuration 参数
+     */
     private void addJvmArguments(Command command, Arguments arguments, Configuration configuration) {
         if (arguments == null) {
             return;
@@ -106,18 +131,35 @@ public class DefaultImplementationJsonParser implements Parser {
         addArgumentValues(command, arguments.javaVirtualMachine(), configuration);
     }
 
+    /**
+     * 添加 Game Arguments。
+     * @param command 参数
+     * @param arguments 参数
+     * @param configuration 参数
+     */
     private void addGameArguments(Command command, Arguments arguments, Configuration configuration) {
         if (arguments != null) {
             addArgumentValues(command, arguments.game(), configuration);
         }
     }
 
+    /**
+     * 添加 Main Class。
+     * @param command 参数
+     * @param manifest 参数
+     */
     private void addMainClass(Command command, GameMetadataManifest manifest) {
         if (manifest.mainClass() != null && !manifest.mainClass().isBlank()) {
             command.add(manifest.mainClass());
         }
     }
 
+    /**
+     * 添加 Argument Values。
+     * @param command 参数
+     * @param arguments 参数
+     * @param configuration 参数
+     */
     private void addArgumentValues(Command command, List<Argument> arguments, Configuration configuration) {
         if (arguments == null) {
             return;
@@ -129,6 +171,11 @@ public class DefaultImplementationJsonParser implements Parser {
         }
     }
 
+    /**
+     * 判断是否 Applicable。
+     * @param argument 参数
+     * @return 返回值
+     */
     private boolean isApplicable(Argument argument) {
         if (argument == null || argument.value() == null) {
             return false;
@@ -136,6 +183,12 @@ public class DefaultImplementationJsonParser implements Parser {
         return argument.rules() == null || RuleEvaluator.isAllowed(argument.rules(), features);
     }
 
+    /**
+     * 添加 Values。
+     * @param command 参数
+     * @param values 参数
+     * @param configuration 参数
+     */
     private void addValues(Command command, List<String> values, Configuration configuration) {
         for (String value : values) {
             command.add(parseReference(value, configuration));
@@ -159,6 +212,13 @@ public class DefaultImplementationJsonParser implements Parser {
         return buffer.toString();
     }
 
+    /**
+     * 解析 Key。
+     * @param key 参数
+     * @param fallback 参数
+     * @param configuration 参数
+     * @return 返回值
+     */
     private String resolveKey(String key, String fallback, Configuration configuration) {
         String value = configuration.get(key);
         if (value != null) {
@@ -168,6 +228,11 @@ public class DefaultImplementationJsonParser implements Parser {
         return fallback;
     }
 
+    /**
+     * 实现/覆写接口或父类方法。
+     * @param command 参数
+     * @return 返回值
+     */
     @Override
     public Command parse(Command command) {
         return parse(command, configuration);

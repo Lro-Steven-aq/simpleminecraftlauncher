@@ -42,6 +42,14 @@ import java.lang.reflect.Type;
  */
 public class WebURLDeserializer implements JsonDeserializer<WebURL>, JsonSerializer<WebURL> {
 
+    /**
+     * 实现/覆写接口或父类方法。
+     * @param json 参数
+     * @param typeOfT 参数
+     * @param context 参数
+     * @return 返回值
+     * @throws JsonParseException 异常
+     */
     @Override
     public WebURL deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         if (json == null || json.isJsonNull()) {
@@ -50,6 +58,13 @@ public class WebURLDeserializer implements JsonDeserializer<WebURL>, JsonSeriali
         return WebURL.parse(json.getAsString());
     }
 
+    /**
+     * 实现/覆写接口或父类方法。
+     * @param src 参数
+     * @param typeOfSrc 参数
+     * @param context 参数
+     * @return 返回值
+     */
     @Override
     public JsonElement serialize(WebURL src, Type typeOfSrc, JsonSerializationContext context) {
         return src == null ? JsonNull.INSTANCE : new JsonPrimitive(src.toString());

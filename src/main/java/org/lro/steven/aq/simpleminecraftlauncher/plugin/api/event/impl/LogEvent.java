@@ -28,6 +28,10 @@ import org.lro.steven.aq.simpleminecraftlauncher.plugin.api.event.Event;
 /** 日志事件。 */
 public class LogEvent implements Event {
     private final String message;
+    /**
+     * 创建 {@code LogEvent} 实例。
+     * @param message 参数
+     */
     private LogEvent(String message) {
         this.message = message;
     }
@@ -41,11 +45,19 @@ public class LogEvent implements Event {
         return new LogEvent(message);
     }
 
+    /**
+     * 实现/覆写接口或父类方法。
+     * @return 返回值
+     */
     @Override
     public String source() {
         return "logger event";
     }
 
+    /**
+     * 获取 Message。
+     * @return 返回值
+     */
     public String getMessage() {
         return message;
     }

@@ -1,29 +1,29 @@
-[21:29:48] [Datafixer Bootstrap #0/INFO]: 307 Datafixer optimizations took 1061 milliseconds
-[21:29:56] [Render thread/INFO]: Environment: Environment[discoveryUrl=https://discovery.minecraftservices.com/minecraft/client, name=PROD]
-[21:29:56] [Render thread/INFO]: Setting user: NormalTable5801
-[21:29:56] [Render thread/INFO]: Backend library: LWJGL version 3.4.3+4
-[21:29:56] [Render thread/WARN]: Detected unexpected shutdown during last game startup: resetting fullscreen mode
-[21:29:56] [Render thread/INFO]: SDL [SYSTEM]: App name: Minecraft
-[21:29:56] [Render thread/INFO]: SDL [SYSTEM]: App version: 26.3
-[21:29:56] [Render thread/INFO]: SDL [SYSTEM]: App ID: com.mojang.minecraft
-[21:29:56] [Render thread/INFO]: SDL [SYSTEM]: SDL revision: SDL-3.4.14--128-NOTFOUND
-[21:29:56] [Render thread/INFO]: SDL [VIDEO]: Detected XWayland
-[21:29:56] [Render thread/ERROR]: Failed to create backend OpenGL
+[10:33:15] [Datafixer Bootstrap #0/INFO]: 307 Datafixer optimizations took 947 milliseconds
+[10:33:23] [Render thread/INFO]: Environment: Environment[discoveryUrl=https://discovery.minecraftservices.com/minecraft/client, name=PROD]
+[10:33:23] [Render thread/INFO]: Setting user: NormalTable5801
+[10:33:24] [Render thread/INFO]: Backend library: LWJGL version 3.4.3+4
+[10:33:24] [Render thread/WARN]: Detected unexpected shutdown during last game startup: resetting fullscreen mode
+[10:33:24] [Render thread/INFO]: SDL [SYSTEM]: App name: Minecraft
+[10:33:24] [Render thread/INFO]: SDL [SYSTEM]: App version: 26.3
+[10:33:24] [Render thread/INFO]: SDL [SYSTEM]: App ID: com.mojang.minecraft
+[10:33:24] [Render thread/INFO]: SDL [SYSTEM]: SDL revision: SDL-3.4.14--128-NOTFOUND
+[10:33:24] [Render thread/INFO]: SDL [VIDEO]: Detected XWayland
+[10:33:24] [Render thread/ERROR]: Failed to create backend OpenGL
 com.mojang.renderpearl.api.device.BackendCreationException: OpenGL is not supported: Could not retrieve OpenGL functions
 	at com.mojang.renderpearl.backend.opengl.GlBackend.loadLibrary(GlBackend.java:36)
 	at net.minecraft.client.Minecraft.<init>(Minecraft.java:530)
 	at net.minecraft.client.main.Main.main(Main.java:278)
-[21:29:56] [Render thread/INFO]: Preferring discrete GPU: NVIDIA GeForce 940MX
-[21:29:56] [Render thread/INFO]: Enabling optional FeatureSet [Calibrated Timestamps]
-[21:29:56] [Render thread/INFO]: Enabling optional FeatureSet [Wireframe]
-[21:29:56] [Render thread/INFO]: Enabling optional FeatureSet [AMD Buffer Marker]
-[21:29:56] [Render thread/INFO]: Enabling optional FeatureSet [EXT MultiDraw]
-[21:29:56] [Render thread/INFO]: Optional FeatureSet [NV Diagnostic Checkpoint] supported but device condition failed and will not be enabled
-[21:29:57] [Render thread/INFO]: Using graphics backend Vulkan, using drivers: 1.4.312 NVIDIA 580.178.04
-[21:29:57] [Render thread/INFO]: Using graphics device: NVIDIA GeForce 940MX (NVIDIA)
-[21:29:57] [Render thread/INFO]: Using graphics device extensions: VK_EXT_calibrated_timestamps (D), VK_KHR_synchronization2 (D), VK_EXT_multi_draw (D), VK_AMD_buffer_marker (D), VK_EXT_vertex_attribute_divisor (D), VK_KHR_swapchain (D), VK_KHR_surface (I), VK_KHR_push_descriptor (D), VK_KHR_xlib_surface (I), VK_EXT_debug_utils (I), VK_KHR_dynamic_rendering (D)
-[21:29:57] [Render thread/INFO]: Created window using SDL video driver: x11
-[21:29:59] [Download-2/ERROR]: Failed to fetch user properties
+[10:33:24] [Render thread/INFO]: Preferring discrete GPU: NVIDIA GeForce 940MX
+[10:33:24] [Render thread/INFO]: Enabling optional FeatureSet [EXT MultiDraw]
+[10:33:24] [Render thread/INFO]: Enabling optional FeatureSet [AMD Buffer Marker]
+[10:33:24] [Render thread/INFO]: Enabling optional FeatureSet [Wireframe]
+[10:33:24] [Render thread/INFO]: Enabling optional FeatureSet [Calibrated Timestamps]
+[10:33:24] [Render thread/INFO]: Optional FeatureSet [NV Diagnostic Checkpoint] supported but device condition failed and will not be enabled
+[10:33:24] [Render thread/INFO]: Using graphics backend Vulkan, using drivers: 1.4.312 NVIDIA 580.178.04
+[10:33:24] [Render thread/INFO]: Using graphics device: NVIDIA GeForce 940MX (NVIDIA)
+[10:33:24] [Render thread/INFO]: Using graphics device extensions: VK_EXT_calibrated_timestamps (D), VK_KHR_synchronization2 (D), VK_EXT_multi_draw (D), VK_AMD_buffer_marker (D), VK_EXT_vertex_attribute_divisor (D), VK_KHR_swapchain (D), VK_KHR_surface (I), VK_KHR_push_descriptor (D), VK_KHR_xlib_surface (I), VK_EXT_debug_utils (I), VK_KHR_dynamic_rendering (D)
+[10:33:25] [Render thread/INFO]: Created window using SDL video driver: x11
+[10:33:26] [Download-2/ERROR]: Failed to fetch user properties
 com.mojang.authlib.exceptions.InvalidCredentialsException: Status: 401
 	at com.mojang.authlib.exceptions.MinecraftClientHttpException.toAuthenticationException(MinecraftClientHttpException.java:70)
 	at com.mojang.authlib.services.MinecraftServicesUserApiService.fetchProperties(MinecraftServicesUserApiService.java:168)
@@ -39,4 +39,41 @@ Caused by: MinecraftClientHttpException[type=HTTP_ERROR, status=401, response=Er
 	at com.mojang.authlib.minecraft.client.MinecraftClient.get(MinecraftClient.java:65)
 	at com.mojang.authlib.services.MinecraftServicesUserApiService.fetchProperties(MinecraftServicesUserApiService.java:118)
 	... 5 more
-[21:29:59] [Render thread/INFO]: Reloading ResourceManager: vanilla, vanilla
+[10:33:27] [Render thread/INFO]: Reloading ResourceManager: vanilla, vanilla
+[10:33:27] [Download-2/INFO]: Could not authorize you against Realms server: java.lang.RuntimeException: Failed to parse into SignedJWT: 0
+[10:33:27] [Download-2/ERROR]: Failed to fetch Realms feature flags
+com.mojang.realmsclient.exception.RealmsServiceException: Realms authentication error with message 'java.lang.RuntimeException: Failed to parse into SignedJWT: 0'
+	at com.mojang.realmsclient.client.RealmsClient.execute(RealmsClient.java:625)
+	at com.mojang.realmsclient.client.RealmsClient.fetchFeatureFlags(RealmsClient.java:204)
+	at java.base/java.util.concurrent.CompletableFuture$AsyncSupply.run(CompletableFuture.java:1789)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+	at java.base/java.lang.Thread.run(Thread.java:1516)
+[10:33:28] [Worker-Main-1/INFO]: Found unifont_all_no_pua-17.0.01.hex, loading
+[10:33:28] [Worker-Main-3/INFO]: Found unifont_pua-17.0.01.hex, loading
+[10:33:28] [Worker-Main-1/INFO]: Found unifont_jp_patch-17.0.01.hex, loading
+[10:33:32] [Render thread/INFO]: OpenAL initialized on device 内置音频 模拟立体声
+[10:33:32] [Render thread/INFO]: Sound engine started
+[10:33:32] [Render thread/INFO]: Created: 512x256x0 minecraft:textures/atlas/particles.png-atlas
+[10:33:33] [Render thread/INFO]: Created: 256x128x0 minecraft:textures/atlas/celestials.png-atlas
+[10:33:33] [Render thread/INFO]: Created: 128x128x0 minecraft:textures/atlas/decorated_pot.png-atlas
+[10:33:33] [Render thread/INFO]: Created: 512x256x0 minecraft:textures/atlas/paintings.png-atlas
+[10:33:33] [Render thread/INFO]: Created: 1024x512x0 minecraft:textures/atlas/shield_patterns.png-atlas
+[10:33:33] [Render thread/INFO]: Created: 1024x512x0 minecraft:textures/atlas/banner_patterns.png-atlas
+[10:33:33] [Render thread/INFO]: Created: 2048x2048x4 minecraft:textures/atlas/blocks.png-atlas
+[10:33:33] [Render thread/INFO]: Created: 1024x512x0 minecraft:textures/atlas/items.png-atlas
+[10:33:33] [Render thread/INFO]: Created: 1024x1024x0 minecraft:textures/atlas/gui.png-atlas
+[10:33:33] [Render thread/INFO]: Created: 128x64x0 minecraft:textures/atlas/map_decorations.png-atlas
+[10:33:33] [Render thread/INFO]: Created: 512x512x0 minecraft:textures/atlas/chest.png-atlas
+[10:33:33] [Render thread/INFO]: Created: 512x512x0 minecraft:textures/atlas/shulker_boxes.png-atlas
+[10:33:34] [Download-2/INFO]: Could not authorize you against Realms server: java.lang.RuntimeException: Failed to parse into SignedJWT: 0
+[10:33:34] [Download-2/ERROR]: Couldn't connect to realms
+com.mojang.realmsclient.exception.RealmsServiceException: Realms authentication error with message 'java.lang.RuntimeException: Failed to parse into SignedJWT: 0'
+	at com.mojang.realmsclient.client.RealmsClient.execute(RealmsClient.java:625)
+	at com.mojang.realmsclient.client.RealmsClient.clientCompatible(RealmsClient.java:354)
+	at com.mojang.realmsclient.RealmsAvailability.lambda$check$0(RealmsAvailability.java:48)
+	at java.base/java.util.concurrent.CompletableFuture$AsyncSupply.run(CompletableFuture.java:1789)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+	at java.base/java.lang.Thread.run(Thread.java:1516)
+[10:33:50] [Render thread/INFO]: Stopping!

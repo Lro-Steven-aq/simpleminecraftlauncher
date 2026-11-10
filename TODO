@@ -1,4 +1,3 @@
-1. is_fast_launch 未实现 快速启动：打开启动器时，直接安装settings里面的配置启动minecraft
 2. menu bar 未实现按钮
 3. breakhandler 在另一个项目里实现
 3.1. 移除okhttp依赖。将依赖转移至下载插件。主程序只依赖Downloader接口。

@@ -70,18 +70,33 @@ public final class DefaultImplementationSignalBus implements SignalBus {
     }
 
     /// Implement its interface:
+    /**
+     * 实现/覆写接口或父类方法。
+     * @param signal 参数
+     * @param consumer 参数
+     */
     @Override
     public void connect(String signal, EventConsumer consumer) {
         mapOfEvent.computeIfAbsent(signal, (string) -> new ArrayList<>()).add(consumer);
     }
 
     /// Implement its interface:
+    /**
+     * 实现/覆写接口或父类方法。
+     * @param signal 参数
+     * @param consumer 参数
+     */
     @Override
     public void connect(String signal, ChannelConsumer consumer) {
         mapOfChannel.computeIfAbsent(signal, (string) -> new ArrayList<>()).add(consumer);
     }
 
     /// Implement its interface:
+    /**
+     * 实现/覆写接口或父类方法。
+     * @param signal 参数
+     * @param payload 参数
+     */
     @Override
     public void emit(String signal, Event payload) {
         mapOfEvent.getOrDefault(signal, List.of())
@@ -96,6 +111,11 @@ public final class DefaultImplementationSignalBus implements SignalBus {
     }
 
     /// Implement its interface:
+    /**
+     * 实现/覆写接口或父类方法。
+     * @param signal 参数
+     * @param payload 参数
+     */
     @Override
     public void emit(String signal, Channel payload) {
         mapOfChannel.getOrDefault(signal, List.of())

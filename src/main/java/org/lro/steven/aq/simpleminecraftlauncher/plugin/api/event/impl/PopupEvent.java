@@ -53,6 +53,15 @@ public class PopupEvent implements Event {
     private final Runnable callableOnNo;
     private final Runnable callableOnClose;
 
+    /**
+     * 创建 {@code PopupEvent} 实例。
+     * @param title 参数
+     * @param head 参数
+     * @param msg 参数
+     * @param callableOnYes 参数
+     * @param callableOnNo 参数
+     * @param callableOnClose 参数
+     */
     private PopupEvent(String title,
                        String head,
                        String msg,
@@ -67,11 +76,19 @@ public class PopupEvent implements Event {
         this.callableOnClose = callableOnClose;
     }
 
+    /**
+     * 实现/覆写接口或父类方法。
+     * @return 返回值
+     */
     @Override
     public String source() {
         return "popup event";
     }
 
+    /**
+     * 获取 Title。
+     * @return 返回值
+     */
     public String getTitle() {
         return title;
     }

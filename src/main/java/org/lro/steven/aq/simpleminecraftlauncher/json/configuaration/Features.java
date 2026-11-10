@@ -40,6 +40,10 @@ public final class Features {
         return features;
     }
 
+    /**
+     * 创建 {@code Features} 实例。
+     * @param config 参数
+     */
     private Features(Map<String, Boolean> config) {
         this.map = config;
     }

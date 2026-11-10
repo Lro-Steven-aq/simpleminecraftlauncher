@@ -52,6 +52,18 @@ public class DefaultImplementationPluginLoader implements PluginLoader {
         this.loaderMap = new ConcurrentHashMap<>();
     }
 
+    /**
+     * 实现/覆写接口或父类方法。
+     * @param file 参数
+     * @param clazz 参数
+     * @return 返回值
+     * @throws NoSuchMethodException 异常
+     * @throws ClassNotFoundException 异常
+     * @throws InvocationTargetException 异常
+     * @throws InstantiationException 异常
+     * @throws IllegalAccessException 异常
+     * @throws MalformedURLException 异常
+     */
     @Override
     public Plugin load(String file, String clazz) throws NoSuchMethodException, ClassNotFoundException, InvocationTargetException, InstantiationException, IllegalAccessException, MalformedURLException {
         if (!file.endsWith(".jar")) {
@@ -77,6 +89,11 @@ public class DefaultImplementationPluginLoader implements PluginLoader {
         }
     }
 
+    /**
+     * 实现/覆写接口或父类方法。
+     * @param file 参数
+     * @throws IOException 异常
+     */
     @Override
     public void unload(String file) throws IOException {
         PluginClassLoader loader = (PluginClassLoader) loaderMap.remove(file);
@@ -85,6 +102,10 @@ public class DefaultImplementationPluginLoader implements PluginLoader {
         }
     }
 
+    /**
+     * 实现/覆写接口或父类方法。
+     * @throws IOException 异常
+     */
     @Override
     public void unloadAll() throws IOException {
         for(ClassLoader loader : loaderMap.values()) {
