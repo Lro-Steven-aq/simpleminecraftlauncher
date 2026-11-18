@@ -31,9 +31,13 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import org.apache.commons.io.FileUtils;
 import org.glavo.url.WebURL;
 
+import java.io.File;
 import java.lang.reflect.Type;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * WebURL 与 JSON 字符串互转。
@@ -55,7 +59,14 @@ public class WebURLDeserializer implements JsonDeserializer<WebURL>, JsonSeriali
         if (json == null || json.isJsonNull()) {
             return null;
         }
-        return WebURL.parse(json.getAsString());
+        String string = json.getAsString();
+        if (FileUtils.isRegularFile(new File(string))) {
+            File file = new File(string);
+            return WebURL.parse(
+              "file:" + file.getAbsolutePath()
+            );
+        }
+        return WebURL.parse(string);
     }
 
     /**
